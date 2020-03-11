@@ -1,0 +1,78 @@
+// Mixins ======================================================================================== /
+
+@mixin respond-to($media) {
+	@if $media == mobile-portrait {
+		@media only screen and (min-width: $minw-mp) {
+			@content;
+		}
+	}
+	@if $media == mobile-large {
+		@media only screen and (min-width: $minw-mxl) {
+			@content;
+		}
+	} @else if $media == mobile-landscape {
+		@media only screen and (min-width: $minw-ml) {
+			@content;
+		}
+	} @else if $media == small-height {
+		@media only screen and (max-height: 450px) {
+			@content;
+		}
+	} @else if $media == mobile-only {
+		@media only screen and (max-width: #{$minw-tp - 1}) {
+			@content;
+		}
+	} @else if $media == mobile-landscape-only {
+		@media only screen and (max-width: #{$minw-d - 1} ) {
+			@content;
+		}
+	} @else if $media == mobile-tablet-only {
+		@media only screen and (max-width: #{$minw-tp - 1}) {
+			@content;
+		}
+	} @else if $media == tablet-portrait {
+		@media only screen and (min-width: $minw-tp) {
+			@content;
+		}
+	} @else if $media == tablet-portrait-only {
+		@media only screen and (min-width: $minw-tp) and (max-width: #{$minw-tl - 1} ) {
+			@content;
+		}
+	} @else if $media == tablet-only {
+		@media only screen and (min-width: $minw-tp)  and (max-width: #{$minw-d - 1} ) {
+			@content;
+		}
+	} @else if $media == tablet-landscape {
+		@media only screen and (min-width: $minw-tl) {
+			@content;
+		}
+	} @else if $media == tablet-landscape-only {
+		@media only screen and (min-width: $minw-tl) and (max-width: #{$minw-d - 1} ) {
+			@content;
+		}
+	} @else if $media == desktop {
+		@media only screen and (min-width: $minw-d) {
+			@content;
+		}
+	} @else if $media == desktop-only {
+		@media only screen and (min-width: $minw-d) and (max-width: #{$minw-dxl - 1} ) {
+			@content;
+		}
+	} @else if $media == desktop-xl {
+		@media only screen and (min-width: $minw-dxl) {
+			@content;
+		}
+	} @else if $media == breakpoint {
+		@media only screen and (min-width: $full-width) {
+			@content;
+		}
+	} @else if $media == breakpoint2 {
+		@media only screen and (min-width: 1250px) {
+			@content;
+		}
+	} @else if $media == retina {
+		@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+			@content;
+		}
+	}
+}
