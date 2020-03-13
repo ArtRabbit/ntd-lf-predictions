@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Header, Footer } from './';
+
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -9,6 +11,12 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
+        background: 'white',
+    },
+    main: {
+        paddingTop: theme.spacing(4),
+        flex: 2,
+
     },
 }));
 
@@ -18,7 +26,15 @@ const Layout = (props) => {
 
     return (
         <div className={classes.root}>
-            {props.children}
+
+            <Header />
+
+            <Container component="main" className={classes.main} maxWidth="lg">
+                {props.children}
+            </Container>
+
+            <Footer />
+
         </div>
     )
 }

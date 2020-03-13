@@ -14,22 +14,28 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         position: "relative",
         zIndex: 1,
-        opacity: 0.5,
         margin: "-300px 0px 0px 0px",
         '& > img': {
             width: '100%',
             height: 'auto'
         },
+        '&:after': {
+            content: "''",
+            display: 'block',
+            width: '100%',
+            height: '100%',
+            background: 'red'
+        },
     },
 }));
 
-const Home = ({ history, location }) => {
+const Intro = ({ history, location }) => {
 
     const classes = useStyles();
 
-    const showIntro = (event) => {
+    const playScenario = (event) => {
         if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {
-            history.push('/intro');
+            alert('Playing');
         }
     }
 
@@ -37,7 +43,8 @@ const Home = ({ history, location }) => {
         <Layout>
 
             <Head
-                title="Lympahtic filariasis Prediction Maps"
+                transparent={true}
+                title="Lympahtic filariasis Predicted outcome 2030"
                 text={
                     `Welcome to the NTD Modelling Prediction Maps.
                     The predictions in this website provide guidance on
@@ -45,9 +52,12 @@ const Home = ({ history, location }) => {
                     coverage treatment would have on timelines to
                     reach the WHO target.`
                 }
-                actionLabel={"Enter"}
-                action={showIntro}
+                subTitle={"Current WHO guidelines"}
+                actionLabel={"PLAY SCENARIO"}
+                action={playScenario}
             />
+
+
 
             <Box component="figure" m={1} className={classes.map}>
                 <img src={map} alt="map" />
@@ -56,4 +66,4 @@ const Home = ({ history, location }) => {
         </Layout >
     )
 }
-export default Home;
+export default Intro;
