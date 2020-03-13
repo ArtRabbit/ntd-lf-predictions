@@ -1,6 +1,6 @@
-# NTD IF Predictions
+# NTD LF Predictions
 
-NTD IF Predictions
+NTD LF Predictions
 
 ## Available Scripts
 
