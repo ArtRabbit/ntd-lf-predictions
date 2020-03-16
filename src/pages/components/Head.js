@@ -15,11 +15,21 @@ const useStyles = makeStyles(theme => ({
         left: theme.spacing(3),*/
         zIndex: 9,
         position: "relative",
+        float: 'left'
 
     },
     transparent: {
         background: 'transparent',
         boxShadow: 'none',
+        padding: theme.spacing(2, 0)
+    },
+    cardContent: {
+        padding: theme.spacing(2),
+
+    },
+    cardContentTransparent: {
+        padding: theme.spacing(2, 0)
+
     },
     headline: {
         fontSize: 18
@@ -39,7 +49,7 @@ const Head = ({ title, text, subTitle, transparent, actionLabel, action }) => {
     return (
         <Card className={`${classes.card} ${transparent ? classes.transparent : ''}`}>
 
-            <CardContent>
+            <CardContent className={`${classes.cardContent} ${transparent ? classes.cardContentTransparent : ''}`}>
 
                 <Typography className={classes.headline} color="textSecondary" gutterBottom>
                     NTD Modelling Consortium

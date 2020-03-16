@@ -3,6 +3,7 @@ import React from 'react';
 import { Layout } from '../layout';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
 
 import Head from './components/Head';
 
@@ -15,7 +16,8 @@ const useStyles = makeStyles(theme => ({
         position: "relative",
         zIndex: 1,
         opacity: 0.5,
-        margin: "-300px 0px 0px 0px",
+        top: "-300px",
+        marginBottom: '-300px',
         '& > img': {
             width: '100%',
             height: 'auto'
