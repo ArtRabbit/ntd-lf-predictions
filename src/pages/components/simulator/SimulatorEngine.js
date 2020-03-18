@@ -770,7 +770,7 @@ export var simControler = {
         statFunctions.setInputParams({ nMDA: 40 });
         // var scenLabel = $("#inputScenarioLabel").val();
         //max number of mda rounds even if doing it six monthly.
-        var maxN = 10; // Number($("#runs").val());
+        var maxN = simControler.params.runs; // Number($("#runs").val());
         var runs = [];
         var progression = 0;
         this.fixInput();
@@ -787,6 +787,7 @@ export var simControler = {
             // runs.push(SessionData.convertRun(m, endemicity)); // !!!!!! could this ever work???
             runs.push(SessionData.convertRun(m));
             // $("#roundsTest").html((progression * 100) / maxN + "%");
+            simulatorCallback(parseInt((progression * 100) / maxN));
             if (progression === maxN) {
                 // $("#map-progress-bar").hide();
                 clearInterval(progress);

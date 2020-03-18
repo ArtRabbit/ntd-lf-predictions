@@ -127,10 +127,15 @@ const Simulator = ({ history, location }) => {
         });
     };
 
+    const [simulationProgress, setSimulationProgress] = useState(0);
     const [scenarioResults, setScenarioResults] = useState([]);
     const simulatorCallback = par => {
-        console.log("Simulation returned results!");
-        setScenarioResults([...scenarioResults, par]);
+        if (typeof par == "number") {
+            setSimulationProgress(par);
+        } else {
+            console.log("Simulation returned results!");
+            setScenarioResults([...scenarioResults, par]);
+        }
     };
     const runScenario = () => {
         SimulatorEngine.simControler.runScenario(simParams, simulatorCallback);
@@ -218,7 +223,6 @@ const Simulator = ({ history, location }) => {
                         <InputLabel id="slider2"></InputLabel>
                         <Slider value={simParams.runs} min={1} step={1} max={100} onChange={handleSliderChange2} valueLabelDisplay="auto" aria-labelledby="slider" />
                     </FormControl>
-
                     <div className={classes.buttons}>
                         <Button variant="contained" color="primary" onClick={runScenario}>
                             UPDATE SCENARIO
@@ -227,6 +231,7 @@ const Simulator = ({ history, location }) => {
                             NEW SCENARIO
                         </Button>
                     </div>
+                    {simulationProgress !== 0 && simulationProgress !== 100 && <p style={{ textAlign: "center" }}>{simulationProgress}%</p>}
                 </Grid>
             </Grid>
 
