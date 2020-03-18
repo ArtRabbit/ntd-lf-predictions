@@ -6,7 +6,7 @@ const View = ({ label, children, style }) => (
     style={{
       marginBottom: 32,
       paddingBottom: 32,
-      ...style
+      ...style,
     }}
   >
     <h4>{label}</h4>
@@ -14,6 +14,10 @@ const View = ({ label, children, style }) => (
   </div>
 )
 
+/**
+ * Generic container for visualizations, adds controls for clipping and switching
+ * between country and state level
+ */
 export default function CountryPanel({ data, render, direction = 'row' }) {
   const [detailed, setDetailed] = useState(false)
   const [clip, setClip] = useState(false)
@@ -24,12 +28,15 @@ export default function CountryPanel({ data, render, direction = 'row' }) {
       <NavLink to={`/states/${country}`}>
         <h3>{country}</h3>
       </NavLink>
+
       <button onClick={e => setDetailed(!detailed)} style={{ fontSize: 16 }}>
         {detailed ? 'Combine states' : 'Break-up states'}
       </button>
+
       <button onClick={e => setClip(!clip)} style={{ fontSize: 16 }}>
         Toggle clipping
       </button>
+
       <div style={{ display: 'flex', flexDirection: direction }}>
         {detailed ? (
           <>

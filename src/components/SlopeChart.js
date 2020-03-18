@@ -9,16 +9,15 @@ export default function SlopeChart({
   height,
   start,
   end,
-  clipDomain
+  clipDomain,
+  showLegend,
+  showAxis,
+  svgPadding = [16, 200, 16, 64],
 }) {
   const [selected, setSelected] = useState()
-
-  const lPad = 64
-  const rPad = 200
-  const xPad = lPad + rPad
-  const yPad = 32
-  const svgHeight = height + yPad * 2
-  const svgWidth = width + xPad
+  const [tPad, rPad, bPad, lPad] = svgPadding
+  const svgWidth = width + lPad + rPad
+  const svgHeight = height + tPad + bPad
 
   const labelOffset = 32
 
@@ -50,36 +49,38 @@ export default function SlopeChart({
         height={svgHeight}
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
       >
-        <g transform={`translate(${lPad},${yPad})`}>
-          <rect width={width} height={height} fill='#f0f0f0'></rect>
+        <g transform={`translate(${lPad},${tPad})`}>
+          <rect width={width} height={height} fill="#f0f0f0"></rect>
 
           {/* x-axis labels */}
 
-          {[start, end].map(year => (
-            <g key={year}>
-              <text
-                x={xScale(year)}
-                y={height + 32}
-                textAnchor='middle'
-                fontSize='10'
-              >
-                {year}
-              </text>
-            </g>
-          ))}
+          {showAxis &&
+            [start, end].map(year => (
+              <g key={year}>
+                <text
+                  x={xScale(year)}
+                  y={height + 32}
+                  textAnchor="middle"
+                  fontSize="10"
+                >
+                  {year}
+                </text>
+              </g>
+            ))}
 
           {/* y-axis labels */}
-          {yTicks.map(t => {
-            const y = yScale(t)
-            return (
-              <g key={t}>
-                <text x={-16} y={y} textAnchor='end' fontSize='10'>
-                  {t}%
-                </text>
-                <line x1='0' x2={width} y1={y} y2={y} stroke='#cfcfcf'></line>
-              </g>
-            )
-          })}
+          {showAxis &&
+            yTicks.map(t => {
+              const y = yScale(t)
+              return (
+                <g key={t}>
+                  <text x={-16} y={y} textAnchor="end" fontSize="10">
+                    {t}%
+                  </text>
+                  <line x1="0" x2={width} y1={y} y2={y} stroke="#cfcfcf"></line>
+                </g>
+              )
+            })}
 
           {/* lines */}
           {orderBy(data, x => last(x.ranks).p_prevalence, 'desc').map(
@@ -98,7 +99,7 @@ export default function SlopeChart({
                   d={l}
                   stroke={slopeColor(a, b, iu_name === selected)}
                   strokeWidth={iu_name === selected ? 2 : 1}
-                  fill='none'
+                  fill="none"
                   onMouseEnter={() => handleEnter(iu_name)}
                   onMouseLeave={handleLeave}
                 />
@@ -116,12 +117,12 @@ export default function SlopeChart({
             return (
               <Fragment key={`label-${state}-${iu_name}`}>
                 <text
-                  fontSize='12'
-                  fontWeight='800'
+                  fontSize="12"
+                  fontWeight="800"
                   x={xScale(a.year) - labelOffset}
                   y={y(a)}
-                  textAnchor='end'
-                  dominantBaseline='middle'
+                  textAnchor="end"
+                  dominantBaseline="middle"
                   onMouseEnter={() => handleEnter(iu_name)}
                   onMouseLeave={handleLeave}
                   fill={iu_name === selected ? 'blue' : 'black'}
@@ -129,11 +130,11 @@ export default function SlopeChart({
                   {a.p_prevalence}%
                 </text>
                 <text
-                  fontSize='12'
-                  fontWeight='800'
+                  fontSize="12"
+                  fontWeight="800"
                   x={xScale(b.year) + labelOffset}
                   y={y(b)}
-                  dominantBaseline='middle'
+                  dominantBaseline="middle"
                   onMouseEnter={() => handleEnter(iu_name)}
                   onMouseLeave={handleLeave}
                   fill={iu_name === selected ? 'blue' : 'black'}
@@ -145,10 +146,13 @@ export default function SlopeChart({
           })}
         </g>
       </svg>
-      <div style={{ fontSize: 12, paddingTop: 16, lineHeight: 2 }}>
-        <div style={{ color: '#ff5e0d' }}>prevalence increasing</div>
-        <div style={{ color: '#12df93' }}>{`prevalence <= 1% by ${end}`}</div>
-      </div>
+
+      {showLegend && (
+        <div style={{ fontSize: 12, paddingTop: 16, lineHeight: 2 }}>
+          <div style={{ color: '#ff5e0d' }}>prevalence increasing</div>
+          <div style={{ color: '#12df93' }}>{`prevalence <= 1% by ${end}`}</div>
+        </div>
+      )}
     </div>
   )
 }

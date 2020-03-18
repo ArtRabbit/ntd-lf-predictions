@@ -13,6 +13,7 @@ import DiveDeeper from './components/DiveDeeper'
 import Map from '../components/Map'
 import CountryPanel from '../components/CountryPanel'
 import SlopeChart from '../components/SlopeChart'
+import { Box, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const PanelContainer = ({ children }) => (
-  <div style={{ display: 'flex', flexWrap: 'wrap' }}>{children}</div>
+  <div style={{ display: 'flex', overflow: 'auto' }}>{children}</div>
 )
 
 const Trends = ({ history, location }) => {
@@ -47,20 +48,18 @@ const Trends = ({ history, location }) => {
 
       <PanelContainer>
         {data.map(d => (
-          <CountryPanel
-            key={d.country}
-            data={d}
-            render={({ data, clip }) => (
-              <SlopeChart
-                data={data}
-                width={100}
-                height={300}
-                start={2015}
-                end={2031}
-                clipDomain={clip}
-              />
-            )}
-          />
+          <Box key={d.country} p={1}>
+            <SlopeChart
+              data={d.units}
+              width={100}
+              height={300}
+              start={2015}
+              end={2031}
+              clipDomain={false}
+              svgPadding={[0, 0, 0, 0]}
+            />
+            <Typography variant="caption">{d.country}</Typography>
+          </Box>
         ))}
       </PanelContainer>
 
