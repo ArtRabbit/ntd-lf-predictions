@@ -111,8 +111,7 @@ const Simulator = ({ history, location }) => {
     };
 
     useEffect(() => {
-        console.log(simParams.mdaSixMonths);
-        console.log(simParams.coverage);
+        console.log(simParams.mdaSixMonths, simParams.coverage, simParams.mdaRegimen, simParams.runs);
     }, [simParams]);
 
     const handleSliderChange = (event, newValue) => {
@@ -120,7 +119,12 @@ const Simulator = ({ history, location }) => {
             ...simParams,
             coverage: newValue / 100
         });
-        // setSliderValue(newValue);
+    };
+    const handleSliderChange2 = (event, newValue) => {
+        setSimParams({
+            ...simParams,
+            runs: newValue
+        });
     };
 
     const [scenarioResults, setScenarioResults] = useState([]);
@@ -186,16 +190,40 @@ const Simulator = ({ history, location }) => {
                         <Typography id="non-linear-slider" gutterBottom>
                             Target coverage
                         </Typography>
-
                         <InputLabel id="slider"></InputLabel>
                         <Slider value={simParams.coverage * 100} min={0} step={1} max={100} onChange={handleSliderChange} valueLabelDisplay="auto" aria-labelledby="slider" />
+                    </FormControl>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-helper-label">Drug regimen</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-helper-label"
+                            id="demo-simple-select-helper"
+                            value={simParams.mdaRegimen}
+                            onChange={event => {
+                                // setFrequency(event.target.value);
+                                setSimParams({ ...simParams, mdaRegimen: event.target.value });
+                            }}
+                        >
+                            <MenuItem value={1}>albendazole + ivermectin</MenuItem>
+                            <MenuItem value={2}>albendazole + diethylcarbamazine</MenuItem>
+                            <MenuItem value={3}>ivermectin</MenuItem>
+                            <MenuItem value={4}>ivermectin + albendazole + diethylcarbamazine</MenuItem>
+                            <MenuItem value={5}>custom</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <FormControl className={classes.formControl}>
+                        <Typography id="non-linear-slider2" gutterBottom>
+                            Number of runs
+                        </Typography>
+                        <InputLabel id="slider2"></InputLabel>
+                        <Slider value={simParams.runs} min={1} step={1} max={100} onChange={handleSliderChange2} valueLabelDisplay="auto" aria-labelledby="slider" />
                     </FormControl>
 
                     <div className={classes.buttons}>
                         <Button variant="contained" color="primary" onClick={runScenario}>
                             UPDATE SCENARIO
                         </Button>
-                        <Button variant="contained" color="primary">
+                        <Button variant="contained" color="primary" onClick={runScenario}>
                             NEW SCENARIO
                         </Button>
                     </div>

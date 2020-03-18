@@ -1,19 +1,4 @@
-/* require("./sim.js");
-require("./jquery-2.0.3.min.js"); */
 import { Random } from "./sim";
-/* import {
-  atan2,
-  chain,
-  derivative,
-  e,
-  evaluate,
-  log,
-  pi,
-  pow,
-  round,
-  sqrt
-} from "mathjs"; */
-export var $ = function() {};
 export var s = new Random();
 export var SessionData = {
     storeResults: (results, scenLabel, stats) => {
@@ -743,7 +728,6 @@ export var simControler = {
 
 
     */
-
     //////////////////////////////////////////
     /* DOM manipulation */
 
@@ -781,9 +765,6 @@ export var simControler = {
 
         if (values.length % 2) return values[half];
         else return (values[half - 1] + values[half]) / 2.0;
-    },
-    numberWithCommas: x => {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     runMapSimulation: function(simulatorCallback) {
         statFunctions.setInputParams({ nMDA: 40 });
@@ -889,12 +870,6 @@ export var simControler = {
         .attr("disabled", false)
         .val("Scenario " + (curScen + 1)); */
         }
-        /*     if ($("input[name=mdaRegimenRadios]:checked").val() == 5) {
-      $("#custom-regimen-sliders").show();
-    } else {
-      $("#custom-regimen-sliders").hide();
-    }
-    $("#scenario-label-button").hide(); */
     },
     documentReady: function() {
         params.lbda_original = params.lbda;
@@ -912,79 +887,6 @@ export var simControler = {
 
         SessionData.deleteSession();
         ScenarioIndex.setIndex(0);
-
-        // simControler.runScenario();
-
-        /*     $(document).ready(function() {
-      //first remove previous session data.
-
-
-      $("#map-progress-bar").hide();
-      $("#run_scenario").on("click", simControler.runScenario);
-
-      $(".desc").hide();
-      $("#desc1").show();
-      $('input:radio[name="mdaRegimenRadios"]').click(function() {
-        var test = $(this).val();
-
-        $("small.desc").hide();
-        $("#desc" + test).show();
-      });
-
-      $("#regimen-radio").bind("click", function() {
-        if ($("input[name=mdaRegimenRadios]:checked").val() == 5) {
-          $("#custom-regimen-sliders").show();
-        } else {
-          $("#custom-regimen-sliders").hide();
-        }
-      });
-
-      $("#custom-regimen-sliders").hide();
-      $("#Macrofilaricide").slider({});
-
-      $("#Microfilaricide").slider({});
-
-      $("#sysAdherence").slider({});
-
-      $("#brMda").slider({});
-
-      $("#bedNetMda").slider({});
-
-      $("#endemicity").slider({
-        formatter: function(value) {
-          return value + "%";
-        }
-      });
-
-      $("#roundSims").slider({});
-
-      $("#MDACoverage").slider({
-        formatter: function(value) {
-          return value + "%";
-        }
-      });
-
-      $("#bedNetCoverage").slider({
-        formatter: function(value) {
-          return value + "%";
-        }
-      });
-
-      $("#insecticideCoverage").slider({
-        formatter: function(value) {
-          return value + "%";
-        }
-      });
-
-      $("#multiSim").slider();
-      $("#vectorialCapacity").slider();
-      $("#vectorialCompetence").slider();
-      $("#vectorialDeathRate").slider();
-      $("#multiSimSliderDiv").hide();
-      $("#multiSimLoading").hide();
-      $("#rounds-progress-bar").hide();
-      $("#runs").slider({});
-    }); */
     },
     params: {
         mda: 2, // $("#inputMDARounds").val(),
@@ -1004,26 +906,5 @@ export var simControler = {
         macrofilaricide: 65, // $("#Macrofilaricide").val(),
         microfilaricide: 65, // $("#Microfilaricide").val(),
         runs: 5 // $("#runs").val()
-    },
-    mdaDrugName: str => {
-        var drug_name = "";
-        switch (str) {
-            case "1":
-                drug_name = "albendazole + ivermectin";
-                break;
-            case "2":
-                drug_name = "albendazole + diethylcarbamazine";
-                break;
-            case "3":
-                drug_name = "ivermectin";
-                break;
-            case "4":
-                drug_name = "ivermectin + diethylcarbamazine + albendazole";
-                break;
-            case "5":
-                drug_name = "custom regimen with " + $("#Macrofilaricide").val() + "% macrofilariae reduction, and " + $("#Microfilaricide").val() + "% microfilariae reduction";
-        }
-        return drug_name;
     }
 };
-// simControler.documentReady();
