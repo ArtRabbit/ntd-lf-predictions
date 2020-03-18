@@ -27,3 +27,5 @@ yarn-error.log*
 
 
 settings.json
+.editorconfig
+.env.development
