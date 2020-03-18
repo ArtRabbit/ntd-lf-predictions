@@ -33,7 +33,7 @@ import * as SimulatorEngine from "./components/simulator/SimulatorEngine";
 // let SimulatorEngine = await import("./components/simulator/SimulatorEngine");
 // console.log(params);
 console.log(SimulatorEngine.params);
-console.log(SimulatorEngine);
+console.log(SimulatorEngine.simControler.params);
 
 // SimulatorEngine.documentReady();
 
@@ -94,13 +94,11 @@ const Simulator = ({ history, location }) => {
     const classes = useStyles();
 
     SimulatorEngine.simControler.documentReady();
-    //   SimulatorEngine.simControler.modalConfirmation();
 
     const [simParams, setSimParams] = useState({
-        ...SimulatorEngine.params
-        //    covMDA2: SimulatorEngine.params.covMDA * 100
+        // ...SimulatorEngine.params, // default params
+        ...SimulatorEngine.simControler.params // params editable via UI
     });
-    // tabs
 
     const [value, setValue] = React.useState(0);
     const handleTabChange = (event, newValue) => {
@@ -109,18 +107,18 @@ const Simulator = ({ history, location }) => {
 
     const handleInputChange = event => {
         // setFrequency(event.target.value);
-        setSimParams({ ...simParams, mdaFreq: event.target.value });
+        setSimParams({ ...simParams, mdaSixMonths: event.target.value });
     };
 
     useEffect(() => {
-        console.log(simParams.mdaFreq);
-        console.log(simParams.covMDA);
+        console.log(simParams.mdaSixMonths);
+        console.log(simParams.coverage);
     }, [simParams]);
 
     const handleSliderChange = (event, newValue) => {
         setSimParams({
             ...simParams,
-            covMDA: newValue / 100
+            coverage: newValue / 100
         });
         // setSliderValue(newValue);
     };
@@ -130,9 +128,8 @@ const Simulator = ({ history, location }) => {
         //        console.log(par);
         setScenarioResults([...scenarioResults, par]);
     };
-    const runScenario = async () => {
-        var result = await SimulatorEngine.simControler.runScenario(simParams, simulatorCallback);
-        console.log(result);
+    const runScenario = () => {
+        SimulatorEngine.simControler.runScenario(simParams, simulatorCallback);
     };
 
     return (
@@ -163,13 +160,13 @@ const Simulator = ({ history, location }) => {
                             </Tabs>
                         </AppBar>
                         <TabPanel value={value} index={0}>
-                            <div style={{ overflow: "hidden", height: "500px" }}>{scenarioResults[0]}</div>
+                            Scenario 1<div style={{ overflow: "hidden", height: "500px" }}>{scenarioResults[0]}</div>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            Scenario 2
+                            Scenario 2<div style={{ overflow: "hidden", height: "500px" }}>{scenarioResults[1]}</div>
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                            Scenario 3
+                            Scenario 3<div style={{ overflow: "hidden", height: "500px" }}>{scenarioResults[3]}</div>
                         </TabPanel>
                     </div>
                 </Grid>
@@ -180,7 +177,7 @@ const Simulator = ({ history, location }) => {
 
                     <FormControl className={classes.formControl}>
                         <InputLabel id="demo-simple-select-helper-label">Fruequency</InputLabel>
-                        <Select labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={simParams.mdaFreq} onChange={handleInputChange}>
+                        <Select labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={simParams.mdaSixMonths} onChange={handleInputChange}>
                             <MenuItem value={12}>Annual</MenuItem>
                             <MenuItem value={6}>Every 6 months</MenuItem>
                         </Select>
@@ -191,7 +188,7 @@ const Simulator = ({ history, location }) => {
                         </Typography>
 
                         <InputLabel id="slider"></InputLabel>
-                        <Slider value={simParams.covMDA * 100} min={0} step={1} max={100} onChange={handleSliderChange} valueLabelDisplay="auto" aria-labelledby="slider" />
+                        <Slider value={simParams.coverage * 100} min={0} step={1} max={100} onChange={handleSliderChange} valueLabelDisplay="auto" aria-labelledby="slider" />
                     </FormControl>
 
                     <div className={classes.buttons}>

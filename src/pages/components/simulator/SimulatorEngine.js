@@ -603,7 +603,8 @@ export var statFunctions = {
     },
 
     setPropMDA: function(regimen) {
-        var ps = simControler.modelParams();
+        // var ps = simControler.modelParams();
+        var ps = simControler.params;
         var chis = [0.99, 0.95, 0.99, 1.0, Number(ps.microfilaricide) / 100, 0.99];
         var taus = [0.35, 0.55, 0.1, 1.0, Number(ps.macrofilaricide) / 100, 0.1];
         params.mfPropMDA = 1 - chis[Number(regimen) - 1];
@@ -685,7 +686,8 @@ export var statFunctions = {
     },
 
     setInputParams: function(dict) {
-        var ps = simControler.modelParams();
+        // var ps = simControler.modelParams();
+        var ps = simControler.params;
         params.inputs = ps;
         params.runs = Number(ps.runs);
         params.nMDA = dict && dict.nMDA ? dict.nMDA : Number(ps.mda);
@@ -746,7 +748,6 @@ export var simControler = {
     /* DOM manipulation */
 
     scenarioRunStats: simulatorCallback => {
-        console.log("scenarioRunStats");
         var scenInd = ScenarioIndex.getIndex();
         var scenario = SessionData.retrieveSession()["scenarios"][scenInd];
         var ts = [],
@@ -804,7 +805,6 @@ export var simControler = {
             m.evolveAndSaves(120.0);
             // runs.push(SessionData.convertRun(m, endemicity)); // !!!!!! could this ever work???
             runs.push(SessionData.convertRun(m));
-            console.log(progression);
             // $("#roundsTest").html((progression * 100) / maxN + "%");
             if (progression === maxN) {
                 // $("#map-progress-bar").hide();
@@ -817,7 +817,6 @@ export var simControler = {
         }, 10);
     },
     reductionStatsCalc: (scenario, coverage) => {
-        console.log(scenario);
         var n = scenario["results"].length;
         var T = 0; //scenario["results"][0]["ts"].length; !!!!!! doesnt seem to work
         var prev0;
@@ -860,8 +859,9 @@ export var simControler = {
             medL: medL
         };
     },
-    runScenario: async function(paramsFromUI, simulatorCallback) {
-        console.log(paramsFromUI);
+    runScenario: function(paramsFromUI, simulatorCallback) {
+        //        console.log(paramsFromUI);
+        this.params = { ...paramsFromUI };
         var i = SessionData.numScenarios();
         ScenarioIndex.setIndex(i);
         SessionData.createNewSession();
@@ -986,27 +986,24 @@ export var simControler = {
       $("#runs").slider({});
     }); */
     },
-    modelParams: () => {
-        // console.log(object);
-        return {
-            mda: 2, // $("#inputMDARounds").val(),
-            mdaSixMonths: 6, // $("input:radio[name=mdaSixMonths]:checked").val(),   !!!!!!!!!
-            endemicity: 10, // $("#endemicity").val(),
-            coverage: 100, // $("#MDACoverage").val(),
-            covN: 0, // $("#bedNetCoverage").val(),
-            v_to_hR: 0, // $("#insecticideCoverage").val(),
-            vecCap: 0, // $("#vectorialCapacity").val(),
-            vecComp: 0, //$("#vectorialCompetence").val(),
-            vecD: 0, //$("#vectorialDeathRate").val(),
-            mdaRegimen: 1, // $("input[name=mdaRegimenRadios]:checked").val(),
-            rho: 0.2, // $("#sysAdherence").val(),
-            rhoBComp: 0, // $("#brMda").val(),
-            rhoCN: 0, // $("#bedNetMda").val(),
-            species: 0, // $("input[name=speciesRadios]:checked").val(),
-            macrofilaricide: 65, // $("#Macrofilaricide").val(),
-            microfilaricide: 65, // $("#Microfilaricide").val(),
-            runs: 5 // $("#runs").val()
-        };
+    params: {
+        mda: 2, // $("#inputMDARounds").val(),
+        mdaSixMonths: 6, // $("input:radio[name=mdaSixMonths]:checked").val(),   !!!!!!!!!
+        endemicity: 10, // $("#endemicity").val(),
+        coverage: 100, // $("#MDACoverage").val(),
+        covN: 0, // $("#bedNetCoverage").val(),
+        v_to_hR: 0, // $("#insecticideCoverage").val(),
+        vecCap: 0, // $("#vectorialCapacity").val(),
+        vecComp: 0, //$("#vectorialCompetence").val(),
+        vecD: 0, //$("#vectorialDeathRate").val(),
+        mdaRegimen: 1, // $("input[name=mdaRegimenRadios]:checked").val(),
+        rho: 0.2, // $("#sysAdherence").val(),
+        rhoBComp: 0, // $("#brMda").val(),
+        rhoCN: 0, // $("#bedNetMda").val(),
+        species: 0, // $("input[name=speciesRadios]:checked").val(),
+        macrofilaricide: 65, // $("#Macrofilaricide").val(),
+        microfilaricide: 65, // $("#Microfilaricide").val(),
+        runs: 5 // $("#runs").val()
     },
     mdaDrugName: str => {
         var drug_name = "";
