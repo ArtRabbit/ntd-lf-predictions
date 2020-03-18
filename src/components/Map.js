@@ -52,11 +52,11 @@ function Map({ width, height, initialLevel }) {
   })
 
   const prevalenceHover =
-    data[featureHover?.properties.id]?.prevalence[`Prev_Year${year}`]
+    data[featureHover?.properties.id]?.prevalence[`${year}`]
 
   const selectedFeatureID = feature?.properties.id
   const selectedData = data[selectedFeatureID]
-  const prevalenceSelected = selectedData?.prevalence[`Prev_Year${year}`]
+  const prevalenceSelected = selectedData?.prevalence[`${year}`]
 
   const handleViewportChange = payload => {
     dispatch({ type: 'VIEWPORT', payload })
@@ -94,12 +94,12 @@ function Map({ width, height, initialLevel }) {
           id="fill-layer"
           // beforeId={level === 0 ? 'admin-1-boundary-bg' : 'admin-0-boundary'}
           beforeId="admin-0-boundary"
-          filter={['has', `Prev_Year${year}`]}
+          filter={['has', `${year}`]}
           type="fill"
           paint={{
             'fill-color': [
               'coalesce',
-              ['get', `Prev_Year${year}`],
+              ['get', `${year}`],
               // hide shape if no data available
               'rgba(0,0,0,0)',
             ],
@@ -114,7 +114,7 @@ function Map({ width, height, initialLevel }) {
         <Layer
           id="hover-layer"
           type="line"
-          filter={['has', `Prev_Year${year}`]}
+          filter={['has', `${year}`]}
           layout={{ 'line-join': 'bevel' }}
           paint={{
             'line-color': [

@@ -4,7 +4,7 @@ import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
 import { Box, Typography, Grid } from '@material-ui/core'
 
-import { useOldData } from '../hooks/useData'
+import { useOldData, useNewData } from '../hooks/useData'
 
 import Head from './components/Head'
 import Inputs from './components/Inputs'
@@ -12,7 +12,6 @@ import DiveDeeper from './components/DiveDeeper'
 
 import Map from '../components/Map'
 import SlopeChart from '../components/SlopeChart'
-
 import BumpChart from '../components/BumpChart'
 
 const useStyles = makeStyles(theme => ({
@@ -32,8 +31,14 @@ const PanelContainer = ({ children }) => (
 const Trends = ({ history, location }) => {
   const classes = useStyles()
   const data = useOldData()
+  const newData = useNewData({
+    source: 'data/country-level.csv',
+    Regime: 'No MDA',
+    key: 'Country',
+  })
 
   console.log(data)
+  console.log('new', newData.data)
 
   //   example data
   const testData = data.find(x => x.country === 'Liberia')?.units

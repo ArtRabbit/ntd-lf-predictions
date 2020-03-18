@@ -7,7 +7,7 @@ export default function useFeaturesAndData({
   data,
   stats,
   key,
-  ready
+  ready,
 }) {
   const [merged, setMerged] = useState([])
   const [ticks, setTicks] = useState([])
@@ -31,18 +31,19 @@ export default function useFeaturesAndData({
             const prevalenceOverTime = data[id]?.prevalence ?? {}
 
             // get color from scale if prevalence value available
-            const years = mapValues(prevalenceOverTime, p_prevalence =>
+            const colorsByYear = mapValues(prevalenceOverTime, p_prevalence =>
               isFinite(p_prevalence)
                 ? color(colorScale(p_prevalence)).hex()
                 : null
             )
 
+
             return merge({}, feature, {
               properties: {
-                ...years
-              }
+                ...colorsByYear,
+              },
             })
-          })
+          }),
         })
       )
     }

@@ -11,7 +11,8 @@ import {
   map,
   round,
   filter,
-  pickBy as pickByFP
+  mapKeys,
+  pickBy as pickByFP,
 } from 'lodash/fp'
 import { sortBy, pick, pickBy, merge, min, max, zip } from 'lodash'
 import config from '../config'
@@ -31,7 +32,7 @@ function process(data, filter) {
           year: +year,
           // TODO: leave rounding?
           p_prevalence: round(p_prevalence * 100, precision),
-          rank: i + 1
+          rank: i + 1,
         })
       )
     ),
@@ -50,12 +51,20 @@ function process(data, filter) {
         country,
         iu_name,
         state,
-        ranks
+        ranks,
       }
     }),
     values
   )(input)
 }
+
+const groupProps = (obj, pattern) =>
+  flow(
+    pickByFP((value, key) => new RegExp(pattern).test(key)),
+    mapKeys(key => key.replace(/[^\d]/g, ''))
+  )(obj)
+
+const roundPrevalence = p => round(p * 100, 2)
 
 export function useNewData({ source, Regime, Endemicity, key }) {
   const [data, setData] = useState([])
@@ -64,8 +73,8 @@ export function useNewData({ source, Regime, Endemicity, key }) {
   const [stats, setStats] = useState({
     prevalence: {
       min: 0,
-      max: 0
-    }
+      max: 0,
+    },
   })
 
   // load data
@@ -86,29 +95,19 @@ export function useNewData({ source, Regime, Endemicity, key }) {
         mapValues(country => {
           const { [key]: id, Population } = country
 
-          // propability of elemination by year
-          const probability = pickBy(country, (value, key) =>
-            /elimination/.test(key)
-          )
-
-          // prevalence values by year (rounded percentage)
-          const prevalence = flow(
-            pickByFP((value, key) => /Prev_/.test(key)),
-            mapValues(p => round(p * 100, 2))
-          )(country)
-
-          // lower/upper bounds
-          const lower = pickBy(country, (value, key) => /Lower/.test(key))
-          const upper = pickBy(country, (value, key) => /Upper/.test(key))
+          const probability = groupProps(country, 'elimination')
+          const prev = groupProps(country, 'Prev_')
+          const lower = groupProps(country, 'Lower')
+          const upper = groupProps(country, 'Upper')
 
           return {
             id,
             population: round(Population, 0),
             endemicity: country.Endemicity,
+            prevalence: mapValues(roundPrevalence)(prev),
             probability,
-            prevalence,
             lower,
-            upper
+            upper,
           }
         })
       )(data)
@@ -131,7 +130,7 @@ export function useNewData({ source, Regime, Endemicity, key }) {
 
     setStats(state =>
       merge({}, state, {
-        prevalence: { min: min(minN) ?? 0, max: max(maxN) ?? 0 }
+        prevalence: { min: min(minN) ?? 0, max: max(maxN) ?? 0 },
       })
     )
   }, [processed])
@@ -160,7 +159,7 @@ export function useOldData() {
         map(([country, data]) => ({
           country,
           states: data,
-          units: process(result, d => d.country === country)
+          units: process(result, d => d.country === country),
         }))
       )(result)
       setCountryData(series)
