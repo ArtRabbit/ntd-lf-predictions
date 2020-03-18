@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Layout } from "../layout";
@@ -27,7 +27,13 @@ import Head from "./components/Head";
 import Inputs from "./components/Inputs";
 import DiveDeeper from "./components/DiveDeeper";
 
-import SimulatorEngine from "./components/simulator/SimulatorEngine";
+import * as SimulatorEngine from "./components/simulator/SimulatorEngine";
+// import "./components/simulator/SimulatorEngine";
+
+// let SimulatorEngine = await import("./components/simulator/SimulatorEngine");
+// console.log(params);
+console.log(SimulatorEngine.params);
+console.log(SimulatorEngine);
 
 // SimulatorEngine.documentReady();
 
@@ -93,23 +99,39 @@ TabPanel.propTypes = {
 
 const Simulator = ({ history, location }) => {
   const classes = useStyles();
+
+  const [simParams, setSimParams] = useState({
+    ...SimulatorEngine.params,
+    covMDA2: SimulatorEngine.params.covMDA * 100
+  });
   // tabs
+
   const [value, setValue] = React.useState(0);
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
 
   // input
-  const [frequency, setFrequency] = useState(10);
+  //   const [frequency, setFrequency] = useState(10);
   const handleInputChange = event => {
-    setFrequency(event.target.value);
+    // setFrequency(event.target.value);
+    setSimParams({ ...simParams, mdaFreq: event.target.value });
   };
 
-  // slider
-  const [sliderValue, setSliderValue] = useState(50);
+  useEffect(() => {
+    console.log(simParams.mdaFreq);
+    console.log(simParams.covMDA);
+  }, [simParams]);
 
+  // slider
+  //  const [sliderValue, setSliderValue] = useState(50);
   const handleSliderChange = (event, newValue) => {
-    setSliderValue(newValue);
+    setSimParams({
+      ...simParams,
+      covMDA: newValue / 100,
+      covMDA2: newValue
+    });
+    // setSliderValue(newValue);
   };
 
   return (
@@ -173,11 +195,11 @@ const Simulator = ({ history, location }) => {
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
-              value={frequency}
+              value={simParams.mdaFreq}
               onChange={handleInputChange}
             >
-              <MenuItem value={10}>Annual</MenuItem>
-              <MenuItem value={20}>Others</MenuItem>
+              <MenuItem value={12}>Annual</MenuItem>
+              <MenuItem value={6}>Every 6 months</MenuItem>
             </Select>
           </FormControl>
           <FormControl className={classes.formControl}>
@@ -187,10 +209,10 @@ const Simulator = ({ history, location }) => {
 
             <InputLabel id="slider"></InputLabel>
             <Slider
-              value={sliderValue}
+              value={simParams.covMDA2}
               min={0}
               step={1}
-              max={200}
+              max={100}
               onChange={handleSliderChange}
               valueLabelDisplay="auto"
               aria-labelledby="slider"

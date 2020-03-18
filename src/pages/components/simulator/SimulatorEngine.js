@@ -13,9 +13,9 @@ import { Random } from "./sim";
   round,
   sqrt
 } from "mathjs"; */
-var $ = function() {};
+export var $ = function() {};
 
-var SessionData = {
+export var SessionData = {
   storeResults: (results, scenLabel, stats) => {
     //takes results: an Array of json with each json obj having ts, Ms, Ws.
     //combines these with parameter information and stores to be retrieved whenever.
@@ -158,7 +158,7 @@ var SessionData = {
     ScenarioIndex.setIndex(0);
   }
 };
-var ScenarioIndex = {
+export var ScenarioIndex = {
   getIndex: function() {
     return Number(localStorage.getItem("scenarioIndex"));
   },
@@ -172,8 +172,8 @@ var ScenarioIndex = {
     return localStorage.setItem("scenarioIndex", ind);
   }
 };
-var s = new Random();
-var Person = function(a, b) {
+export var s = new Random();
+export var Person = function(a, b) {
   //constructor(a,b) {
   this.b = s.gamma(a, b);
   this.M = 0.5;
@@ -292,7 +292,7 @@ var Person = function(a, b) {
     this.u = s.normal(params.u0, Math.sqrt(params.sigma));
   };
 };
-var Model = function(n) {
+export var Model = function(n) {
   //constructor(n){
 
   this.sU = 0;
@@ -499,7 +499,7 @@ var Model = function(n) {
     //plot(this.ts,this.Ws,this.Ms,this.Ls);
   };
 };
-var params = {
+export var params = {
   riskMu1: 1.0,
   riskMu2: 1.0,
   riskMu3: 1.0,
@@ -539,7 +539,8 @@ var params = {
   rhoCN: 0.0, //correlation between receiving chemotherapy and use of bed nets.
   IDAControl: 0 //if 1 then programme switches to IDA after five rounds of standard MDA defined with chi and tau.
 };
-var statFunctions = {
+
+export var statFunctions = {
   immuneRK4Step: function(W, I) {
     var k1 = params.dt * (W - params.z * I);
     var k2 = params.dt * (W - params.z * (I + 0.5 * k1));
@@ -819,7 +820,7 @@ var statFunctions = {
       -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma);
   }
 };
-var simulationEngine = {
+export var simulationEngine = {
   /*
     DEFINE CLASS SESSION DATA TO STORE AND RETRIEVE RUNS.
     Data structure
