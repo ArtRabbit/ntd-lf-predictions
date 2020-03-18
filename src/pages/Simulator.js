@@ -125,7 +125,7 @@ const Simulator = ({ history, location }) => {
 
     const [scenarioResults, setScenarioResults] = useState([]);
     const simulatorCallback = par => {
-        //        console.log(par);
+        console.log("Simulation returned results!");
         setScenarioResults([...scenarioResults, par]);
     };
     const runScenario = () => {
@@ -155,8 +155,8 @@ const Simulator = ({ history, location }) => {
                         <AppBar position="static">
                             <Tabs value={value} onChange={handleTabChange} aria-label="simple tabs example">
                                 <Tab label="Scenario 1" {...a11yProps(0)} />
-                                <Tab label="Scenario 2" {...a11yProps(1)} />
-                                <Tab label="Scenario 3" {...a11yProps(2)} />
+                                {scenarioResults.length > 1 && <Tab label="Scenario 2" {...a11yProps(1)} />}
+                                {scenarioResults.length > 2 && <Tab label="Scenario 3" {...a11yProps(2)} />}
                             </Tabs>
                         </AppBar>
                         <TabPanel value={value} index={0}>
