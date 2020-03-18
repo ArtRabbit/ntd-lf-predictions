@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
-import Grid from '@material-ui/core/Grid'
+import { Box, Typography, Grid } from '@material-ui/core'
 
 import { useOldData } from '../hooks/useData'
 
@@ -11,9 +11,9 @@ import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
 
 import Map from '../components/Map'
-import CountryPanel from '../components/CountryPanel'
 import SlopeChart from '../components/SlopeChart'
-import { Box, Typography } from '@material-ui/core'
+
+import BumpChart from '../components/BumpChart'
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -32,6 +32,11 @@ const PanelContainer = ({ children }) => (
 const Trends = ({ history, location }) => {
   const classes = useStyles()
   const data = useOldData()
+
+  console.log(data)
+
+  //   example data
+  const testData = data.find(x => x.country === 'Liberia')?.units
 
   return (
     <Layout>
@@ -62,6 +67,10 @@ const Trends = ({ history, location }) => {
           </Box>
         ))}
       </PanelContainer>
+
+      {testData && (
+        <BumpChart data={testData} start={2015} end={2030} width={500} />
+      )}
 
       <DiveDeeper
         title="Dive deeper"

@@ -2,9 +2,10 @@ import React, { Fragment, useState } from 'react'
 import { scaleLinear, line } from 'd3'
 import { first, last } from 'lodash'
 
-export default function BumpChart({ data, width, height, start, end }) {
+export default function BumpChart({ data, width, start, end }) {
   const [selected, setSelected] = useState()
 
+  const height = data.length * 30
   const xPad = 250
   const yPad = 32
   const svgHeight = height + yPad * 2
@@ -41,8 +42,8 @@ export default function BumpChart({ data, width, height, start, end }) {
             <text
               x={xScale(year)}
               y={height + 32}
-              textAnchor='middle'
-              fontSize='10'
+              textAnchor="middle"
+              fontSize="10"
             >
               {year}
             </text>
@@ -53,7 +54,7 @@ export default function BumpChart({ data, width, height, start, end }) {
         {data.map(({ state, iu_name, ranks }) => {
           const coords = ranks.map(({ year, rank }) => [
             xScale(year),
-            yScale(rank)
+            yScale(rank),
           ])
           const isSelected = iu_name === selected
           const l = line()(coords)
@@ -63,7 +64,7 @@ export default function BumpChart({ data, width, height, start, end }) {
               d={l}
               stroke={isSelected ? 'blue' : '#999'}
               strokeWidth={isSelected ? 2 : 1}
-              fill='none'
+              fill="none"
               onMouseEnter={() => handleEnter(iu_name)}
               onMouseLeave={handleLeave}
             />
@@ -76,7 +77,7 @@ export default function BumpChart({ data, width, height, start, end }) {
           x2={nowX}
           y1={0}
           y2={height + 16}
-          stroke='#cfcfcf'
+          stroke="#cfcfcf"
         ></line>
 
         {/* grid */}
@@ -88,7 +89,7 @@ export default function BumpChart({ data, width, height, start, end }) {
                 transform={`translate(${xScale(year)}, ${yScale(rank)})`}
               >
                 <circle
-                  r='3'
+                  r="3"
                   fill={
                     p_prevalence <= 1
                       ? '#12df93'
@@ -110,14 +111,14 @@ export default function BumpChart({ data, width, height, start, end }) {
           return (
             <Fragment key={`label-${state}-${iu_name}`}>
               <text
-                fontSize='12'
+                fontSize="12"
                 fontWeight={
                   iu_name === selected ? 800 : a.p_prevalence <= 1 ? 500 : 300
                 }
                 x={xScale(a.year) - labelOffset}
                 y={yScale(a.rank)}
-                textAnchor='end'
-                dominantBaseline='middle'
+                textAnchor="end"
+                dominantBaseline="middle"
                 onMouseEnter={() => handleEnter(iu_name)}
                 onMouseLeave={handleLeave}
                 fill={iu_name === selected ? 'blue' : 'black'}
@@ -125,13 +126,13 @@ export default function BumpChart({ data, width, height, start, end }) {
                 {iu_name} ({a.p_prevalence}%) {a.rank}.
               </text>
               <text
-                fontSize='12'
+                fontSize="12"
                 fontWeight={
                   iu_name === selected ? 800 : b.p_prevalence <= 1 ? 500 : 300
                 }
                 x={xScale(b.year) + labelOffset}
                 y={yScale(b.rank)}
-                dominantBaseline='middle'
+                dominantBaseline="middle"
                 onMouseEnter={() => handleEnter(iu_name)}
                 onMouseLeave={handleLeave}
                 fill={iu_name === selected ? 'blue' : 'black'}
