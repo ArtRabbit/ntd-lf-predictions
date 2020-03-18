@@ -29,3 +29,5 @@ yarn-error.log*
 settings.json
 .editorconfig
 .env.development
+.prettierrc
+.env.production
