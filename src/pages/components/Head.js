@@ -55,7 +55,7 @@ const Head = ({ title, text, subTitle, transparent, actionLabel, action }) => {
                 <span>NTD Modelling Consortium</span>
             </NavLink>
 
-            <Typography className={classes.title} variant="h4" component="h1">{title}</Typography>
+            <Typography className={classes.title} variant="h1" component="h1">{title}</Typography>
 
             {subTitle && <Typography className={classes.subTitle} variant="subtitle2" component="h2">{subTitle}</Typography>}
 

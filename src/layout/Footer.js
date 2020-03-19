@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 
     },
     footer: {
-        padding: theme.spacing(4, 0, 4, 0),
+        padding: theme.spacing(4),
         marginTop: 'auto',
         backgroundColor: theme.palette.secondary.light,
         color: theme.palette.text.secondary,
@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(0, 0, 2, 0),
     },
     siteSections: {
-        padding: theme.spacing(4, 0, 4, 0),
+        padding: theme.spacing(4),
 
         '& ul': {
             color: theme.palette.text.primary,
@@ -54,6 +54,7 @@ const useStyles = makeStyles(theme => ({
             margin: 0,
             '& li': {
                 display: 'block',
+                padding: '0px 0px .4rem 0px',
 
                 '& a': {
                     display: 'block',
@@ -91,10 +92,10 @@ const Footer = (props) => {
                         <Typography variant="h6" component="h6" className={`${classes.headline} ${classes.bordered}`} >Site sections</Typography>
 
                         <ul>
-                            <Typography component="li" variant="h5"><Link component={RouterLink} to="/intro" color="inherit">Introduction</Link></Typography>
-                            <Typography component="li" variant="h5"><Link component={RouterLink} to="/trends" color="inherit">Trends</Link></Typography>
-                            <Typography component="li" variant="h5"><Link component={RouterLink} to="/hot-spots" color="inherit">Hotspots</Link></Typography>
-                            <Typography component="li" variant="h5"><Link component={RouterLink} to="/simulator" color="inherit">Simulator</Link></Typography>
+                            <Typography component="li" variant="h3"><Link component={RouterLink} to="/intro" color="inherit">Introduction</Link></Typography>
+                            <Typography component="li" variant="h3"><Link component={RouterLink} to="/trends" color="inherit">Trends</Link></Typography>
+                            <Typography component="li" variant="h3"><Link component={RouterLink} to="/hot-spots" color="inherit">Hotspots</Link></Typography>
+                            <Typography component="li" variant="h3"><Link component={RouterLink} to="/simulator" color="inherit">Simulator</Link></Typography>
                         </ul>
                     </Grid>
                 </Grid>

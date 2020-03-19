@@ -14,7 +14,8 @@ const useStyles = makeStyles(theme => ({
         background: 'white',
     },
     main: {
-        paddingTop: theme.spacing(4),
+        //paddingTop: theme.spacing(4),
+        padding: theme.spacing(4, 0),
         flex: 2,
 
     },

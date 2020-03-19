@@ -29,6 +29,8 @@ const styleManager = createStyleManager({
     jss: create(jssPreset()),
 });
 */
+
+
 const theme = createMuiTheme({
     /*
     '@global': {
@@ -60,6 +62,11 @@ const theme = createMuiTheme({
             light: '#eeeeee',
             main: '#000000',
         },
+        error: {
+            main: '#aa2323'
+        }
+
+
     },
 
     typography: {
@@ -68,42 +75,46 @@ const theme = createMuiTheme({
         headline: {
             fontFamily: "'Libre Franklin', sans-serif",
         },
+
         h1: {
             fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800
+            fontWeight: 800,
+            fontSize: '2.75rem',
         },
         h2: {
             fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800
+            fontWeight: 800,
+            fontSize: '1.75rem',
         },
         h3: {
             fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800
+            fontWeight: 800,
+            fontSize: '1.375rem',
         },
         h4: {
             fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800
+            fontWeight: 800,
+            fontSize: '1.25rem',
         },
         h5: {
             fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800
+            fontWeight: 800,
+            fontSize: '1.125rem',
         },
         h6: {
             textTransform: 'uppercase',
             //fontFamily: "'Libre Franklin', sans-serif",
-            //fontWeight: 800
-            fontSize: 12,
+            //fontWeight: 800 
+            fontSize: '0.75rem',
+        },
+        subtitle2: {
+            fontSize: 22,
         },
         button: {
             fontWeight: 400,
         }
     },
     overrides: {
-        MuiButton: {
-            text: {
-
-            },
-        },
     },
 });
 

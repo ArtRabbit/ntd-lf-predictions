@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -21,8 +22,33 @@ const useStyles = makeStyles(theme => ({
     },
     formControl: {
         margin: theme.spacing(0, 1),
-        minWidth: 120,
+        minWidth: 220,
+        textAlign: 'left',
         '& > label': {
+        }
+    },
+    largeTooltip: {
+        width: '100%',
+        maxWidth: 345,
+        minWidth: 320,
+        background: theme.palette.error.main,
+        color: 'white',
+        padding: theme.spacing(2),
+        position: 'absolute',
+        top: '5rem',
+        left: '50%',
+        transform: 'translate(-50%, 0%)',
+        textAlign: 'center',
+        '&::after': {
+            content: `''`,
+            position: 'absolute',
+            left: '50%',
+            top: '-2rem',
+            transform: 'translate(-50%, 0%)',
+            width: '0',
+            height: '0',
+            border: '1rem solid transparent',
+            borderBottomColor: theme.palette.error.main,
         }
     }
 }));
@@ -135,7 +161,7 @@ const top100Films = [
 const Inputs = (props) => {
 
     const classes = useStyles();
-    const [regime, setRegime] = useState('');
+    const [regime, setRegime] = useState(10);
 
     const handleChange = event => {
         setRegime(event.target.value);
@@ -155,19 +181,18 @@ const Inputs = (props) => {
             </FormControl>
             <FormControl className={classes.formControl}>
 
-                <InputLabel id="demo-simple-select-helper-label">Regime</InputLabel>
-                <Tooltip title="See how other treatement regimes can save lives">
-                    <Select
-                        labelId="demo-simple-select-helper-label"
-                        id="demo-simple-select-helper"
-                        value={regime}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value={10}>WHO guidelines</MenuItem>
-                        <MenuItem value={20}>WHO guidelines 2</MenuItem>
-                        <MenuItem value={30}>WHO guidelines 3</MenuItem>
-                    </Select>
-                </Tooltip>
+                <InputLabel id="demo-simple-select-helper-label">Treatment regime</InputLabel>
+                <Select
+                    labelId="demo-simple-select-helper-label"
+                    id="demo-simple-select-helper"
+                    value={regime}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={10}>WHO guidelines</MenuItem>
+                    <MenuItem value={20}>WHO guidelines 2</MenuItem>
+                    <MenuItem value={30}>WHO guidelines 3</MenuItem>
+                </Select>
+                <div className={classes.largeTooltip}><Typography variant="subtitle2" color="inherit" component="p">See how other treatement regimes can save lives</Typography></div>
             </FormControl>
         </Box>
     )
