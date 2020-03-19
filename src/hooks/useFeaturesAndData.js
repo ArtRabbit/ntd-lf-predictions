@@ -9,7 +9,10 @@ export default function useFeaturesAndData({
   key,
   ready,
 }) {
-  const [merged, setMerged] = useState([])
+  const [merged, setMerged] = useState({
+    type: 'FeatureCollection',
+    features: [],
+  })
   const [ticks, setTicks] = useState([])
 
   useEffect(() => {
@@ -36,7 +39,6 @@ export default function useFeaturesAndData({
                 ? color(colorScale(p_prevalence)).hex()
                 : null
             )
-
 
             return merge({}, feature, {
               properties: {

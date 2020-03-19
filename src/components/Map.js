@@ -9,7 +9,7 @@ import useFeaturesAndData from '../hooks/useFeaturesAndData'
 import useMapReducer from '../hooks/useMapReducer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-function Map({ width, height, initialLevel }) {
+function Map({ width, height, initialLevel, filter }) {
   const [
     {
       year,
@@ -40,6 +40,7 @@ function Map({ width, height, initialLevel }) {
     Endemicity: level === 2 && Endemicity,
     source,
     key: dataKey,
+    f: filter,
   })
 
   // merge features with data
