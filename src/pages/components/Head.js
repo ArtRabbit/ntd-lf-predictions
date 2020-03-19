@@ -71,7 +71,7 @@ const Head = ({ title, text, subTitle, transparent, actionLabel, action }) => {
 
                 {subTitle && <Typography className={classes.subTitle} variant="h6" component="h2">{subTitle}</Typography>}
 
-                {text && <Typography variant="body2" component="p">{text}</Typography>}
+                {text && <Typography variant="body1" component="p">{text}</Typography>}
 
             </CardContent>
 

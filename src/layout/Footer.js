@@ -12,10 +12,15 @@ import { NavLink } from 'react-router-dom';
 
 import OxfordLogo from '../images/oxford-logo.svg';
 import BigDataLogo from '../images/bigdata-logo.png';
+import Arrow from '../images/arrow-right.svg';
+import ArrowHover from '../images/arrow-right-hover.svg';
 
 const useStyles = makeStyles(theme => ({
+    root: {
+
+    },
     footer: {
-        padding: theme.spacing(0, 0, 2, 0),
+        padding: theme.spacing(4, 0, 4, 0),
         marginTop: 'auto',
         backgroundColor: theme.palette.secondary.light,
         color: theme.palette.text.secondary,
@@ -30,17 +35,39 @@ const useStyles = makeStyles(theme => ({
         margin: 0
     },
     headline: {
-        textTransform: 'uppercase'
+        textTransform: 'uppercase',
+        color: theme.palette.text.primary,
+        margin: theme.spacing(0, 0, 3, 0),
+
     },
-    buttonGroup: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: theme.spacing(1, 1),
-        backgroundColor: theme.palette.primary.light,
-        '& > *': {
-            margin: theme.spacing(1),
+    bordered: {
+        borderBottom: `1px solid ${theme.palette.primary.line}`,
+        margin: theme.spacing(0, 0, 2, 0),
+    },
+    siteSections: {
+        padding: theme.spacing(4, 0, 4, 0),
+
+        '& ul': {
+            color: theme.palette.text.primary,
+            display: 'block',
+            listStyleType: 'none',
+            padding: 0,
+            margin: 0,
+            '& li': {
+                display: 'block',
+
+                '& a': {
+                    display: 'block',
+                    backgroundImage: `url(${Arrow})`,
+                    backgroundPosition: 'left center',
+                    backgroundRepeat: 'no-repeat',
+                    padding: theme.spacing(0, 0, 0, 4),
+                    '&:hover': {
+                        backgroundImage: `url(${ArrowHover})`,
+                        textDecoration: 'none'
+                    }
+                }
+            }
         },
     },
     logo: {
@@ -55,77 +82,67 @@ const Footer = (props) => {
     const classes = useStyles();
 
     return (
-        <footer className={classes.footer}>
 
-            <div className={classes.buttonGroup}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    component={RouterLink}
-                    to="/intro">
-                    INTRO
-                    </Button>
+        <div className={classes.root}>
 
-                <Button
-                    variant="contained"
-                    color="primary"
-                    component={RouterLink}
-                    to="/trends">
-                    TRENDS
-                    </Button>
-
-                <Button
-                    variant="contained"
-                    color="primary"
-                    component={RouterLink}
-                    to="/hot-spots">
-                    HOT SPOTS
-                    </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    component={RouterLink}
-                    to="/simulator">
-                    SIMULATOR
-                    </Button>
-            </div>
-
-
-            <Container maxWidth="xl" >
-
+            <Container maxWidth="xl">
                 <Grid container spacing={0}>
-                    <Grid item md={3} xs={12} className={classes.column}>
 
-                        <Typography variant="h6" component="h6" className={classes.headline} gutterBottom>Further information</Typography>
+                    <Grid item md={5} xs={12} className={classes.siteSections}>
+                        <Typography variant="h6" component="h6" className={`${classes.headline} ${classes.bordered}`} >Site sections</Typography>
 
-                        <ul className={classes.menu}>
-                            <li><Link component={RouterLink} to="/about" color="inherit">About</Link></li>
-                            <li><Link component={RouterLink} to="/data" color="inherit">Data</Link></li>
-                            <li><Link component={RouterLink} to="/methodology" color="inherit">Methodology</Link></li>
-                            <li><Link component={RouterLink} to="/ntds" color="inherit">NTDs</Link></li>
-                            <li><Link component={RouterLink} to="/privacy" color="inherit">Privacy&amp;Cookies</Link></li>
+                        <ul>
+                            <Typography component="li" variant="h5"><Link component={RouterLink} to="/intro" color="inherit">Introduction</Link></Typography>
+                            <Typography component="li" variant="h5"><Link component={RouterLink} to="/trends" color="inherit">Trends</Link></Typography>
+                            <Typography component="li" variant="h5"><Link component={RouterLink} to="/hot-spots" color="inherit">Hotspots</Link></Typography>
+                            <Typography component="li" variant="h5"><Link component={RouterLink} to="/simulator" color="inherit">Simulator</Link></Typography>
                         </ul>
-
                     </Grid>
-                    <Grid item md={3} xs={12} className={classes.column}>
-                        <Typography variant="h6" component="h6" className={classes.headline} gutterBottom>Contact</Typography>
-                    </Grid>
-                    <Grid item md={6} xs={12} className={classes.column}>
-                        <Typography variant="h6" component="h6" className={classes.headline} gutterBottom>In collaboration with</Typography>
-                        <img className={classes.logo} src={OxfordLogo} alt="University of Oxford" />
-                        <img className={classes.logo} src={BigDataLogo} alt="Big Data Institute" />
-
-                    </Grid>
-
-                    <Grid item xs={12} className={classes.column}>
-                        <Typography variant="h6" component="h6" className={classes.headline} gutterBottom>designed and made by</Typography>
-                        <Link href="https://www.artrabbit.studio/" rel="noopener" target="_blank" color="inherit" variant="body2">ArtRabbit Studio</Link>
-                    </Grid>
-
                 </Grid>
-
             </Container>
-        </footer>
+
+            <footer className={classes.footer}>
+                <Container maxWidth="xl" >
+
+                    <Grid container spacing={0}>
+                        <Grid item md={3} xs={12} className={classes.column}>
+
+                            <Typography variant="h6" component="h6" className={classes.headline} >Further information</Typography>
+
+                            <ul className={classes.menu}>
+                                <Typography component="li" variant="body2"><Link component={RouterLink} to="/about" color="inherit">About</Link></Typography>
+                                <Typography component="li" variant="body2"><Link component={RouterLink} to="/data" color="inherit">Data</Link></Typography>
+                                <Typography component="li" variant="body2"><Link component={RouterLink} to="/methodology" color="inherit">Methodology</Link></Typography>
+                                <Typography component="li" variant="body2"><Link component={RouterLink} to="/ntds" color="inherit">NTDs</Link></Typography>
+                                <Typography component="li" variant="body2"><Link component={RouterLink} to="/privacy" color="inherit">Privacy&amp;Cookies</Link></Typography>
+                            </ul>
+
+                        </Grid>
+                        <Grid item md={3} xs={12} className={classes.column}>
+                            <Typography variant="h6" component="h6" className={classes.headline} >Contact</Typography>
+
+                            <Typography display="block" variant="body2">Email: <Link href="mailto:contact@email.com" rel="noopener" color="inherit">contact@email.com</Link></Typography>
+                            <Typography display="block" variant="body2">Twitter: <Link href="https://www.artrabbit.studio/" rel="noopener" target="_blank" color="inherit" variant="body2">@ntdmodelling</Link></Typography>
+
+
+                        </Grid>
+                        <Grid item md={6} xs={12} className={classes.column} >
+                            <Typography variant="h6" component="h6" className={classes.headline} >In collaboration with</Typography>
+                            <img className={classes.logo} src={OxfordLogo} alt="University of Oxford" />
+                            <img className={classes.logo} src={BigDataLogo} alt="Big Data Institute" />
+
+                        </Grid>
+
+                        <Grid item xs={12} className={classes.column}>
+                            <Typography variant="h6" component="h6" className={classes.headline} >designed and made by</Typography>
+                            <Link href="https://www.artrabbit.studio/" rel="noopener" target="_blank" color="inherit" variant="body2">ArtRabbit Studio</Link>
+                        </Grid>
+
+                    </Grid>
+
+                </Container>
+            </footer>
+        </div>
     )
 }
 export default Footer;
