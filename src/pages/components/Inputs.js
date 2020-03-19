@@ -15,13 +15,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        padding: theme.spacing(2, 0),
         zIndex: 9,
         position: "relative",
 
     },
     formControl: {
-        margin: theme.spacing(1),
+        margin: theme.spacing(0, 1),
         minWidth: 120,
         '& > label': {
         }
