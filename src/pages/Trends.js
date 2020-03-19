@@ -70,11 +70,11 @@ const Trends = ({ history, location }) => {
         ))}
       </PanelContainer>
 
-      <Box>
-        {bumpData.length && (
-          <BumpChart data={bumpData} start={2015} end={2030} width={400} />
-        )}
-      </Box>
+      <Grid container justify="center">
+        <Grid item>
+          {bumpData.length && <BumpChart data={bumpData} width={800} />}
+        </Grid>
+      </Grid>
 
       <DiveDeeper
         title="Dive deeper"

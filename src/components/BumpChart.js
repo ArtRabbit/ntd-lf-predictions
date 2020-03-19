@@ -2,11 +2,15 @@ import React, { Fragment, useState } from 'react'
 import { scaleLinear, line } from 'd3'
 import { first, last } from 'lodash'
 
-export default function BumpChart({ data, width, start, end }) {
+// TODO: derive start/end from data
+const start = 2000
+const end = 2030
+
+export default function BumpChart({ data, width }) {
   const [selected, setSelected] = useState()
 
   const height = data.length * 30
-  const xPad = 250
+  const xPad = 128
   const yPad = 32
   const svgHeight = height + yPad * 2
   const svgWidth = width + xPad * 2
@@ -36,8 +40,8 @@ export default function BumpChart({ data, width, start, end }) {
       height={svgHeight}
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
-      <g transform={`translate(${xPad},${yPad})`}>
-        {data[0].ranks.map(({ year }) => (
+      <g transform={`translate(${xPad},${0})`}>
+        {xScale.ticks().map(year => (
           <g key={year}>
             <text
               x={xScale(year)}
