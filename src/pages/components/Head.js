@@ -5,6 +5,9 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import { NavLink } from 'react-router-dom';
+
+import Logo from '../../images/ntd-logo.svg';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -31,8 +34,17 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(2, 0)
 
     },
-    headline: {
-        fontSize: 18
+    logo: {
+        display: 'block',
+        backgroundImage: `url(${Logo})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        width: 228,
+        height: 50,
+        '& > span': {
+            display: 'none'
+        }
     },
     title: {
         marginBottom: 10
@@ -51,9 +63,9 @@ const Head = ({ title, text, subTitle, transparent, actionLabel, action }) => {
 
             <CardContent className={`${classes.cardContent} ${transparent ? classes.cardContentTransparent : ''}`}>
 
-                <Typography className={classes.headline} color="textSecondary" gutterBottom>
-                    NTD Modelling Consortium
-                </Typography>
+                <NavLink to='/' className={classes.logo}>
+                    <span>NTD Modelling Consortium</span>
+                </NavLink>
 
                 <Typography className={classes.title} variant="h4" component="h1">{title}</Typography>
 

@@ -8,21 +8,29 @@ import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
+import { NavLink } from 'react-router-dom';
+
+import OxfordLogo from '../images/oxford-logo.svg';
+import BigDataLogo from '../images/bigdata-logo.png';
+
 const useStyles = makeStyles(theme => ({
     footer: {
         padding: theme.spacing(0, 0, 2, 0),
         marginTop: 'auto',
-        backgroundColor: theme.palette.grey[900],
-        color: 'white',
+        backgroundColor: theme.palette.secondary.light,
+        color: theme.palette.text.secondary,
     },
-    footerColumn: {
+    column: {
         padding: theme.spacing(2, 2, 2, 0),
     },
-    footerMenu: {
+    menu: {
         display: 'block',
         listStyleType: 'none',
         padding: 0,
         margin: 0
+    },
+    headline: {
+        textTransform: 'uppercase'
     },
     buttonGroup: {
         display: 'flex',
@@ -34,6 +42,11 @@ const useStyles = makeStyles(theme => ({
         '& > *': {
             margin: theme.spacing(1),
         },
+    },
+    logo: {
+        width: 83,
+        height: 'auto',
+        marginRight: theme.spacing(2),
     }
 }));
 
@@ -78,29 +91,37 @@ const Footer = (props) => {
             </div>
 
 
-            <Container maxWidth="xl">
+            <Container maxWidth="xl" >
 
                 <Grid container spacing={0}>
-                    <Grid item xs={12} className={classes.footerColumn}>
-                        <Typography variant="body1">Footer</Typography>
-                    </Grid>
-                    <Grid item md={4} xs={12} className={classes.footerColumn}>
+                    <Grid item md={3} xs={12} className={classes.column}>
 
-                        Logos
-                        <ul className={classes.footerMenu}>
-                            <li><Link component={RouterLink} to="/about">About</Link></li>
-                            <li><Link component={RouterLink} to="/contact">Contact</Link></li>
+                        <Typography variant="h6" component="h6" className={classes.headline} gutterBottom>Further information</Typography>
+
+                        <ul className={classes.menu}>
+                            <li><Link component={RouterLink} to="/about" color="inherit">About</Link></li>
+                            <li><Link component={RouterLink} to="/data" color="inherit">Data</Link></li>
+                            <li><Link component={RouterLink} to="/methodology" color="inherit">Methodology</Link></li>
+                            <li><Link component={RouterLink} to="/ntds" color="inherit">NTDs</Link></li>
+                            <li><Link component={RouterLink} to="/privacy" color="inherit">Privacy&amp;Cookies</Link></li>
                         </ul>
 
+                    </Grid>
+                    <Grid item md={3} xs={12} className={classes.column}>
+                        <Typography variant="h6" component="h6" className={classes.headline} gutterBottom>Contact</Typography>
+                    </Grid>
+                    <Grid item md={6} xs={12} className={classes.column}>
+                        <Typography variant="h6" component="h6" className={classes.headline} gutterBottom>In collaboration with</Typography>
+                        <img className={classes.logo} src={OxfordLogo} alt="University of Oxford" />
+                        <img className={classes.logo} src={BigDataLogo} alt="Big Data Institute" />
 
+                    </Grid>
 
+                    <Grid item xs={12} className={classes.column}>
+                        <Typography variant="h6" component="h6" className={classes.headline} gutterBottom>designed and made by</Typography>
+                        <Link href="https://www.artrabbit.studio/" rel="noopener" target="_blank" color="inherit" variant="body2">ArtRabbit Studio</Link>
                     </Grid>
-                    <Grid item md={4} xs={12} className={classes.footerColumn}>
-                        About LF
-                    </Grid>
-                    <Grid item md={4} xs={12} className={classes.footerColumn}>
-                        copy
-                    </Grid>
+
                 </Grid>
 
             </Container>

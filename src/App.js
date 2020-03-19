@@ -11,24 +11,69 @@ import Trends from './pages/Trends';
 import HotSpotCountry from './pages/HotSpotCountry';
 
 import 'typeface-roboto';
+import 'typeface-libre-franklin';
+
+import purple from '@material-ui/core/colors/purple';
+import grey from '@material-ui/core/colors/grey';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import './App.scss';
 
 const theme = createMuiTheme({
     palette: {
+        /*
+        primary: purple,
+        secondary: grey
+        */
+        text: {
+            primary: '#000000',
+            secondary: '#616161'
+        },
         primary: {
             // light: will be calculated from palette.primary.main,
-            main: '#009688',
+            main: '#6236ff',
             // dark: will be calculated from palette.primary.main,
             // contrastText: will be calculated to contrast with palette.primary.main
         },
         secondary: {
-            light: '#0066ff',
-            main: '#212121',
+            light: '#eeeeee',
+            main: '#000000',
             // dark: will be calculated from palette.secondary.main,
             contrastText: '#ffcc00',
-        }
+        },
+    },
+
+    typography: {
+        fontSize: 18,
+        headline: {
+            fontFamily: "'Libre Franklin', sans-serif",
+        },
+        h1: {
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontWeight: 800
+        },
+        h2: {
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontWeight: 800
+        },
+        h3: {
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontWeight: 800
+        },
+        h4: {
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontWeight: 800
+        },
+        h5: {
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontWeight: 800
+        },
+        h6: {
+            //fontFamily: "'Libre Franklin', sans-serif",
+            //fontWeight: 800
+            fontSize: 12,
+        },
     },
 });
 
