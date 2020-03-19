@@ -39,6 +39,7 @@ const Head = ({ title, links }) => {
                     key={i}
                     variant="contained"
                     color="primary"
+                    size="large"
                     component={RouterLink}
                     to={link.to}>
                     {link.name}

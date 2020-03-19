@@ -64,7 +64,7 @@ const Head = ({ title, text, subTitle, transparent, actionLabel, action }) => {
 
             {actionLabel &&
                 <div className={classes.actions}>
-                    <Button onClick={(event) => action(event)} onKeyDown={(event) => action(event)} variant="contained" color="primary">{actionLabel}</Button>
+                    <Button onClick={(event) => action(event)} onKeyDown={(event) => action(event)} size="large" variant="contained" color="primary">{actionLabel}</Button>
                 </div>
             }
         </Box>

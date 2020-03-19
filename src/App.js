@@ -64,6 +64,7 @@ const theme = createMuiTheme({
 
     typography: {
         fontSize: 16,
+        fontWeight: 400,
         headline: {
             fontFamily: "'Libre Franklin', sans-serif",
         },
@@ -92,6 +93,16 @@ const theme = createMuiTheme({
             //fontFamily: "'Libre Franklin', sans-serif",
             //fontWeight: 800
             fontSize: 12,
+        },
+        button: {
+            fontWeight: 400,
+        }
+    },
+    overrides: {
+        MuiButton: {
+            text: {
+
+            },
         },
     },
 });
