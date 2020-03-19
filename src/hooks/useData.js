@@ -10,12 +10,13 @@ import {
   entries,
   map,
   round,
+  keys,
   filter,
   mapKeys,
   omit,
   pickBy as pickByFP,
 } from 'lodash/fp'
-import { sortBy, pick, pickBy, merge, min, max, zip } from 'lodash'
+import { sortBy, pick, merge, min, max, zip } from 'lodash'
 import config from '../config'
 
 const { precision } = config
@@ -59,6 +60,7 @@ function process(data, filter) {
   )(input)
 }
 
+// helper that groups columns of the csv into object properties
 const groupProps = (obj, pattern) =>
   flow(
     pickByFP((value, key) => new RegExp(pattern).test(key)),
@@ -67,9 +69,25 @@ const groupProps = (obj, pattern) =>
 
 const roundPrevalence = p => round(p * 100, 2)
 
-export function useNewData({ source, Regime, Endemicity, key }) {
+function useCSV(source) {
   const [data, setData] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    csv(source, autoType).then(result => {
+      setData(result)
+      setLoading(false)
+    })
+  }, [source])
+
+  return { data, loading }
+}
+
+export function useNewData({ source, Regime, Endemicity, key, f }) {
+  const { data, loading } = useCSV(source)
+  const { data: relations, loading: relationsLoading } = useCSV(
+    'data/relations.csv'
+  )
   const [processed, setProcessed] = useState({})
   const [stats, setStats] = useState({
     prevalence: {
@@ -78,39 +96,46 @@ export function useNewData({ source, Regime, Endemicity, key }) {
     },
   })
 
-  // load data
-  useEffect(() => {
-    setLoading(true)
-    csv(source, autoType).then(result => {
-      setData(result)
-      setLoading(false)
-    })
-  }, [source])
+  const isLoading = loading || relationsLoading
 
   // process data
   useEffect(() => {
-    if (!loading) {
+    if (!isLoading) {
+      const groupRelByKey = groupBy(key)(relations)
+
       const transformed = flow(
+        // filtering based on values that are contained in the CSV file
         filter(!!Endemicity ? { Regime, Endemicity } : { Regime }),
         keyBy(key),
-        mapValues(country => {
-          const { [key]: id, Population } = country
+        mapValues(row => {
+          const { [key]: id, Population } = row
 
-          const probability = groupProps(country, 'elimination')
-          const prev = groupProps(country, 'Prev_')
-          const lower = groupProps(country, 'Lower')
-          const upper = groupProps(country, 'Upper')
+          const probability = groupProps(row, 'elimination')
+          const prev = groupProps(row, 'Prev_')
+          const lower = groupProps(row, 'Lower')
+          const upper = groupProps(row, 'Upper')
+
+          const related = groupRelByKey[id]
+          const relatedCountries = flow(groupBy('Country'), keys)(related)
+          const relatedStates = flow(groupBy('StateCode'), keys)(related)
+          const relatedIU = flow(groupBy('IUID'), keys)(related)
 
           return {
             id,
             population: round(Population, 0),
-            endemicity: country.Endemicity,
+            endemicity: row.Endemicity,
             prevalence: mapValues(roundPrevalence)(prev),
             probability,
             lower,
             upper,
+            relatedCountries,
+            relatedStates,
+            relatedIU,
           }
-        })
+        }),
+        values,
+        filter(f),
+        keyBy('id')
       )(data)
 
       // create ranking
@@ -149,7 +174,7 @@ export function useNewData({ source, Regime, Endemicity, key }) {
 
       setProcessed(merged)
     }
-  }, [data, Regime, Endemicity, key, loading])
+  }, [data, Regime, Endemicity, key, isLoading, relations])
 
   // create stats
   useEffect(() => {
@@ -170,7 +195,7 @@ export function useNewData({ source, Regime, Endemicity, key }) {
     )
   }, [processed])
 
-  return { data: processed, stats, loading }
+  return { data: processed, stats, loading: isLoading }
 }
 
 export function useOldData() {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
@@ -32,14 +32,15 @@ const PanelContainer = ({ children }) => (
 const Trends = ({ history, location }) => {
     const classes = useStyles()
     const data = useOldData()
+    const countryFilter = useCallback(x => x.relatedCountries.includes('AGO'), [])
     const { data: newData } = useNewData({
-        source: 'data/country-level.csv',
+        source: 'data/state-level.csv',
         Regime: 'No MDA',
-        key: 'Country',
+        key: 'StateCode',
+        f: countryFilter,
     })
 
     const bumpData = Object.values(newData)
-    console.log('new', bumpData)
 
     return (
         <Layout>
@@ -60,8 +61,7 @@ const Trends = ({ history, location }) => {
                 </Grid>
             </Grid>
 
-
-            <Map height={500} />
+            <Map height={500} filter={countryFilter} initialLevel={1} />
 
             <PanelContainer>
                 {data.map(d => (
@@ -82,6 +82,7 @@ const Trends = ({ history, location }) => {
 
             <Grid container justify="center">
                 <Grid item>
+                    <Typography variant="h2">Bump graph States in AGO</Typography>
                     {bumpData.length && <BumpChart data={bumpData} width={800} />}
                 </Grid>
             </Grid>
