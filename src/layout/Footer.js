@@ -35,7 +35,6 @@ const useStyles = makeStyles(theme => ({
         margin: 0
     },
     headline: {
-        textTransform: 'uppercase',
         color: theme.palette.text.primary,
         margin: theme.spacing(0, 0, 3, 0),
 

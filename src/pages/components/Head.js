@@ -1,9 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { NavLink } from 'react-router-dom';
 
@@ -12,10 +10,6 @@ import Logo from '../../images/ntd-logo.svg';
 const useStyles = makeStyles(theme => ({
     card: {
         maxWidth: 475,
-        padding: theme.spacing(2),/*
-        position: 'absolute',
-        top: theme.spacing(3),
-        left: theme.spacing(3),*/
         zIndex: 9,
         position: "relative",
         float: 'left'
@@ -24,15 +18,6 @@ const useStyles = makeStyles(theme => ({
     transparent: {
         background: 'transparent',
         boxShadow: 'none',
-        padding: theme.spacing(2, 0)
-    },
-    cardContent: {
-        padding: theme.spacing(2),
-
-    },
-    cardContentTransparent: {
-        padding: theme.spacing(2, 0)
-
     },
     logo: {
         display: 'block',
@@ -42,16 +27,20 @@ const useStyles = makeStyles(theme => ({
         backgroundRepeat: 'no-repeat',
         width: 228,
         height: 50,
+        margin: theme.spacing(0, 0, 6, 0),
         '& > span': {
             display: 'none'
         }
     },
     title: {
-        marginBottom: 10
+        margin: theme.spacing(0, 0, 3, 0),
     },
     subTitle: {
         marginBottom: 10
     },
+    actions: {
+        padding: theme.spacing(4, 0, 0, 0),
+    }
 }));
 
 const Head = ({ title, text, subTitle, transparent, actionLabel, action }) => {
@@ -59,28 +48,26 @@ const Head = ({ title, text, subTitle, transparent, actionLabel, action }) => {
     const classes = useStyles();
 
     return (
-        <Card className={`${classes.card} ${transparent ? classes.transparent : ''}`}>
+        <Box className={`${classes.card} ${transparent ? classes.transparent : ''}`}>
 
-            <CardContent className={`${classes.cardContent} ${transparent ? classes.cardContentTransparent : ''}`}>
 
-                <NavLink to='/' className={classes.logo}>
-                    <span>NTD Modelling Consortium</span>
-                </NavLink>
+            <NavLink to='/' className={classes.logo}>
+                <span>NTD Modelling Consortium</span>
+            </NavLink>
 
-                <Typography className={classes.title} variant="h4" component="h1">{title}</Typography>
+            <Typography className={classes.title} variant="h4" component="h1">{title}</Typography>
 
-                {subTitle && <Typography className={classes.subTitle} variant="h6" component="h2">{subTitle}</Typography>}
+            {subTitle && <Typography className={classes.subTitle} variant="subtitle2" component="h2">{subTitle}</Typography>}
 
-                {text && <Typography variant="body1" component="p">{text}</Typography>}
+            {text && <Typography variant="body1" component="p">{text}</Typography>}
 
-            </CardContent>
 
             {actionLabel &&
-                <CardActions>
+                <div className={classes.actions}>
                     <Button onClick={(event) => action(event)} onKeyDown={(event) => action(event)} variant="contained" color="primary">{actionLabel}</Button>
-                </CardActions>
+                </div>
             }
-        </Card>
+        </Box>
     )
 }
 export default Head;

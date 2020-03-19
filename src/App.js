@@ -18,9 +18,28 @@ import grey from '@material-ui/core/colors/grey';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import './App.scss';
+//import './App.scss'; 
+/*
+import { create } from 'jss';
+import { createStyleManager } from 'jss-theme-reactor/styleManager';
+import jssPreset from 'jss-preset-default';
 
+const styleManager = createStyleManager({
+    theme,
+    jss: create(jssPreset()),
+});
+*/
 const theme = createMuiTheme({
+    /*
+    '@global': {
+        'a': {
+            'color': 'red'    // Make all links red.
+        },
+        'body': {
+            'color': 'red'    // Make all links red.
+        }
+    },
+    */
     palette: {
         /*
         primary: purple,
@@ -69,6 +88,7 @@ const theme = createMuiTheme({
             fontWeight: 800
         },
         h6: {
+            textTransform: 'uppercase',
             //fontFamily: "'Libre Franklin', sans-serif",
             //fontWeight: 800
             fontSize: 12,

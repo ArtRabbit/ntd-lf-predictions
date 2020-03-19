@@ -9,16 +9,20 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
     buttonGroup: {
-        padding: theme.spacing(4, 1),
-        textAlign: 'center',
-        clear: 'both',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        padding: theme.spacing(4, 0),
+        minWidth: 220,
+        float: 'left',
         '& > *': {
-            margin: theme.spacing(1),
+            margin: theme.spacing(0, 0, 1, 0),
+            float: 'left',
+            clear: 'both'
         },
     },
+    buttonGroupTitle: {
+        borderBottom: `1px solid ${theme.palette.primary.line}`,
+        margin: theme.spacing(0, 0, 2, 0),
+        width: '100%'
+    }
 }));
 
 const Head = ({ title, links }) => {
@@ -28,7 +32,7 @@ const Head = ({ title, links }) => {
     return (
         <Box className={classes.buttonGroup}>
 
-            <Typography className={classes.buttonGroupTitle} variant="h5" component="h3">{title}</Typography>
+            <Typography className={classes.buttonGroupTitle} variant="h6" component="h3">{title}</Typography>
 
             {links.map((link, i) => {
                 return (<Button
