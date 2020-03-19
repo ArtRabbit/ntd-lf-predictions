@@ -774,19 +774,11 @@ export var simControler = {
         var runs = [];
         var progression = 0;
         this.fixInput();
-        // $("#map-progress-bar").css("width", "0%");
-        // $("#map-progress-bar").show();
 
         var progress = setInterval(() => {
-            /*      $("#map-progress-bar").css(
-        "width",
-        Number((progression * 100) / maxN) + "%"
-      ); */
             var m = new Model(800);
             m.evolveAndSaves(120.0);
-            // runs.push(SessionData.convertRun(m, endemicity)); // !!!!!! could this ever work???
             runs.push(SessionData.convertRun(m));
-            // $("#roundsTest").html((progression * 100) / maxN + "%");
             simulatorCallback(parseInt((progression * 100) / maxN));
             if (progression === maxN) {
                 // $("#map-progress-bar").hide();
@@ -800,7 +792,11 @@ export var simControler = {
     },
     reductionStatsCalc: (scenario, coverage) => {
         var n = scenario["results"].length;
-        var T = 0; //scenario["results"][0]["ts"].length; !!!!!! doesnt seem to work
+        //        var T = scenario["results"][0]["ts"].length;  //scenario["results"][0]["ts"].length; !!!!!! doesnt seem to work
+        // var T = 0;
+        var T = scenario["results"] && scenario["results"][0] && scenario["results"][0]["ts"] ? scenario["results"][0]["ts"].length : 0;
+        console.log("T");
+        console.log(T);
         var prev0;
         var totR = new Array(T);
         var doses = new Array(T);
@@ -891,7 +887,7 @@ export var simControler = {
     },
     params: {
         mda: 2, // $("#inputMDARounds").val(),
-        mdaSixMonths: 6, // $("input:radio[name=mdaSixMonths]:checked").val(),   !!!!!!!!!
+        mdaSixMonths: 6, // $("input:radio[name=mdaSixMonths]:checked").val(),
         endemicity: 10, // $("#endemicity").val(),
         coverage: 100, // $("#MDACoverage").val(),
         covN: 0, // $("#bedNetCoverage").val(),
