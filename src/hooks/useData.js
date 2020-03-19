@@ -12,6 +12,7 @@ import {
   round,
   filter,
   mapKeys,
+  omit,
   pickBy as pickByFP,
 } from 'lodash/fp'
 import { sortBy, pick, pickBy, merge, min, max, zip } from 'lodash'
@@ -89,7 +90,7 @@ export function useNewData({ source, Regime, Endemicity, key }) {
   // process data
   useEffect(() => {
     if (!loading) {
-      const p = flow(
+      const transformed = flow(
         filter(!!Endemicity ? { Regime, Endemicity } : { Regime }),
         keyBy(key),
         mapValues(country => {
@@ -112,7 +113,41 @@ export function useNewData({ source, Regime, Endemicity, key }) {
         })
       )(data)
 
-      setProcessed(p)
+      // create ranking
+      const rankings = flow(
+        values,
+        map(({ prevalence, id }) =>
+          entries(prevalence).map(([year, prevalence]) => ({
+            year,
+            prevalence,
+            id,
+          }))
+        ),
+        flatten,
+        // group all values by year
+        groupBy('year'),
+        // add year and rank
+        mapValues(v =>
+          sortBy(v, ['prevalence', 'id']).map((x, i) => ({
+            ...x,
+            year: +x.year,
+            rank: i + 1,
+          }))
+        ),
+        // break-up grouping by year
+        values,
+        flatten,
+        // build rank series
+        groupBy('id'),
+        mapValues(ranks => map(omit('id'))(ranks))
+      )(transformed)
+
+      // add rankings to entries
+      const merged = mapValues(x => ({ ...x, ranks: rankings[x.id] }))(
+        transformed
+      )
+
+      setProcessed(merged)
     }
   }, [data, Regime, Endemicity, key, loading])
 

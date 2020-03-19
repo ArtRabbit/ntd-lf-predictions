@@ -51,21 +51,21 @@ export default function BumpChart({ data, width, start, end }) {
         ))}
 
         {/* lines */}
-        {data.map(({ state, iu_name, ranks }) => {
+        {data.map(({ state, id, ranks }) => {
           const coords = ranks.map(({ year, rank }) => [
             xScale(year),
             yScale(rank),
           ])
-          const isSelected = iu_name === selected
+          const isSelected = id === selected
           const l = line()(coords)
           return (
             <path
-              key={`ranks-${state}-${iu_name}`}
+              key={`ranks-${state}-${id}`}
               d={l}
               stroke={isSelected ? 'blue' : '#999'}
               strokeWidth={isSelected ? 2 : 1}
               fill="none"
-              onMouseEnter={() => handleEnter(iu_name)}
+              onMouseEnter={() => handleEnter(id)}
               onMouseLeave={handleLeave}
             />
           )
@@ -82,7 +82,7 @@ export default function BumpChart({ data, width, start, end }) {
 
         {/* grid */}
         {data.map(({ ranks }) => {
-          return ranks.map(({ year, rank, p_prevalence }) => {
+          return ranks.map(({ year, rank, prevalence }) => {
             return (
               <g
                 key={`circle-${year}-${rank}`}
@@ -91,9 +91,9 @@ export default function BumpChart({ data, width, start, end }) {
                 <circle
                   r="3"
                   fill={
-                    p_prevalence <= 1
+                    prevalence <= 1
                       ? '#12df93'
-                      : p_prevalence > 20
+                      : prevalence > 20
                       ? '#ff5e0d'
                       : 'none'
                   }
@@ -104,40 +104,40 @@ export default function BumpChart({ data, width, start, end }) {
         })}
 
         {/* labels */}
-        {data.map(({ state, ranks, iu_name, p_prevalence }) => {
+        {data.map(({ state, ranks, id, prevalence }) => {
           const a = first(ranks)
           const b = last(ranks)
 
           return (
-            <Fragment key={`label-${state}-${iu_name}`}>
+            <Fragment key={`label-${state}-${id}`}>
               <text
                 fontSize="12"
                 fontWeight={
-                  iu_name === selected ? 800 : a.p_prevalence <= 1 ? 500 : 300
+                  id === selected ? 800 : a.prevalence <= 1 ? 500 : 300
                 }
                 x={xScale(a.year) - labelOffset}
                 y={yScale(a.rank)}
                 textAnchor="end"
                 dominantBaseline="middle"
-                onMouseEnter={() => handleEnter(iu_name)}
+                onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
-                fill={iu_name === selected ? 'blue' : 'black'}
+                fill={id === selected ? 'blue' : 'black'}
               >
-                {iu_name} ({a.p_prevalence}%) {a.rank}.
+                {id} ({a.prevalence}%) {a.rank}.
               </text>
               <text
                 fontSize="12"
                 fontWeight={
-                  iu_name === selected ? 800 : b.p_prevalence <= 1 ? 500 : 300
+                  id === selected ? 800 : b.prevalence <= 1 ? 500 : 300
                 }
                 x={xScale(b.year) + labelOffset}
                 y={yScale(b.rank)}
                 dominantBaseline="middle"
-                onMouseEnter={() => handleEnter(iu_name)}
+                onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
-                fill={iu_name === selected ? 'blue' : 'black'}
+                fill={id === selected ? 'blue' : 'black'}
               >
-                {b.rank}. ({b.p_prevalence}%) {iu_name}
+                {b.rank}. ({b.prevalence}%) {id}
               </text>
             </Fragment>
           )

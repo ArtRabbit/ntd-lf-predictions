@@ -31,17 +31,14 @@ const PanelContainer = ({ children }) => (
 const Trends = ({ history, location }) => {
   const classes = useStyles()
   const data = useOldData()
-  const newData = useNewData({
+  const { data: newData } = useNewData({
     source: 'data/country-level.csv',
     Regime: 'No MDA',
     key: 'Country',
   })
 
-  console.log(data)
-  console.log('new', newData.data)
-
-  //   example data
-  const testData = data.find(x => x.country === 'Liberia')?.units
+  const bumpData = Object.values(newData)
+  console.log('new', bumpData)
 
   return (
     <Layout>
@@ -73,9 +70,11 @@ const Trends = ({ history, location }) => {
         ))}
       </PanelContainer>
 
-      {testData && (
-        <BumpChart data={testData} start={2015} end={2030} width={500} />
-      )}
+      <Box>
+        {bumpData.length && (
+          <BumpChart data={bumpData} start={2015} end={2030} width={400} />
+        )}
+      </Box>
 
       <DiveDeeper
         title="Dive deeper"
