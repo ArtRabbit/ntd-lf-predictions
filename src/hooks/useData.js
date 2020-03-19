@@ -19,8 +19,7 @@ import {
 import { sortBy, pick, merge, min, max, zip } from 'lodash'
 import config from '../config'
 
-const { precision } = config
-
+// TODO: remove function
 function process(data, filter) {
   const input = data.filter(filter)
   return flow(
@@ -33,7 +32,7 @@ function process(data, filter) {
           ...rest,
           year: +year,
           // TODO: leave rounding?
-          p_prevalence: round(p_prevalence * 100, precision),
+          p_prevalence: round(p_prevalence * 100, 2),
           rank: i + 1,
         })
       )
@@ -69,6 +68,7 @@ const groupProps = (obj, pattern) =>
 
 const roundPrevalence = p => round(p * 100, 2)
 
+// hook that loads data from CSV files
 function useCSV(source) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
@@ -109,6 +109,15 @@ export function useNewData({ source, Regime, Endemicity, key, f }) {
         keyBy(key),
         mapValues(row => {
           const { [key]: id, Population } = row
+          const meta = groupRelByKey[id][0]
+
+          // retrieve entity names from relations
+          const name =
+            key === 'Country'
+              ? meta.CountryName
+              : key === 'StateCode'
+              ? meta.StateName
+              : meta.IUName
 
           const probability = groupProps(row, 'elimination')
           const prev = groupProps(row, 'Prev_')
@@ -122,6 +131,7 @@ export function useNewData({ source, Regime, Endemicity, key, f }) {
 
           return {
             id,
+            name,
             population: round(Population, 0),
             endemicity: row.Endemicity,
             prevalence: mapValues(roundPrevalence)(prev),
@@ -174,7 +184,7 @@ export function useNewData({ source, Regime, Endemicity, key, f }) {
 
       setProcessed(merged)
     }
-  }, [data, Regime, Endemicity, key, isLoading, relations])
+  }, [data, Regime, Endemicity, key, isLoading, relations, f])
 
   // create stats
   useEffect(() => {
@@ -196,6 +206,30 @@ export function useNewData({ source, Regime, Endemicity, key, f }) {
   }, [processed])
 
   return { data: processed, stats, loading: isLoading }
+}
+
+export function useCountryData(props) {
+  const [countries, setCountries] = useState([])
+  const { data, stats, loading } = useNewData({
+    source: 'data/country-level.csv',
+    Regime: 'No MDA',
+    key: 'Country',
+    ...props,
+  })
+
+  //   useEffect(() => {
+  //     setCountries(flow()(data))
+  //   }, [data])
+
+  return { data, stats, loading }
+}
+
+export function useStateData(props) {
+  return useNewData({ ...props, source: config.dataSources[1] })
+}
+
+export function useIUData(props) {
+  return useNewData({ ...props, source: config.dataSources[2] })
 }
 
 export function useOldData() {
