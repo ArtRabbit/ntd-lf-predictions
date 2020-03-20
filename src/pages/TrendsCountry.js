@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { observer } from 'mobx-react'
 
@@ -31,7 +30,6 @@ const TrendsCountry = (props) => {
   const classes = useStyles()
 
   const countryIdent = props.match.params.country;
-  alert(countryIdent);
 
   const { country } = useUIState()
   const { countryData, countryFeatures, stateByCountryData } = useDataAPI()
@@ -40,7 +38,7 @@ const TrendsCountry = (props) => {
     <Layout>
       <Grid container spacing={0}>
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Head transparent={true} title="Trends by country" />
+          <Head transparent={true} title={`Trends by country - ${countryIdent}`} />
         </Grid>
         <Grid item md={7} xs={12} className={classes.headRightColumn}>
           <Inputs />
