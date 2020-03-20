@@ -1,12 +1,17 @@
 import { useContext } from 'react'
-import { StateContext, DispatchContext } from '../state'
+import { MobXProviderContext } from 'mobx-react'
 
-export function useState() {
-  const state = useContext(StateContext)
-  return state
+export function useStores() {
+  const stores = useContext(MobXProviderContext)
+  return stores
 }
 
-export function useDispatch() {
-  const dispatch = useContext(DispatchContext)
-  return dispatch
+export function useDataAPI() {
+  const { dataAPI } = useContext(MobXProviderContext)
+  return dataAPI
+}
+
+export function useUIState() {
+  const { uiState } = useContext(MobXProviderContext)
+  return uiState
 }

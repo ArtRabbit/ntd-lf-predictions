@@ -1,4 +1,5 @@
 import React from 'react'
+import { observer } from 'mobx-react'
 
 import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
@@ -10,6 +11,7 @@ import DiveDeeper from './components/DiveDeeper'
 import SiteSections from './components/SiteSections'
 
 import Map from '../components/Map'
+import { useDataAPI } from '../hooks/stateHooks'
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -23,6 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 const HotSpots = ({ history, location }) => {
   const classes = useStyles()
+  const { stateData, stateFeatures } = useDataAPI()
 
   return (
     <Layout>
@@ -35,7 +38,14 @@ const HotSpots = ({ history, location }) => {
         </Grid>
       </Grid>
 
-      { /* <Map height={500} initialLevel={1} />*/}
+      {stateData && stateFeatures && (
+        <Map
+          data={stateData.data}
+          features={stateFeatures}
+          height={500}
+          initialLevel={0}
+        />
+      )}
 
       <DiveDeeper
         title="Dive deeper"
@@ -44,8 +54,7 @@ const HotSpots = ({ history, location }) => {
           { to: '/country', name: 'SELECT COUNTRY' },
         ]}
       />
-
     </Layout>
   )
 }
-export default HotSpots
+export default observer(HotSpots)

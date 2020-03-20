@@ -25,7 +25,7 @@ export default function SlopeChart({
     .domain([start, end])
     .range([0, width])
 
-  const domain = max(flatten(data.map(d => d.ranks.map(r => r.p_prevalence))))
+  const domain = max(flatten(data.map(d => d.ranks.map(r => r.prevalence))))
 
   const yScale = scaleLinear()
     .domain(clipDomain ? [0, domain] : [0, 100])
@@ -40,7 +40,7 @@ export default function SlopeChart({
     setSelected(null)
   }
 
-  const y = d => yScale(d.p_prevalence)
+  const y = d => yScale(d.prevalence)
 
   return (
     <div>
@@ -83,8 +83,8 @@ export default function SlopeChart({
             })}
 
           {/* lines */}
-          {orderBy(data, x => last(x.ranks).p_prevalence, 'desc').map(
-            ({ state, iu_name, ranks }) => {
+          {orderBy(data, x => last(x.ranks).prevalence, 'desc').map(
+            ({ id, ranks }) => {
               const a = first(ranks)
               const b = last(ranks)
               const coords = [a, b].map(d => {
@@ -95,12 +95,12 @@ export default function SlopeChart({
 
               return (
                 <path
-                  key={`ranks-${state}-${iu_name}`}
+                  key={`ranks-${id}`}
                   d={l}
-                  stroke={slopeColor(a, b, iu_name === selected)}
-                  strokeWidth={iu_name === selected ? 2 : 1}
+                  stroke={slopeColor(a, b, id === selected)}
+                  strokeWidth={id === selected ? 2 : 1}
                   fill="none"
-                  onMouseEnter={() => handleEnter(iu_name)}
+                  onMouseEnter={() => handleEnter(id)}
                   onMouseLeave={handleLeave}
                 />
               )
@@ -108,14 +108,14 @@ export default function SlopeChart({
           )}
 
           {/* labels */}
-          {data.map(({ state, ranks, iu_name }) => {
+          {data.map(({ state, ranks, id }) => {
             const a = first(ranks)
             const b = last(ranks)
 
-            if (iu_name !== selected) return null
+            if (id !== selected) return null
 
             return (
-              <Fragment key={`label-${state}-${iu_name}`}>
+              <Fragment key={`label-${state}-${id}`}>
                 <text
                   fontSize="12"
                   fontWeight="800"
@@ -123,11 +123,11 @@ export default function SlopeChart({
                   y={y(a)}
                   textAnchor="end"
                   dominantBaseline="middle"
-                  onMouseEnter={() => handleEnter(iu_name)}
+                  onMouseEnter={() => handleEnter(id)}
                   onMouseLeave={handleLeave}
-                  fill={iu_name === selected ? 'blue' : 'black'}
+                  fill={id === selected ? 'blue' : 'black'}
                 >
-                  {a.p_prevalence}%
+                  {a.prevalence}%
                 </text>
                 <text
                   fontSize="12"
@@ -135,11 +135,11 @@ export default function SlopeChart({
                   x={xScale(b.year) + labelOffset}
                   y={y(b)}
                   dominantBaseline="middle"
-                  onMouseEnter={() => handleEnter(iu_name)}
+                  onMouseEnter={() => handleEnter(id)}
                   onMouseLeave={handleLeave}
-                  fill={iu_name === selected ? 'blue' : 'black'}
+                  fill={id === selected ? 'blue' : 'black'}
                 >
-                  {b.p_prevalence}% {iu_name}
+                  {b.prevalence}% {id}
                 </text>
               </Fragment>
             )
