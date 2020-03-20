@@ -108,7 +108,7 @@ export default function BumpChart({ data, width }) {
         })}
 
         {/* labels */}
-        {data.map(({ state, ranks, id, prevalence }) => {
+        {data.map(({ state, ranks, id, prevalence, name }) => {
           const a = first(ranks)
           const b = last(ranks)
 
@@ -127,7 +127,7 @@ export default function BumpChart({ data, width }) {
                 onMouseLeave={handleLeave}
                 fill={id === selected ? 'blue' : 'black'}
               >
-                {id} ({a.prevalence}%) {a.rank}.
+                {name} ({a.prevalence}%) {a.rank}.
               </text>
               <text
                 fontSize="12"
@@ -141,7 +141,7 @@ export default function BumpChart({ data, width }) {
                 onMouseLeave={handleLeave}
                 fill={id === selected ? 'blue' : 'black'}
               >
-                {b.rank}. ({b.prevalence}%) {id}
+                {b.rank}. ({b.prevalence}%) {name}
               </text>
             </Fragment>
           )

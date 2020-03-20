@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react'
+import React from 'react'
+import { observer } from 'mobx-react'
 
 import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
 import { Box, Typography, Grid } from '@material-ui/core'
 
-import { useOldData, useNewData } from '../hooks/useData'
+import { useUIState, useDataAPI } from '../hooks/stateHooks'
 
 import Head from './components/Head'
 import Inputs from './components/Inputs'
@@ -16,85 +17,93 @@ import SlopeChart from '../components/SlopeChart'
 import BumpChart from '../components/BumpChart'
 
 const useStyles = makeStyles(theme => ({
-    headLeftColumn: {
-        textAlign: 'left',
-    },
-    headRightColumn: {
-        textAlign: 'right',
-        padding: theme.spacing(2),
-    },
+  headLeftColumn: {
+    textAlign: 'left',
+  },
+  headRightColumn: {
+    textAlign: 'right',
+    padding: theme.spacing(2),
+  },
 }))
 
 const PanelContainer = ({ children }) => (
-    <div style={{ display: 'flex', overflow: 'auto' }}>{children}</div>
+  <div style={{ display: 'flex', overflow: 'auto' }}>{children}</div>
 )
 
 const Trends = ({ history, location }) => {
-    const classes = useStyles()
-    const data = useOldData()
-    const countryFilter = useCallback(x => x.relatedCountries.includes('AGO'), [])
-    const { data: newData } = useNewData({
-        source: 'data/state-level.csv',
-        Regime: 'No MDA',
-        key: 'StateCode',
-        f: countryFilter,
-    })
+  const classes = useStyles()
 
-    const bumpData = Object.values(newData)
+  const { country } = useUIState()
+  const { countryData, countryFeatures } = useDataAPI()
 
-    return (
-        <Layout>
-            <Grid container spacing={0}>
-                <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-                    <Head transparent={true} title="Lympahtic filariasis Trends" />
-                </Grid>
-                <Grid item md={7} xs={12} className={classes.headRightColumn}>
-                    <Inputs />
-                </Grid>
-            </Grid>
+  console.log(countryData)
 
-            <Grid container spacing={0}>
-                <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-                    <Typography variant="h2" component="h2">All countries map</Typography>
-                    <ReadMore text="This is what we are showing here This is what we are showing here This is what we are showing here This is what we are showing here" />
+  return (
+    <Layout>
+      <Grid container spacing={0}>
+        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
+          <Head transparent={true} title="Lympahtic filariasis Trends" />
+        </Grid>
+        <Grid item md={7} xs={12} className={classes.headRightColumn}>
+          <Inputs />
+        </Grid>
+      </Grid>
 
-                </Grid>
-            </Grid>
+      <Grid container spacing={0}>
+        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
+          <Typography variant="h2" component="h2">
+            {country ? 'Country level' : 'All countries map'}
+          </Typography>
+          <ReadMore text="This is what we are showing here This is what we are showing here This is what we are showing here This is what we are showing here" />
+        </Grid>
+      </Grid>
 
-            <Map height={500} filter={countryFilter} initialLevel={1} />
+      {countryData && countryFeatures && (
+        <Map
+          data={countryData.data}
+          features={countryFeatures}
+          height={500}
+          initialLevel={0}
+        />
+      )}
 
-            <PanelContainer>
-                {data.map(d => (
-                    <Box key={d.country} p={1}>
-                        <SlopeChart
-                            data={d.units}
-                            width={100}
-                            height={300}
-                            start={2015}
-                            end={2031}
-                            clipDomain={false}
-                            svgPadding={[0, 0, 0, 0]}
-                        />
-                        <Typography variant="caption">{d.country}</Typography>
-                    </Box>
-                ))}
-            </PanelContainer>
+      {/* <PanelContainer>
+        {countryData &&
+          Object.values(countryData.data).map(d => {
+            return (
+              <Box key={d.id} p={1}>
+                <SlopeChart
+                  data={d}
+                  width={100}
+                  height={300}
+                  start={2015}
+                  end={2031}
+                  clipDomain={false}
+                  svgPadding={[0, 0, 0, 0]}
+                />
+                <Typography variant="caption">{d.country}</Typography>
+              </Box>
+            )
+          })}
+      </PanelContainer> */}
 
-            <Grid container justify="center">
-                <Grid item>
-                    <Typography variant="h2">Bump graph States in AGO</Typography>
-                    {bumpData.length && <BumpChart data={bumpData} width={800} />}
-                </Grid>
-            </Grid>
+      {/* <Grid container justify="center">
+        <Grid item>
+          <Typography variant="h2">Bump graph States in AGO</Typography>
+          {countryData && (
+            <BumpChart data={Object.values(countryData.data)} width={800} />
+          )}
+        </Grid>
+      </Grid> */}
 
-            <DiveDeeper
-                title="Dive deeper"
-                links={[
-                    { to: '/hot-spots', name: 'PROBLEM AREAS' },
-                    { to: '/country', name: 'SELECT COUNTRY' },
-                ]}
-            />
-        </Layout>
-    )
+      <DiveDeeper
+        title="Dive deeper"
+        links={[
+          { to: '/hot-spots', name: 'PROBLEM AREAS' },
+          { to: '/country', name: 'SELECT COUNTRY' },
+        ]}
+      />
+    </Layout>
+  )
 }
-export default Trends
+export default observer(Trends)

@@ -12,14 +12,17 @@
         "@turf/bbox": "^6.0.1",
         "d3": "^5.15.0",
         "lodash": "^4.17.15",
+        "mobx": "^5.15.4",
+        "mobx-react": "^6.1.8",
+        "mobx-utils": "^5.5.5",
         "node-sass": "^4.13.1",
         "react": "^16.13.0",
         "react-dom": "^16.13.0",
         "react-map-gl": "^5.2.3",
         "react-router-dom": "^5.1.2",
         "react-scripts": "3.4.0",
-        "typeface-libre-franklin": "0.0.75",
         "react-virtualized-auto-sizer": "^1.0.2",
+        "typeface-libre-franklin": "0.0.75",
         "typeface-roboto": "0.0.75"
     },
     "scripts": {

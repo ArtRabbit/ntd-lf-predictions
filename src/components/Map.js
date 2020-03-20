@@ -3,54 +3,14 @@ import ReactMapGL, { Source, Layer, Popup } from 'react-map-gl'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { Tooltip, Typography } from '@material-ui/core'
 import { format } from 'd3'
-import { useNewData } from '../hooks/useData'
-import useFeatureCollection from '../hooks/useFeatureCollection'
-import useFeaturesAndData from '../hooks/useFeaturesAndData'
 import useMapReducer from '../hooks/useMapReducer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-function Map({ width, height, initialLevel, filter }) {
+function Map({ data, features, width, height, initialLevel, filter }) {
   const [
-    {
-      year,
-      level,
-      Regime,
-      Endemicity,
-      source,
-      featureSource,
-      featureKey,
-      dataKey,
-      viewport,
-      feature,
-      featureHover,
-      popup,
-      tooltip,
-    },
+    { year, level, viewport, feature, featureHover, popup, tooltip },
     dispatch,
   ] = useMapReducer({ initialLevel })
-
-  // load geojson features
-  const { featureCollection, loading: loadingFeatures } = useFeatureCollection(
-    featureSource
-  )
-
-  // load data
-  const { data, stats, loading } = useNewData({
-    Regime,
-    Endemicity: level === 2 && Endemicity,
-    source,
-    key: dataKey,
-    f: filter,
-  })
-
-  // merge features with data
-  const { merged } = useFeaturesAndData({
-    featureCollection,
-    data,
-    stats,
-    key: featureKey,
-    ready: !loading && !loadingFeatures,
-  })
 
   const prevalenceHover =
     data[featureHover?.properties.id]?.prevalence[`${year}`]
@@ -65,13 +25,15 @@ function Map({ width, height, initialLevel, filter }) {
 
   const handleClick = event => {
     const feature = event.features.find(f => f.layer.id === 'fill-layer')
-    dispatch({ type: 'SELECT', payload: { feature, event } })
+    if (feature) {
+      dispatch({ type: 'SELECT', payload: { feature, event } })
+    }
   }
 
   const handleHover = event => {
     if (event.features) {
       const feature = event.features.find(f => f.layer.id === 'fill-layer')
-      dispatch({ type: 'HOVER', payload: { feature, event } })
+      if (feature) dispatch({ type: 'HOVER', payload: { feature, event } })
     }
   }
 
@@ -90,7 +52,7 @@ function Map({ width, height, initialLevel, filter }) {
       onClick={handleClick}
       onHover={handleHover}
     >
-      <Source id="africa" type="geojson" data={merged}>
+      <Source id="africa" type="geojson" data={features}>
         <Layer
           id="fill-layer"
           // beforeId={level === 0 ? 'admin-1-boundary-bg' : 'admin-0-boundary'}

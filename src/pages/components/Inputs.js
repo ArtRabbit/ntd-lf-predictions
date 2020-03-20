@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { flow, values, map, sortBy, pick } from 'lodash/fp'
-
 import Box from '@material-ui/core/Box'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -13,8 +11,6 @@ import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import Tooltip from '@material-ui/core/Tooltip'
-
-import { useCountryData } from '../../hooks/useData'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -61,12 +57,16 @@ const Inputs = props => {
     setRegime(event.target.value)
   }
 
-  const { data } = useCountryData()
-  const countries = flow(
-    values,
-    map(x => pick(['id', 'name'])(x)),
-    sortBy('name')
-  )(data)
+  const countries = []
+  //   const countries = useMemo(
+  //     () =>
+  //       flow(
+  //         values,
+  //         map(({ id, name }) => ({ id, name })),
+  //         sortBy('name')
+  //       )(data),
+  //     [data]
+  //   )
 
   return (
     <Box className={classes.root}>
@@ -79,6 +79,7 @@ const Inputs = props => {
           renderInput={params => (
             <TextField {...params} label="View - Countries" />
           )}
+          //   onChange={handleCountryChange}
         />
         <FormHelperText>Some important helper text</FormHelperText>
       </FormControl>
@@ -105,4 +106,5 @@ const Inputs = props => {
     </Box>
   )
 }
+
 export default Inputs
