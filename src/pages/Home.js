@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { Layout } from '../layout';
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,9 +27,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Home = ({ history, location }) => {
+const Home = (props) => {
 
   const classes = useStyles();
+  const history = useHistory();
 
   const showIntro = (event) => {
     if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {

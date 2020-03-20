@@ -8,27 +8,15 @@ import Intro from './pages/Intro'
 import HotSpots from './pages/HotSpots'
 import Simulator from './pages/Simulator'
 import Trends from './pages/Trends'
+import TrendsCountry from './pages/TrendsCountry'
 import HotSpotCountry from './pages/HotSpotCountry'
 
 import 'typeface-roboto'
 import 'typeface-libre-franklin'
 
-import purple from '@material-ui/core/colors/purple'
-import grey from '@material-ui/core/colors/grey'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
-//import './App.scss';
-/*
-import { create } from 'jss';
-import { createStyleManager } from 'jss-theme-reactor/styleManager';
-import jssPreset from 'jss-preset-default';
-
-const styleManager = createStyleManager({
-    theme,
-    jss: create(jssPreset()),
-});
-*/
 
 const theme = createMuiTheme({
   /*
@@ -128,6 +116,7 @@ function App() {
             <Route exact path="/" component={Home} />
             <Route exact path="/intro" component={Intro} />
             <Route exact path="/trends" component={Trends} />
+            <Route exact path="/trends/:country" component={TrendsCountry} />
             <Route exact path="/hot-spots" component={HotSpots} />
             <Route exact path="/country" component={HotSpotCountry} />
             <Route exact path="/simulator" component={Simulator} />

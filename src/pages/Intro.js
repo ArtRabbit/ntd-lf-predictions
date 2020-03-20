@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Intro = ({ history, location }) => {
+const Intro = (props) => {
   const classes = useStyles()
   const { countryData, countryFeatures } = useDataAPI()
 

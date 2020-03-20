@@ -90,7 +90,7 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired
 };
 
-const Simulator = ({ history, location }) => {
+const Simulator = (props) => {
   const classes = useStyles();
 
   SimulatorEngine.simControler.documentReady();
@@ -117,12 +117,12 @@ const Simulator = ({ history, location }) => {
   useEffect(() => {
     console.log(simParams.mdaSixMonths, simParams.coverage, simParams.mdaRegimen, simParams.runs);
   }, [simParams]);
-/*   useEffect(() => {
-     setSimParams({
-      ...simParams,
-      runs: 80
-    });
-  }, []); */
+  /*   useEffect(() => {
+       setSimParams({
+        ...simParams,
+        runs: 80
+      });
+    }, []); */
 
   const handleCoverageChange = (event, newValue) => { // this used to be a special occastion. If nothing changes we can use the handleSlerChanges handler instead.
     setSimParams({
@@ -206,15 +206,15 @@ const Simulator = ({ history, location }) => {
               Base prevalence
             </Typography>
             <InputLabel htmlFor="endemicity"></InputLabel>
-            <Slider value={simParams.endemicity} id="endemicity" min={1} step={1} max={100} onChange={(event, newValue) => {handleSliderChanges(newValue, "endemicity")}} valueLabelDisplay="auto" aria-labelledby="slider" />
-            <p style={{marginBottom: 0}}>The mf prevalence in the population before intervention occurs. Due to the stochastic nature of the model this is a prevalence averaged over many independent runs and so should be treated as an approximation only. </p>
+            <Slider value={simParams.endemicity} id="endemicity" min={1} step={1} max={100} onChange={(event, newValue) => { handleSliderChanges(newValue, "endemicity") }} valueLabelDisplay="auto" aria-labelledby="slider" />
+            <p style={{ marginBottom: 0 }}>The mf prevalence in the population before intervention occurs. Due to the stochastic nature of the model this is a prevalence averaged over many independent runs and so should be treated as an approximation only. </p>
           </FormControl>
           <FormControl className={classes.formControl}>
             <Typography gutterBottom>
               Number of runs
             </Typography>
             <InputLabel htmlFor="runs"></InputLabel>
-            <Slider value={simParams.runs} min={1} step={1} max={100} onChange={(event, newValue) => {handleSliderChanges(newValue, "runs")}} valueLabelDisplay="auto" aria-labelledby="slider" />
+            <Slider value={simParams.runs} min={1} step={1} max={100} onChange={(event, newValue) => { handleSliderChanges(newValue, "runs") }} valueLabelDisplay="auto" aria-labelledby="slider" />
           </FormControl>
 
           <Typography className={classes.title} variant="h5" component="h2">
@@ -257,8 +257,8 @@ const Simulator = ({ history, location }) => {
               Systemic adherence
               </Typography>
             <InputLabel htmlFor="rho"></InputLabel>
-            <Slider value={simParams.rho} min={1} step={1} max={100} onChange={(event, newValue) => {handleSliderChanges(newValue, "rho")}} valueLabelDisplay="auto" aria-labelledby="slider" />
-            <p style={{marginBottom: 0}}>Controls how randomly coverage is applied. For 0, coverage is completely random. For 1, the same individuals are always treated.</p>
+            <Slider value={simParams.rho} min={1} step={1} max={100} onChange={(event, newValue) => { handleSliderChanges(newValue, "rho") }} valueLabelDisplay="auto" aria-labelledby="slider" />
+            <p style={{ marginBottom: 0 }}>Controls how randomly coverage is applied. For 0, coverage is completely random. For 1, the same individuals are always treated.</p>
           </FormControl>
 
           <Typography className={classes.title} variant="h5" component="h2">
@@ -269,16 +269,16 @@ const Simulator = ({ history, location }) => {
               Bed Net Coverage (%)
             </Typography>
             <InputLabel htmlFor="covN"></InputLabel>
-            <Slider value={simParams.covN} id="covN" min={1} step={1} max={100}  onChange={(event, newValue) => {handleSliderChanges(newValue, "covN")}} valueLabelDisplay="auto" aria-labelledby="slider" />
-            <p style={{marginBottom: 0}}>Bed nets are assumed to have been distributed at the start of intervention and are assumed to be effective for the entire lifetime of the intervention campaign.</p>
+            <Slider value={simParams.covN} id="covN" min={1} step={1} max={100} onChange={(event, newValue) => { handleSliderChanges(newValue, "covN") }} valueLabelDisplay="auto" aria-labelledby="slider" />
+            <p style={{ marginBottom: 0 }}>Bed nets are assumed to have been distributed at the start of intervention and are assumed to be effective for the entire lifetime of the intervention campaign.</p>
           </FormControl>
           <FormControl className={classes.formControl}>
             <Typography gutterBottom>
               Insecticide Coverage (%)
             </Typography>
             <InputLabel htmlFor="v_to_hR"></InputLabel>
-            <Slider value={simParams.v_to_hR} id="v_to_hR" min={1} step={1} max={100}  onChange={(event, newValue) => {handleSliderChanges(newValue, "v_to_hR")}} valueLabelDisplay="auto" aria-labelledby="slider" />
-            <p style={{marginBottom: 0}}>Insecticide is assumed to reduce the vector to host ratio only.</p>
+            <Slider value={simParams.v_to_hR} id="v_to_hR" min={1} step={1} max={100} onChange={(event, newValue) => { handleSliderChanges(newValue, "v_to_hR") }} valueLabelDisplay="auto" aria-labelledby="slider" />
+            <p style={{ marginBottom: 0 }}>Insecticide is assumed to reduce the vector to host ratio only.</p>
           </FormControl>
           <div className={classes.buttons}>
             <Button variant="contained" color="primary" onClick={runScenario}>

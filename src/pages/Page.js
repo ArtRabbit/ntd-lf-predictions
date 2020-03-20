@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Head from './components/Head';
 import SiteSections from './components/SiteSections'
 
-const Page = ({ history, location }) => {
+const Page = (props) => {
 
   return (
     <Layout>

@@ -43,7 +43,7 @@ const PanelContainer = ({ children }) => (
   </div>
 )
 
-const Trends = ({ history, location }) => {
+const Trends = (props) => {
   const classes = useStyles()
 
   const { country } = useUIState()

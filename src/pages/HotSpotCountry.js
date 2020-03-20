@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const HotSpotCountry = ({ history, location }) => {
+const HotSpotCountry = (props) => {
 
   const classes = useStyles();
 
