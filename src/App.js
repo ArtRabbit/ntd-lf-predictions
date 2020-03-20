@@ -18,7 +18,6 @@ import grey from '@material-ui/core/colors/grey'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
-
 //import './App.scss';
 /*
 import { create } from 'jss';
@@ -33,20 +32,20 @@ const styleManager = createStyleManager({
 
 const theme = createMuiTheme({
   /*
-    '@global': {
-        'a': {
-            'color': 'red'    // Make all links red.
-        },
-        'body': {
-            'color': 'red'    // Make all links red.
-        }
-    },
-    */
+  '@global': {
+      'a': {
+          'color': 'red'    // Make all links red.
+      },
+      'body': {
+          'color': 'red'    // Make all links red.
+      }
+  },
+  */
   palette: {
     /*
-        primary: purple,
-        secondary: grey
-        */
+    primary: purple,
+    secondary: grey
+    */
     text: {
       primary: '#000000',
       secondary: '#616161',
@@ -107,6 +106,9 @@ const theme = createMuiTheme({
     },
     subtitle2: {
       fontSize: 22,
+    },
+    subtitle1: {
+      fontWeight: 700,
     },
     button: {
       fontWeight: 400,

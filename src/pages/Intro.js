@@ -47,12 +47,16 @@ const Intro = ({ history, location }) => {
           <Head
             transparent={true}
             title="Lympahtic filariasis Predicted outcome 2030"
-            text={`Welcome to the NTD Modelling Prediction Maps.
-                            The predictions in this website provide guidance on
-                            the impact of more frequent, longer, or higher
-                            coverage treatment would have on timelines to
-                            reach the WHO target.`}
-            subTitle={'Current WHO guidelines'}
+            text={`The main point here is to use
+            show hot spots but combine
+            it with population affected
+            In my head we don’t have this
+            version of the map yet or we 
+            use the normal country
+            level map and overlay
+            this (not just on hover, but
+            always) with affected
+            population numbers.`}
             actionLabel={'PLAY SCENARIO'}
             action={playScenario}
           />
