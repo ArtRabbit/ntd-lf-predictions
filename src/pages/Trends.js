@@ -139,7 +139,7 @@ const Trends = ({ history, location }) => {
 
         </Grid>
       </Grid>
-      { /*}
+
       <Map height={500} filter={countryFilter} initialLevel={1} />
 
       <PanelContainer>
@@ -152,7 +152,7 @@ const Trends = ({ history, location }) => {
               start={2015}
               end={2031}
               clipDomain={false}
-              svgPadding={[0, 0, 0, 0]} 
+              svgPadding={[0, 0, 0, 0]}
             />
             <Typography variant="caption">{d.country}</Typography>
           </Box>
@@ -165,8 +165,6 @@ const Trends = ({ history, location }) => {
           {bumpData.length && <BumpChart data={bumpData} width={800} />}
         </Grid>
       </Grid>
-      */
-      }
 
       <DiveDeeper
         title="Dive deeper"
