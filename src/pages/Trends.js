@@ -31,10 +31,16 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'right',
     padding: theme.spacing(2),
   },
+  chartContainer: {
+    position: 'relative',
+    width: '100%',
+  },
 }))
 
 const PanelContainer = ({ children }) => (
-  <div style={{ display: 'flex', overflow: 'auto' }}>{children}</div>
+  <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>
+    {children}
+  </div>
 )
 
 const Trends = ({ history, location }) => {
@@ -166,33 +172,79 @@ const Trends = ({ history, location }) => {
         />
       )}
 
-      <PanelContainer>
-        {stateByCountryData &&
-          Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
-            return (
-              <Box key={key} p={1}>
-                <SlopeChart
-                  data={Object.values(data)}
-                  width={40}
-                  height={300}
-                  start={2015}
-                  end={2031}
-                  clipDomain={false}
-                  svgPadding={[0, 0, 0, 0]}
-                />
-                <Typography variant="caption">{key}</Typography>
-              </Box>
-            )
-          })}
-      </PanelContainer>
+      <Box className={classes.chartContainer}>
+        <PanelContainer>
+          {stateByCountryData &&
+            Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
+              return (
+                <Box key={key} p={1}>
+                  <SlopeChart
+                    data={Object.values(data)}
+                    width={40}
+                    height={300}
+                    start={2015}
+                    end={2031}
+                    clipDomain={false}
+                    svgPadding={[0, 0, 0, 0]}
+                  />
+                  <Typography variant="caption">{key}</Typography>
+                </Box>
+              )
+            })}
+        </PanelContainer>
+      </Box>
 
+      <Box className={classes.chartContainer}>
+        {countryData && (
+          <Timeline data={Object.values(countryData.data)} width={600} />
+        )}
+      </Box>
+
+      {/*
       <Grid container justify="center">
-        <Grid item>
-          {countryData && (
-            <Timeline data={Object.values(countryData.data)} width={800} />
-          )}
+        <Grid sm="12" item>
+          <Box className={classes.chartContainer}>
+
+            <ChartSettings
+              action={settingsClickDemo}
+              title="Settings"
+              buttonText="Update graphs"
+            >
+              <FormControl className={classes.formControl}>
+                <Typography id="non-linear-slider1" variant="subtitle1" gutterBottom>Time period</Typography>
+                <Slider
+                  value={[2021, 2029]}
+                  step={1}
+                  min={2019}
+                  max={2030}
+                  marks={[{ value: 2019, label: '2019', }, { value: 2030, label: '2030' }]}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Typography id="non-linear-slider2" variant="subtitle1" gutterBottom>Clip scale</Typography>
+                <Slider
+                  value={40}
+                  step={1}
+                  min={0}
+                  max={100}
+                  marks={[{ value: 0, label: '0', }, { value: 100, label: '100' }]}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+
+              </FormControl>
+            </ChartSettings>
+            <Typography variant="h2">Bump graph States in AGO</Typography>
+            {countryData && (
+              <BumpChart data={Object.values(countryData.data)} width={800} />
+            )}
+
+          </Box>
         </Grid>
       </Grid>
+            */}
 
       <DiveDeeper
         title="Dive deeper"
