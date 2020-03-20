@@ -140,6 +140,38 @@ function process({ data, relations, key, regime, endemicity, f }) {
   return { data: processed, stats }
 }
 
+function mergeFeatures(data, featureCollection, key) {
+  const { data: d, stats } = data
+
+  // TODO: add bins
+  const colorScale = scaleSequential(interpolateReds)
+    .domain([0, stats.prevalence.max])
+    .nice(5)
+
+  const ticks = colorScale
+    .ticks(5)
+    .map(value => ({ value, color: colorScale(value) }))
+
+  const features = featureCollection.features.map(feature => {
+    // get IU id
+    const id = feature.properties[key]
+    const prevalenceOverTime = d[id]?.prevalence ?? {}
+
+    // get color from scale if prevalence value available
+    const colorsByYear = mapValuesS(prevalenceOverTime, p_prevalence =>
+      isFinite(p_prevalence) ? color(colorScale(p_prevalence)).hex() : null
+    )
+
+    return merge({}, feature, {
+      properties: {
+        ...colorsByYear,
+      },
+    })
+  })
+
+  return { type: 'FeatureCollection', features }
+}
+
 class DataAPI {
   constructor(rootStore) {
     this.dataStore = rootStore.dataStore
@@ -202,80 +234,32 @@ class DataAPI {
 
   get countryFeatures() {
     const featureCollection = this.dataStore.featuresLevel0
-    const cData = this.countryData
-    const key = 'ADMIN0ISO3'
+    const data = this.countryData
 
-    if (featureCollection && cData) {
-      const { data, stats } = cData
-
-      // TODO: add bins
-      const colorScale = scaleSequential(interpolateReds)
-        .domain([0, stats.prevalence.max])
-        .nice(5)
-
-      const ticks = colorScale
-        .ticks(5)
-        .map(value => ({ value, color: colorScale(value) }))
-
-      const features = featureCollection.features.map(feature => {
-        // get IU id
-        const id = feature.properties[key]
-        const prevalenceOverTime = data[id]?.prevalence ?? {}
-
-        // get color from scale if prevalence value available
-        const colorsByYear = mapValuesS(prevalenceOverTime, p_prevalence =>
-          isFinite(p_prevalence) ? color(colorScale(p_prevalence)).hex() : null
-        )
-
-        return merge({}, feature, {
-          properties: {
-            ...colorsByYear,
-          },
-        })
-      })
-
-      return { type: 'FeatureCollection', features }
+    if (featureCollection && data) {
+      return mergeFeatures(data, featureCollection, 'ADMIN0ISO3')
     }
 
     return { type: 'FeatureCollection', features: [] }
   }
 
-  //   TODO: combine with countryFeatures
   get stateFeatures() {
     const featureCollection = this.dataStore.featuresLevel1
-    const cData = this.stateData
-    const key = 'ADMIN1ID'
+    const data = this.stateData
 
-    if (featureCollection && cData) {
-      const { data, stats } = cData
+    if (featureCollection && data) {
+      return mergeFeatures(data, featureCollection, 'ADMIN1ID')
+    }
 
-      // TODO: add bins
-      const colorScale = scaleSequential(interpolateReds)
-        .domain([0, stats.prevalence.max])
-        .nice(5)
+    return { type: 'FeatureCollection', features: [] }
+  }
 
-      const ticks = colorScale
-        .ticks(5)
-        .map(value => ({ value, color: colorScale(value) }))
+  get iuFeatures() {
+    const featureCollection = this.dataStore.featuresLevel2
+    const data = this.iuData
 
-      const features = featureCollection.features.map(feature => {
-        // get IU id
-        const id = feature.properties[key]
-        const prevalenceOverTime = data[id]?.prevalence ?? {}
-
-        // get color from scale if prevalence value available
-        const colorsByYear = mapValuesS(prevalenceOverTime, p_prevalence =>
-          isFinite(p_prevalence) ? color(colorScale(p_prevalence)).hex() : null
-        )
-
-        return merge({}, feature, {
-          properties: {
-            ...colorsByYear,
-          },
-        })
-      })
-
-      return { type: 'FeatureCollection', features }
+    if (featureCollection && data) {
+      return mergeFeatures(data, featureCollection, 'IU_ID')
     }
 
     return { type: 'FeatureCollection', features: [] }
@@ -289,6 +273,7 @@ decorate(DataAPI, {
   iuData: computed,
   countryFeatures: computed,
   stateFeatures: computed,
+  iuFeatures: computed,
 })
 
 export default DataAPI
