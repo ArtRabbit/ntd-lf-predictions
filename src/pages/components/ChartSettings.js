@@ -66,8 +66,6 @@ const ChartsSettings = ({ title, buttonText, action, children }) => {
   title = title ? title : 'Settings';
   buttonText = buttonText ? buttonText : 'Update graphs';
 
-  console.log(action);
-
   const handleClickOpen = () => {
     setOpen(true);
   };

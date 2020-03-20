@@ -16,6 +16,7 @@ import Head from './components/Head'
 import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
 import ReadMore from './components/ReadMore'
+import ExpandableInfo from './components/ExpandableInfo'
 
 import ChartSettings from './components/ChartSettings'
 import Map from '../components/Map'
@@ -60,9 +61,34 @@ const Trends = ({ history, location }) => {
       <Grid container spacing={0}>
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
           <Typography variant="h2" component="h2">
-            {country ? 'Country level' : 'All countries map'}
+            All countries map
           </Typography>
-          <ReadMore text="This is what we are showing here This is what we are showing here This is what we are showing here This is what we are showing here" />
+          <ReadMore>
+            <Typography variant="body1" component="div">
+              This is what we are showing here This is what we are showing here
+              This is what we are showing here This is what we are showing here
+            </Typography>
+          </ReadMore>
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={0}>
+        <Grid
+          item
+          md={5}
+          xs={12}
+          style={{ position: 'relative', margin: '40px 0px 80px 0px' }}
+        >
+          <ExpandableInfo title="Kenya facts">
+            <Box variant="body1">
+              <Typography component="p">
+                Population xxx
+                <br />
+                50k people affected in 2030
+                <br />3 districts with high prevalence
+              </Typography>
+            </Box>
+          </ExpandableInfo>
         </Grid>
       </Grid>
 

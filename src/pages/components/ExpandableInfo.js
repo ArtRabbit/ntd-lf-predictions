@@ -5,16 +5,25 @@ import Typography from '@material-ui/core/Typography';
 
 import Arrow from '../../images/arrow-drop-down.svg';
 import ArrowHover from '../../images/arrow-drop-down-hover.svg';
+import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    position: 'relative',
     cursor: 'pointer',
-    padding: theme.spacing(0, 4, 0, 0),
+    padding: theme.spacing(2, 3, 0, 3),
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 99,
     '& > div': {
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
+      padding: theme.spacing(0, 3, 0, 0),
       overflow: 'hidden',
+      height: 0,
+      opacity: 0,
+    },
+    '& > h3': {
+      position: 'relative',
+      padding: theme.spacing(0, 0, 2, 0),
       '&:after': {
         content: `''`,
         display: 'block',
@@ -38,13 +47,17 @@ const useStyles = makeStyles(theme => ({
         }
       }
     },
-    '&.expanded > div': {
-      whiteSpace: 'normal',
-      overflow: 'visible',
+    '&.expanded > h3': {
       '&:after': {
         transform: 'rotate(180deg)'
 
       }
+    },
+    '&.expanded > div': {
+      opacity: 1,
+      overflow: 'visible',
+      height: 'auto',
+      padding: theme.spacing(0, 3, 2, 0),
     }
   },
   expanded: {
@@ -53,10 +66,10 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const ReadMore = ({ children }) => {
+const ExpandableInfo = ({ title, text, children }) => {
 
   const classes = useStyles();
-  const [showMore, setShowMore] = useState(false);
+  const [showMore, setShowMore] = useState(true);
 
   const showHide = (event) => {
     if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {
@@ -65,10 +78,13 @@ const ReadMore = ({ children }) => {
     }
   }
 
-  return children ? (
-    <Box onClick={(event) => showHide(event)} onKeyDown={(event) => showHide(event)} className={`${classes.root} ${showMore ? 'expanded' : ''}`}>
-      {children}
-    </Box>
+  return title ? (
+    <Paper elevation={3} onClick={(event) => showHide(event)} onKeyDown={(event) => showHide(event)} className={`${classes.root} ${showMore ? 'expanded' : ''}`}>
+      <Typography display="block" variant="h3" component="h3">{title}</Typography>
+      <Box display="block" variant="body2" component="div">
+        {children}
+      </Box>
+    </Paper>
   ) : '';
 }
-export default ReadMore;
+export default ExpandableInfo;
