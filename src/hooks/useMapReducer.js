@@ -3,6 +3,7 @@ import { WebMercatorViewport, LinearInterpolator } from 'react-map-gl'
 import { merge } from 'lodash'
 import bbox from '@turf/bbox'
 
+// TODO: not needed anymore
 const settings = [
   {
     source: 'data/country-level.csv',

@@ -163,6 +163,9 @@ function mergeFeatures(data, featureCollection, key) {
   return { type: 'FeatureCollection', features }
 }
 
+const rowFilter = ({ endemicity, regime }) =>
+  !!endemicity ? { Regime: regime, Endemicity: endemicity } : { Regime: regime }
+
 class DataAPI {
   constructor(rootStore) {
     this.dataStore = rootStore.dataStore
@@ -175,27 +178,31 @@ class DataAPI {
     const { endemicity, regime } = this.uiState
 
     if (countries) {
-      return filter(
-        !!endemicity
-          ? { Regime: regime, Endemicity: endemicity }
-          : { Regime: regime }
-      )(countries)
+      return filter(rowFilter({ endemicity, regime }))(countries)
     }
 
     return null
   }
 
-  //   filter states by endemicity and regime
+  // filter states by endemicity and regime
   get filteredStates() {
     const { states } = this.dataStore
     const { endemicity, regime } = this.uiState
 
     if (states) {
-      return filter(
-        !!endemicity
-          ? { Regime: regime, Endemicity: endemicity }
-          : { Regime: regime }
-      )(states)
+      return filter(rowFilter({ endemicity, regime }))(states)
+    }
+
+    return null
+  }
+
+  // filter states by endemicity and regime
+  get filteredIU() {
+    const { ius } = this.dataStore
+    const { endemicity, regime } = this.uiState
+
+    if (ius) {
+      return filter(rowFilter({ endemicity, regime }))(ius)
     }
 
     return null
@@ -220,6 +227,18 @@ class DataAPI {
 
     if (states && relations) {
       return transformRow({ data: states, relations, key: 'StateCode' })
+    }
+
+    return null
+  }
+
+  // add relations to IUs
+  get filteredIUsWithMeta() {
+    const ius = this.filteredIU
+    const { relations } = this.dataStore
+
+    if (ius && relations) {
+      return transformRow({ data: ius, relations, key: 'IUID' })
     }
 
     return null
@@ -262,9 +281,8 @@ class DataAPI {
   }
 
   get iuData() {
-    //   FIXME: important!
-    //   TODO: adapt to stateData() / countryData()
-    const { ius, relations } = this.dataStore
+    const ius = this.filteredIUsWithMeta
+    const { relations } = this.dataStore
 
     if (ius && relations) {
       return addRankingAndStats(ius)
@@ -317,8 +335,10 @@ decorate(DataAPI, {
   iuFeatures: computed,
   filteredCountries: computed,
   filteredStates: computed,
+  filteredIU: computed,
   filteredCountriesWithMeta: computed,
   filteredStatesWithMeta: computed,
+  filteredIUsWithMeta: computed,
 })
 
 export default DataAPI

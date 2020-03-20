@@ -21,7 +21,7 @@ import ExpandableInfo from './components/ExpandableInfo'
 import ChartSettings from './components/ChartSettings'
 import Map from '../components/Map'
 import SlopeChart from '../components/SlopeChart'
-import BumpChart from '../components/BumpChart'
+import Timeline from '../components/Timeline'
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -33,12 +33,14 @@ const useStyles = makeStyles(theme => ({
   },
   chartContainer: {
     position: 'relative',
-    width: '100%'
-  }
+    width: '100%',
+  },
 }))
 
 const PanelContainer = ({ children }) => (
-  <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>{children}</div>
+  <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>
+    {children}
+  </div>
 )
 
 const Trends = (props) => {
@@ -161,14 +163,12 @@ const Trends = (props) => {
         </Grid>
       </Grid>
 
-      {countryData && countryFeatures && (
-        <Map
-          data={countryData.data}
-          features={countryFeatures}
-          height={500}
-          initialLevel={0}
-        />
-      )}
+      <Map
+        data={countryData?.data}
+        features={countryFeatures}
+        height={500}
+        initialLevel={0}
+      />
 
       <Box className={classes.chartContainer}>
         <PanelContainer>
@@ -191,7 +191,14 @@ const Trends = (props) => {
             })}
         </PanelContainer>
       </Box>
-      { /*
+
+      <Box className={classes.chartContainer}>
+        {countryData && (
+          <Timeline data={Object.values(countryData.data)} width={600} />
+        )}
+      </Box>
+
+      {/*
       <Grid container justify="center">
         <Grid sm="12" item>
           <Box className={classes.chartContainer}>
@@ -235,7 +242,7 @@ const Trends = (props) => {
           </Box>
         </Grid>
       </Grid>
-            */ }
+            */}
 
       <DiveDeeper
         title="Dive deeper"
@@ -244,7 +251,7 @@ const Trends = (props) => {
           { to: '/country', name: 'SELECT COUNTRY' },
         ]}
       />
-    </Layout >
+    </Layout>
   )
 }
 export default observer(Trends)
