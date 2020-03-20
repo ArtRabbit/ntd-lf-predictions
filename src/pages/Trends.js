@@ -41,7 +41,7 @@ const PanelContainer = ({ children }) => (
   <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>{children}</div>
 )
 
-const Trends = ({ history, location }) => {
+const Trends = (props) => {
   const classes = useStyles()
 
   const { country } = useUIState()

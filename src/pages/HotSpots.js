@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const HotSpots = ({ history, location }) => {
+const HotSpots = (props) => {
   const classes = useStyles()
   const { stateData, stateFeatures } = useDataAPI()
 
