@@ -2,8 +2,8 @@
 
 export const textColor = (a, selected) => {
   if (selected) return 'blue'
-  if (a.prevalence <= 1) return '#11cf88'
-  if (a.prevalence >= 20) return '#ff5e0d'
+  //   if (a.prevalence <= 1) return '#11cf88'
+  //   if (a.prevalence >= 20) return '#ff5e0d'
   return 'black'
 }
 

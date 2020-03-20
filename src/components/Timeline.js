@@ -11,10 +11,11 @@ export default function Timeline({ data, width }) {
   const [selected, setSelected] = useState()
 
   const height = data.length * 20
-  const xPad = 250
+  const lPad = 250
+  const rPad = 100
   const yPad = 32
   const svgHeight = height + yPad * 2
-  const svgWidth = width + xPad * 2
+  const svgWidth = width + lPad + rPad
 
   const labelOffset = 32
 
@@ -41,7 +42,7 @@ export default function Timeline({ data, width }) {
       height={svgHeight}
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
-      <g transform={`translate(${xPad},${yPad})`}>
+      <g transform={`translate(${lPad},${yPad})`}>
         {xScale.ticks().map(year => (
           <g key={year}>
             <text
@@ -101,7 +102,19 @@ export default function Timeline({ data, width }) {
               <text
                 fontSize="12"
                 fontWeight={id === selected ? 800 : 500}
-                x={xScale(a.year) - labelOffset}
+                x={-lPad}
+                y={yScale(b.rank)}
+                dominantBaseline="middle"
+                onMouseEnter={() => handleEnter(id)}
+                onMouseLeave={handleLeave}
+                fill={textColor(a, id === selected)}
+              >
+                {b.rank} {name}
+              </text>
+              <text
+                fontSize="12"
+                fontWeight={id === selected ? 800 : 500}
+                x={-labelOffset}
                 y={yScale(b.rank)}
                 textAnchor="end"
                 dominantBaseline="middle"
@@ -121,7 +134,7 @@ export default function Timeline({ data, width }) {
                 onMouseLeave={handleLeave}
                 fill={textColor(b, id === selected)}
               >
-                {b.rank}. ({b.prevalence}%) {name}
+                {b.prevalence}%
               </text>
             </Fragment>
           )
