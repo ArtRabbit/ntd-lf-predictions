@@ -25,7 +25,6 @@ export default function SlopeChart({
     .domain([start, end])
     .range([0, width])
 
-  debugger
   const domain = max(flatten(data.map(d => d.ranks.map(r => r.prevalence))))
 
   const yScale = scaleLinear()
