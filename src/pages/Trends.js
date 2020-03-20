@@ -163,14 +163,12 @@ const Trends = ({ history, location }) => {
         </Grid>
       </Grid>
 
-      {countryData && countryFeatures && (
-        <Map
-          data={countryData.data}
-          features={countryFeatures}
-          height={500}
-          initialLevel={0}
-        />
-      )}
+      <Map
+        data={countryData?.data}
+        features={countryFeatures}
+        height={500}
+        initialLevel={0}
+      />
 
       <Box className={classes.chartContainer}>
         <PanelContainer>

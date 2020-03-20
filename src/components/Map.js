@@ -12,11 +12,8 @@ function Map({ data, features, width, height, initialLevel, filter }) {
     dispatch,
   ] = useMapReducer({ initialLevel })
 
-  const prevalenceHover =
-    data[featureHover?.properties.id]?.prevalence[`${year}`]
-
   const selectedFeatureID = feature?.properties.id
-  const selectedData = data[selectedFeatureID]
+  const selectedData = data ? data[selectedFeatureID] : null
   const prevalenceSelected = selectedData?.prevalence[`${year}`]
 
   const handleViewportChange = payload => {
@@ -52,44 +49,46 @@ function Map({ data, features, width, height, initialLevel, filter }) {
       onClick={handleClick}
       onHover={handleHover}
     >
-      <Source id="africa" type="geojson" data={features}>
-        <Layer
-          id="fill-layer"
-          // beforeId={level === 0 ? 'admin-1-boundary-bg' : 'admin-0-boundary'}
-          beforeId="admin-0-boundary"
-          filter={['has', `${year}`]}
-          type="fill"
-          paint={{
-            'fill-color': [
-              'coalesce',
-              ['get', `${year}`],
-              // hide shape if no data available
-              'rgba(0,0,0,0)',
-            ],
-            'fill-outline-color': [
-              'case',
-              ['==', ['get', 'id'], feature?.properties.id || null],
-              'rgba(121, 145, 170, 1)',
-              'rgba(121, 145, 170, 0.3)',
-            ],
-          }}
-        />
-        <Layer
-          id="hover-layer"
-          type="line"
-          filter={['has', `${year}`]}
-          layout={{ 'line-join': 'bevel' }}
-          paint={{
-            'line-color': [
-              'case',
-              ['==', ['get', 'id'], featureHover?.properties.id || null],
-              '#96B4D3',
-              'rgba(0,0,0,0)',
-            ],
-            'line-width': 2,
-          }}
-        />
-      </Source>
+      {features && (
+        <Source id="africa" type="geojson" data={features}>
+          <Layer
+            id="fill-layer"
+            // beforeId={level === 0 ? 'admin-1-boundary-bg' : 'admin-0-boundary'}
+            beforeId="admin-0-boundary"
+            filter={['has', `${year}`]}
+            type="fill"
+            paint={{
+              'fill-color': [
+                'coalesce',
+                ['get', `${year}`],
+                // hide shape if no data available
+                'rgba(0,0,0,0)',
+              ],
+              'fill-outline-color': [
+                'case',
+                ['==', ['get', 'id'], feature?.properties.id || null],
+                'rgba(121, 145, 170, 1)',
+                'rgba(121, 145, 170, 0.3)',
+              ],
+            }}
+          />
+          <Layer
+            id="hover-layer"
+            type="line"
+            filter={['has', `${year}`]}
+            layout={{ 'line-join': 'bevel' }}
+            paint={{
+              'line-color': [
+                'case',
+                ['==', ['get', 'id'], featureHover?.properties.id || null],
+                '#96B4D3',
+                'rgba(0,0,0,0)',
+              ],
+              'line-width': 2,
+            }}
+          />
+        </Source>
+      )}
       {feature && selectedData && (
         <Popup
           latitude={popup[1]}
@@ -111,7 +110,9 @@ function Map({ data, features, width, height, initialLevel, filter }) {
       )}
       {featureHover && (
         <Tooltip
-          title={`${featureHover.properties.name} ${prevalenceHover} %`}
+          title={`${featureHover.properties.name} ${
+            data[featureHover?.properties.id]?.prevalence[`${year}`]
+          } %`}
           open
           placement="top"
         >

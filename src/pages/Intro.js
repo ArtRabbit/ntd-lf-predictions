@@ -1,4 +1,5 @@
 import React from 'react'
+import { observer } from 'mobx-react'
 
 import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
@@ -11,6 +12,7 @@ import DiveDeeper from './components/DiveDeeper'
 import SiteSections from './components/SiteSections'
 
 import Map from '../components/Map'
+import { useDataAPI } from '../hooks/stateHooks'
 
 const useStyles = makeStyles(theme => ({
   map: {
@@ -33,6 +35,7 @@ const useStyles = makeStyles(theme => ({
 
 const Intro = ({ history, location }) => {
   const classes = useStyles()
+  const { countryData, countryFeatures } = useDataAPI()
 
   const playScenario = event => {
     if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {
@@ -67,7 +70,12 @@ const Intro = ({ history, location }) => {
       </Grid>
 
       <Box m={1} className={classes.map}>
-        <Map height={800} />
+        <Map
+          data={countryData?.data}
+          features={countryFeatures}
+          height={500}
+          initialLevel={0}
+        />
       </Box>
 
       <DiveDeeper
@@ -77,8 +85,7 @@ const Intro = ({ history, location }) => {
           { to: '/hot-spots', name: 'PROBLEM AREAS' },
         ]}
       />
-
     </Layout>
   )
 }
-export default Intro
+export default observer(Intro)

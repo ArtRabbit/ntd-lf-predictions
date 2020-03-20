@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 const HotSpots = ({ history, location }) => {
   const classes = useStyles()
-  const { stateData, stateFeatures } = useDataAPI()
+  const { iuData, iuFeatures } = useDataAPI()
 
   return (
     <Layout>
@@ -38,14 +38,12 @@ const HotSpots = ({ history, location }) => {
         </Grid>
       </Grid>
 
-      {stateData && stateFeatures && (
-        <Map
-          data={stateData.data}
-          features={stateFeatures}
-          height={500}
-          initialLevel={0}
-        />
-      )}
+      <Map
+        data={iuData?.data}
+        features={iuFeatures}
+        height={500}
+        initialLevel={0}
+      />
 
       <DiveDeeper
         title="Dive deeper"
