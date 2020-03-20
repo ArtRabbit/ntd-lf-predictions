@@ -35,7 +35,7 @@ const groupProps = (obj, pattern) =>
 
 const roundPrevalence = p => round(p * 100, 2)
 
-function addRankingAndStats({ data, relations, regime, endemicity, f }) {
+function addRankingAndStats(data) {
   const dataMap = keyBy('id')(data)
 
   // create ranking
@@ -228,17 +228,9 @@ class DataAPI {
   get countryData() {
     const countries = this.filteredCountriesWithMeta
     const { relations } = this.dataStore
-    const { regime, endemicity } = this.uiState
 
     if (countries && relations) {
-      // TODO: add filtering
-      return addRankingAndStats({
-        data: countries,
-        relations,
-        key: 'Country',
-        regime,
-        endemicity,
-      })
+      return addRankingAndStats(countries)
     }
 
     return null
@@ -247,17 +239,23 @@ class DataAPI {
   get stateData() {
     const states = this.filteredStatesWithMeta
     const { relations } = this.dataStore
-    const { regime, endemicity } = this.uiState
 
     if (states && relations) {
-      // TODO: add filtering
-      return addRankingAndStats({
-        data: states,
-        relations,
-        key: 'StateCode',
-        regime,
-        endemicity,
-      })
+      return addRankingAndStats(states)
+    }
+
+    return null
+  }
+
+  get stateByCountryData() {
+    const states = this.filteredStatesWithMeta
+    const { relations } = this.dataStore
+
+    if (states && relations) {
+      return flow(
+        groupBy(x => x.relatedCountries[0]),
+        mapValues(addRankingAndStats)
+      )(states)
     }
 
     return null
@@ -267,17 +265,9 @@ class DataAPI {
     //   FIXME: important!
     //   TODO: adapt to stateData() / countryData()
     const { ius, relations } = this.dataStore
-    const { regime, endemicity } = this.uiState
 
     if (ius && relations) {
-      // TODO: add filtering
-      return addRankingAndStats({
-        data: ius,
-        relations,
-        key: 'IUID',
-        regime,
-        endemicity,
-      })
+      return addRankingAndStats(ius)
     }
 
     return null
@@ -320,14 +310,15 @@ class DataAPI {
 decorate(DataAPI, {
   countryData: computed,
   stateData: computed,
+  stateByCountryData: computed,
   iuData: computed,
   countryFeatures: computed,
   stateFeatures: computed,
   iuFeatures: computed,
-  filteredCountriesWithMeta: computed,
   filteredCountries: computed,
-  //   filteredStatesWithMeta: computed,
-  //   filteredStates: computed,
+  filteredStates: computed,
+  filteredCountriesWithMeta: computed,
+  filteredStatesWithMeta: computed,
 })
 
 export default DataAPI
