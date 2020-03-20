@@ -21,7 +21,7 @@ import ExpandableInfo from './components/ExpandableInfo'
 import ChartSettings from './components/ChartSettings'
 import Map from '../components/Map'
 import SlopeChart from '../components/SlopeChart'
-import BumpChart from '../components/BumpChart'
+import Timeline from '../components/Timeline'
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -186,14 +186,13 @@ const Trends = ({ history, location }) => {
           })}
       </PanelContainer>
 
-      {/* <Grid container justify="center">
+      <Grid container justify="center">
         <Grid item>
-          <Typography variant="h2">Bump graph States in AGO</Typography>
           {countryData && (
-            <BumpChart data={Object.values(countryData.data)} width={800} />
+            <Timeline data={Object.values(countryData.data)} width={800} />
           )}
         </Grid>
-      </Grid> */}
+      </Grid>
 
       <DiveDeeper
         title="Dive deeper"
