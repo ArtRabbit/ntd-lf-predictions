@@ -34,7 +34,7 @@ const Trends = ({ history, location }) => {
   const classes = useStyles()
 
   const { country } = useUIState()
-  const { countryData, countryFeatures } = useDataAPI()
+  const { countryData, countryFeatures, stateByCountryData } = useDataAPI()
 
   return (
     <Layout>
@@ -65,25 +65,25 @@ const Trends = ({ history, location }) => {
         />
       )}
 
-      {/* <PanelContainer>
-        {countryData &&
-          Object.values(countryData.data).map(d => {
+      <PanelContainer>
+        {stateByCountryData &&
+          Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
             return (
-              <Box key={d.id} p={1}>
+              <Box key={key} p={1}>
                 <SlopeChart
-                  data={d}
-                  width={100}
+                  data={Object.values(data)}
+                  width={40}
                   height={300}
                   start={2015}
                   end={2031}
                   clipDomain={false}
                   svgPadding={[0, 0, 0, 0]}
                 />
-                <Typography variant="caption">{d.country}</Typography>
+                <Typography variant="caption">{key}</Typography>
               </Box>
             )
           })}
-      </PanelContainer> */}
+      </PanelContainer>
 
       {/* <Grid container justify="center">
         <Grid item>
