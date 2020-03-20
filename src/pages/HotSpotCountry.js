@@ -10,45 +10,43 @@ import Inputs from './components/Inputs';
 import DiveDeeper from './components/DiveDeeper';
 
 const useStyles = makeStyles(theme => ({
-    headLeftColumn: {
-        textAlign: 'left'
-    },
-    headRightColumn: {
-        textAlign: 'right',
-        padding: theme.spacing(2),
-    },
+  headLeftColumn: {
+    textAlign: 'left'
+  },
+  headRightColumn: {
+    textAlign: 'right',
+    padding: theme.spacing(2),
+  },
 }));
 
 const HotSpotCountry = ({ history, location }) => {
 
-    const classes = useStyles();
+  const classes = useStyles();
 
 
-    return (
-        <Layout>
+  return (
+    <Layout>
 
-
-
-            <Grid container spacing={0}>
-                <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-                    <Head
-                        transparent={true}
-                        title="Lympahtic filariasis
+      <Grid maxWidth="xl" container spacing={0}>
+        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
+          <Head
+            transparent={true}
+            title="Lympahtic filariasis
                         Problem areas
                         Kenya"
-                    />
-                </Grid>
-                <Grid item md={7} xs={12} className={classes.headRightColumn}>
-                    <Inputs />
-                </Grid>
-            </Grid>
+          />
+        </Grid>
+        <Grid item md={7} xs={12} className={classes.headRightColumn}>
+          <Inputs />
+        </Grid>
+      </Grid>
 
-            <DiveDeeper
-                title="Dive deeper"
-                links={[{ to: '/hot-spots', name: 'PROBLEM AREAS' }, { to: '/country', name: 'SELECT COUNTRY' }]}
-            />
+      <DiveDeeper
+        title="Dive deeper"
+        links={[{ to: '/hot-spots', name: 'PROBLEM AREAS' }, { to: '/country', name: 'SELECT COUNTRY' }]}
+      />
 
-        </Layout >
-    )
+    </Layout >
+  )
 }
 export default HotSpotCountry;

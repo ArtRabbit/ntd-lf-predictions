@@ -36,8 +36,6 @@ const Trends = ({ history, location }) => {
   const { country } = useUIState()
   const { countryData, countryFeatures } = useDataAPI()
 
-  console.log(countryData)
-
   return (
     <Layout>
       <Grid container spacing={0}>

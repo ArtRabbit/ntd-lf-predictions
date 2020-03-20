@@ -8,9 +8,10 @@ import Grid from '@material-ui/core/Grid'
 import Head from './components/Head'
 import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
+import SiteSections from './components/SiteSections'
 
 import Map from '../components/Map'
-import { useUIState, useDataAPI } from '../hooks/stateHooks'
+import { useDataAPI } from '../hooks/stateHooks'
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -24,10 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 const HotSpots = ({ history, location }) => {
   const classes = useStyles()
-
   const { stateData, stateFeatures } = useDataAPI()
-
-  console.log(stateData, stateFeatures)
 
   return (
     <Layout>

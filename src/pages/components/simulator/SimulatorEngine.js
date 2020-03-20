@@ -436,7 +436,7 @@ export var Model = function(n) {
         this.Ls = this.Ls.slice(200, this.Ls.length);
         var maxt = this.ts[200];
         // this.ts = math.subtract(this.ts.slice(200, this.ts.length), maxt); // !!!!!!!!!!!!!!
-        this.ts = this.ts.slice(200, this.ts.length) - maxt;
+        this.ts = this.ts.slice(200, this.ts.length) - maxt; // I replaced the math.subtract() with a simple "-" operator - is that bad???
         //plot(this.ts,this.Ws,this.Ms,this.Ls);
     };
 };
@@ -792,9 +792,9 @@ export var simControler = {
     },
     reductionStatsCalc: (scenario, coverage) => {
         var n = scenario["results"].length;
-        //        var T = scenario["results"][0]["ts"].length;  //scenario["results"][0]["ts"].length; !!!!!! doesnt seem to work
+        //        var T = scenario["results"][0]["ts"].length;  //scenario["results"][0]["ts"].length; !!!!!!!!!!!!!! doesnt seem to work
         // var T = 0;
-        var T = scenario["results"] && scenario["results"][0] && scenario["results"][0]["ts"] ? scenario["results"][0]["ts"].length : 0;
+        var T = scenario["results"] && scenario["results"][0] && scenario["results"][0]["ts"] ? scenario["results"][0]["ts"].length : 0;  // this is just a hotfix so it doesn't crash, however things don't work as they are supposed to
         console.log("T");
         console.log(T);
         var prev0;
@@ -886,10 +886,10 @@ export var simControler = {
         ScenarioIndex.setIndex(0);
     },
     params: {
+        coverage: 90, // $("#MDACoverage").val(),
         mda: 2, // $("#inputMDARounds").val(),
         mdaSixMonths: 6, // $("input:radio[name=mdaSixMonths]:checked").val(),
         endemicity: 10, // $("#endemicity").val(),
-        coverage: 100, // $("#MDACoverage").val(),
         covN: 0, // $("#bedNetCoverage").val(),
         v_to_hR: 0, // $("#insecticideCoverage").val(),
         vecCap: 0, // $("#vectorialCapacity").val(),
