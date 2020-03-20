@@ -34,10 +34,14 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'right',
     padding: theme.spacing(2),
   },
+  chartContainer: {
+    position: 'relative',
+    width: '100%'
+  }
 }))
 
 const PanelContainer = ({ children }) => (
-  <div style={{ display: 'flex', overflow: 'auto' }}>{children}</div>
+  <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>{children}</div>
 )
 
 const Trends = ({ history, location }) => {
@@ -142,27 +146,69 @@ const Trends = ({ history, location }) => {
 
       <Map height={500} filter={countryFilter} initialLevel={1} />
 
-      <PanelContainer>
-        {data.map(d => (
-          <Box key={d.country} p={1}>
-            <SlopeChart
-              data={d.units}
-              width={100}
-              height={300}
-              start={2015}
-              end={2031}
-              clipDomain={false}
-              svgPadding={[0, 0, 0, 0]}
-            />
-            <Typography variant="caption">{d.country}</Typography>
-          </Box>
-        ))}
-      </PanelContainer>
+      <Box className={classes.chartContainer}>
+        <PanelContainer>
 
-      <Grid container justify="center">
-        <Grid item>
-          <Typography variant="h2">Bump graph States in AGO</Typography>
-          {bumpData.length && <BumpChart data={bumpData} width={800} />}
+
+          {data.map(d => (
+            <Box key={d.country} p={1}>
+              <SlopeChart
+                data={d.units}
+                width={100}
+                height={300}
+                start={2015}
+                end={2031}
+                clipDomain={false}
+                svgPadding={[0, 0, 0, 0]}
+              />
+              <Typography variant="caption">{d.country}</Typography>
+            </Box>
+          ))}
+        </PanelContainer>
+      </Box>
+
+      <Grid container  >
+        <Grid sm={12} item>
+          <Box className={classes.chartContainer}>
+
+            <ChartSettings
+              action={settingsClickDemo}
+              title="Settings"
+              buttonText="Update graphs"
+            >
+              { /* settings form controls */}
+              <FormControl className={classes.formControl}>
+                <Typography id="non-linear-slider1" variant="subtitle1" gutterBottom>Time period</Typography>
+                <Slider
+                  value={[2021, 2029]}
+                  step={1}
+                  min={2019}
+                  max={2030}
+                  marks={[{ value: 2019, label: '2019', }, { value: 2030, label: '2030' }]}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Typography id="non-linear-slider2" variant="subtitle1" gutterBottom>Clip scale</Typography>
+                <Slider
+                  value={40}
+                  step={1}
+                  min={0}
+                  max={100}
+                  marks={[{ value: 0, label: '0', }, { value: 100, label: '100' }]}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+                { /* settings form controls */}
+
+              </FormControl>
+            </ChartSettings>
+
+
+            <Typography variant="h2">Bump graph States in AGO</Typography>
+            {bumpData.length && <BumpChart data={bumpData} width={800} />}
+          </Box>
         </Grid>
       </Grid>
 

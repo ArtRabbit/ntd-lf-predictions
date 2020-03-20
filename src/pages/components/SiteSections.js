@@ -12,7 +12,6 @@ import ArrowHover from '../../images/arrow-right-hover.svg';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(8, 6, 4, 6),
     '&.gutter': {
       paddingTop: theme.spacing(12),
     }
@@ -21,6 +20,9 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.primary,
     margin: theme.spacing(0, 0, 3, 0),
 
+  },
+  container: {
+    padding: theme.spacing(8, 6, 4, 6),
   },
   bordered: {
     borderBottom: `1px solid ${theme.palette.primary.line}`,
@@ -62,19 +64,21 @@ const SiteSections = (props) => {
   return (
 
     <section className={`${classes.root} ${classAdd}`}>
-      <Grid container spacing={0}>
+      <Container className={classes.container} maxWidth="xl" >
+        <Grid container spacing={0}>
 
-        <Grid item md={5} xs={12} className={classes.siteSections}>
-          <Typography variant="h6" component="h6" className={`${classes.headline} ${classes.bordered}`} >Site sections</Typography>
+          <Grid item md={5} xs={12} className={classes.siteSections}>
+            <Typography variant="h6" component="h6" className={`${classes.headline} ${classes.bordered}`} >Site sections</Typography>
 
-          <ul>
-            <Typography component="li" variant="h3"><Link component={RouterLink} to="/intro" color="inherit">Introduction</Link></Typography>
-            <Typography component="li" variant="h3"><Link component={RouterLink} to="/trends" color="inherit">Trends</Link></Typography>
-            <Typography component="li" variant="h3"><Link component={RouterLink} to="/hot-spots" color="inherit">Hotspots</Link></Typography>
-            <Typography component="li" variant="h3"><Link component={RouterLink} to="/simulator" color="inherit">Simulator</Link></Typography>
-          </ul>
+            <ul>
+              <Typography component="li" variant="h3"><Link component={RouterLink} to="/intro" color="inherit">Introduction</Link></Typography>
+              <Typography component="li" variant="h3"><Link component={RouterLink} to="/trends" color="inherit">Trends</Link></Typography>
+              <Typography component="li" variant="h3"><Link component={RouterLink} to="/hot-spots" color="inherit">Hotspots</Link></Typography>
+              <Typography component="li" variant="h3"><Link component={RouterLink} to="/simulator" color="inherit">Simulator</Link></Typography>
+            </ul>
+          </Grid>
         </Grid>
-      </Grid>
+      </Container>
     </section>
   )
 }
