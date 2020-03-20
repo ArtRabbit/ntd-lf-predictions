@@ -35,58 +35,8 @@ const groupProps = (obj, pattern) =>
 
 const roundPrevalence = p => round(p * 100, 2)
 
-function process({ data, relations, key, regime, endemicity, f }) {
-  // process data
-  const groupRelByKey = groupBy(key)(relations)
-
-  const transformed = flow(
-    // filtering based on values that are contained in the CSV file
-    filter(
-      !!endemicity
-        ? { Regime: regime, Endemicity: endemicity }
-        : { Regime: regime }
-    ),
-    keyBy(key),
-    mapValues(row => {
-      const { [key]: id, Population } = row
-      const meta = groupRelByKey[id][0]
-
-      // retrieve entity names from relations
-      const name =
-        key === 'Country'
-          ? meta.CountryName
-          : key === 'StateCode'
-          ? meta.StateName
-          : meta.IUName
-
-      const probability = groupProps(row, 'elimination')
-      const prev = groupProps(row, 'Prev_')
-      const lower = groupProps(row, 'Lower')
-      const upper = groupProps(row, 'Upper')
-
-      const related = groupRelByKey[id]
-      const relatedCountries = flow(groupBy('Country'), keys)(related)
-      const relatedStates = flow(groupBy('StateCode'), keys)(related)
-      const relatedIU = flow(groupBy('IUID'), keys)(related)
-
-      return {
-        id,
-        name,
-        population: round(Population, 0),
-        endemicity: row.Endemicity,
-        prevalence: mapValues(roundPrevalence)(prev),
-        probability,
-        lower,
-        upper,
-        relatedCountries,
-        relatedStates,
-        relatedIU,
-      }
-    }),
-    values,
-    filter(f),
-    keyBy('id')
-  )(data)
+function addRankingAndStats({ data, relations, regime, endemicity, f }) {
+  const dataMap = keyBy('id')(data)
 
   // create ranking
   const rankings = flow(
@@ -115,12 +65,10 @@ function process({ data, relations, key, regime, endemicity, f }) {
     // build rank series
     groupBy('id'),
     mapValues(ranks => map(omit('id'))(ranks))
-  )(transformed)
+  )(dataMap)
 
   // add rankings to entries
-  const processed = mapValues(x => ({ ...x, ranks: rankings[x.id] }))(
-    transformed
-  )
+  const processed = mapValues(x => ({ ...x, ranks: rankings[x.id] }))(dataMap)
 
   // create stats
   const extremes = flow(
@@ -138,6 +86,49 @@ function process({ data, relations, key, regime, endemicity, f }) {
   }
 
   return { data: processed, stats }
+}
+
+function transformRow({ data, relations, key }) {
+  const groupRelByKey = groupBy(key)(relations)
+  return flow(
+    map(row => {
+      const { [key]: id, Population } = row
+      const meta = groupRelByKey[id][0]
+
+      // retrieve entity names from relations
+      const name =
+        key === 'Country'
+          ? meta.CountryName
+          : key === 'StateCode'
+          ? meta.StateName
+          : meta.IUName
+
+      const probability = groupProps(row, 'elimination')
+      const prev = groupProps(row, 'Prev_')
+      const lower = groupProps(row, 'Lower')
+      const upper = groupProps(row, 'Upper')
+
+      const related = groupRelByKey[id]
+      const relatedCountries = flow(groupBy('Country'), keys)(related)
+      const relatedStates = flow(groupBy('StateCode'), keys)(related)
+      const relatedIU = flow(groupBy('IUID'), keys)(related)
+
+      const enhanced = {
+        id,
+        name,
+        population: round(Population, 0),
+        endemicity: row.Endemicity,
+        prevalence: mapValues(roundPrevalence)(prev),
+        probability,
+        lower,
+        upper,
+        relatedCountries,
+        relatedStates,
+        relatedIU,
+      }
+      return enhanced
+    })
+  )(data)
 }
 
 function mergeFeatures(data, featureCollection, key) {
@@ -178,13 +169,70 @@ class DataAPI {
     this.uiState = rootStore.uiState
   }
 
+  // filter countries by endemicity and regime
+  get filteredCountries() {
+    const { countries } = this.dataStore
+    const { endemicity, regime } = this.uiState
+
+    if (countries) {
+      return filter(
+        !!endemicity
+          ? { Regime: regime, Endemicity: endemicity }
+          : { Regime: regime }
+      )(countries)
+    }
+
+    return null
+  }
+
+  //   filter states by endemicity and regime
+  get filteredStates() {
+    const { states } = this.dataStore
+    const { endemicity, regime } = this.uiState
+
+    if (states) {
+      return filter(
+        !!endemicity
+          ? { Regime: regime, Endemicity: endemicity }
+          : { Regime: regime }
+      )(states)
+    }
+
+    return null
+  }
+
+  // add relations to countries
+  get filteredCountriesWithMeta() {
+    const countries = this.filteredCountries
+    const { relations } = this.dataStore
+
+    if (countries && relations) {
+      return transformRow({ data: countries, relations, key: 'Country' })
+    }
+
+    return null
+  }
+
+  // add relations to states
+  get filteredStatesWithMeta() {
+    const states = this.filteredStates
+    const { relations } = this.dataStore
+
+    if (states && relations) {
+      return transformRow({ data: states, relations, key: 'StateCode' })
+    }
+
+    return null
+  }
+
   get countryData() {
-    const { countries, relations } = this.dataStore
+    const countries = this.filteredCountriesWithMeta
+    const { relations } = this.dataStore
     const { regime, endemicity } = this.uiState
 
     if (countries && relations) {
       // TODO: add filtering
-      return process({
+      return addRankingAndStats({
         data: countries,
         relations,
         key: 'Country',
@@ -197,12 +245,13 @@ class DataAPI {
   }
 
   get stateData() {
-    const { states, relations } = this.dataStore
+    const states = this.filteredStatesWithMeta
+    const { relations } = this.dataStore
     const { regime, endemicity } = this.uiState
 
     if (states && relations) {
       // TODO: add filtering
-      return process({
+      return addRankingAndStats({
         data: states,
         relations,
         key: 'StateCode',
@@ -215,12 +264,14 @@ class DataAPI {
   }
 
   get iuData() {
+    //   FIXME: important!
+    //   TODO: adapt to stateData() / countryData()
     const { ius, relations } = this.dataStore
     const { regime, endemicity } = this.uiState
 
     if (ius && relations) {
       // TODO: add filtering
-      return process({
+      return addRankingAndStats({
         data: ius,
         relations,
         key: 'IUID',
@@ -267,13 +318,16 @@ class DataAPI {
 }
 
 decorate(DataAPI, {
-  // getData: computed,
   countryData: computed,
   stateData: computed,
   iuData: computed,
   countryFeatures: computed,
   stateFeatures: computed,
   iuFeatures: computed,
+  filteredCountriesWithMeta: computed,
+  filteredCountries: computed,
+  //   filteredStatesWithMeta: computed,
+  //   filteredStates: computed,
 })
 
 export default DataAPI
