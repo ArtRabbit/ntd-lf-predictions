@@ -17,7 +17,6 @@ const Page = ({ history, location }) => {
         }
       />
 
-      <SiteSections />
     </Layout>
   )
 }

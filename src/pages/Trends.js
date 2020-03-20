@@ -10,7 +10,7 @@ import Head from './components/Head'
 import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
 import ReadMore from './components/ReadMore'
-import SiteSections from './components/SiteSections'
+
 
 import Map from '../components/Map'
 import SlopeChart from '../components/SlopeChart'
@@ -96,7 +96,6 @@ const Trends = ({ history, location }) => {
         ]}
       />
 
-      <SiteSections />
     </Layout>
   )
 }

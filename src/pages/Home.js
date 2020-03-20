@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 
 import Head from './components/Head';
-import SiteSections from './components/SiteSections'
+import Inputs from './components/Inputs'
 
 // demo
 import map from '../images/demo/map.png';
@@ -37,7 +37,7 @@ const Home = ({ history, location }) => {
   }
 
   return (
-    <Layout>
+    <Layout classAdd="violet">
 
       <Grid container spacing={0}>
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
@@ -54,13 +54,11 @@ const Home = ({ history, location }) => {
             action={showIntro}
           />
         </Grid>
+        <Grid item md={7} xs={12} className={classes.headRightColumn}>
+          <Inputs />
+        </Grid>
       </Grid>
 
-      <Box component="figure" m={1} className={classes.map}>
-        <img src={map} alt="map" />
-      </Box>
-
-      <SiteSections />
     </Layout >
   )
 }

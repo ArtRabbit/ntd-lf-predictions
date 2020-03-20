@@ -12,6 +12,9 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     minHeight: '100vh',
     background: 'white',
+    '&.violet': {
+      backgroundImage: 'linear-gradient(to bottom, #ebe1ff, #d4cdef)',
+    }
   },
   main: {
     //paddingTop: theme.spacing(4),
@@ -24,9 +27,10 @@ const useStyles = makeStyles(theme => ({
 const Layout = (props) => {
 
   const classes = useStyles();
+  const classAdd = props.classAdd ? props.classAdd : '';
 
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} ${classAdd}`}>
 
       <Header />
 

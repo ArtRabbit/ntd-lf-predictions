@@ -26,7 +26,6 @@ import Slider from "@material-ui/core/Slider";
 import Head from "./components/Head";
 import Inputs from "./components/Inputs";
 import DiveDeeper from "./components/DiveDeeper";
-import SiteSections from './components/SiteSections'
 
 import * as SimulatorEngine from "./components/simulator/SimulatorEngine";
 // import "./components/simulator/SimulatorEngine";
@@ -244,7 +243,6 @@ const Simulator = ({ history, location }) => {
         ]}
       />
 
-      <SiteSections />
     </Layout>
   );
 };

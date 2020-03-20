@@ -45,7 +45,6 @@ const HotSpots = ({ history, location }) => {
         ]}
       />
 
-      <SiteSections />
     </Layout>
   )
 }

@@ -12,7 +12,10 @@ import ArrowHover from '../../images/arrow-right-hover.svg';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(4, 0),
+    padding: theme.spacing(4, 6),
+    '&.gutter': {
+      paddingTop: theme.spacing(12),
+    }
   },
   headline: {
     color: theme.palette.text.primary,
@@ -54,10 +57,11 @@ const useStyles = makeStyles(theme => ({
 const SiteSections = (props) => {
 
   const classes = useStyles();
+  const classAdd = props.classAdd ? props.classAdd : '';
 
   return (
 
-    <section className={classes.root}>
+    <section className={`${classes.root} ${classAdd}`}>
       <Grid container spacing={0}>
 
         <Grid item md={5} xs={12} className={classes.siteSections}>

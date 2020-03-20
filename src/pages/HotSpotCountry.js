@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import Head from './components/Head';
 import Inputs from './components/Inputs';
 import DiveDeeper from './components/DiveDeeper';
-import SiteSections from './components/SiteSections'
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -47,7 +46,6 @@ const HotSpotCountry = ({ history, location }) => {
         links={[{ to: '/hot-spots', name: 'PROBLEM AREAS' }, { to: '/country', name: 'SELECT COUNTRY' }]}
       />
 
-      <SiteSections />
     </Layout >
   )
 }

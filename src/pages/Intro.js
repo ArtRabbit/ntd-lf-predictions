@@ -74,7 +74,6 @@ const Intro = ({ history, location }) => {
         ]}
       />
 
-      <SiteSections />
     </Layout>
   )
 }
