@@ -34,125 +34,128 @@ const styleManager = createStyleManager({
 
 
 const theme = createMuiTheme({
+  /*
+  '@global': {
+      'a': {
+          'color': 'red'    // Make all links red.
+      },
+      'body': {
+          'color': 'red'    // Make all links red.
+      }
+  },
+  */
+  palette: {
     /*
-    '@global': {
-        'a': {
-            'color': 'red'    // Make all links red.
-        },
-        'body': {
-            'color': 'red'    // Make all links red.
-        }
-    },
+    primary: purple,
+    secondary: grey
     */
-    palette: {
-        /*
-        primary: purple,
-        secondary: grey
-        */
-        text: {
-            primary: '#000000',
-            secondary: '#616161'
-        },
-        primary: {
-            // light: will be calculated from palette.primary.main,
-            main: '#6236ff',
-            line: '#bdbdbd'
-            // dark: will be calculated from palette.primary.main,
-            // contrastText: will be calculated to contrast with palette.primary.main
-        },
-        secondary: {
-            light: '#eeeeee',
-            main: '#000000',
-        },
-        error: {
-            main: '#aa2323'
-        }
+    text: {
+      primary: '#000000',
+      secondary: '#616161'
+    },
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#6236ff',
+      line: '#bdbdbd'
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contrast with palette.primary.main
+    },
+    secondary: {
+      light: '#eeeeee',
+      main: '#000000',
+    },
+    error: {
+      main: '#aa2323'
+    }
 
 
+  },
+
+  typography: {
+    fontSize: 16,
+    fontWeight: 400,
+    headline: {
+      fontFamily: "'Libre Franklin', sans-serif"
     },
 
-    typography: {
-        fontSize: 16,
-        fontWeight: 400,
-        headline: {
-            fontFamily: "'Libre Franklin', sans-serif"
-        },
-
-        h1: {
-            fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800,
-            fontSize: '2.75rem',
-        },
-        h2: {
-            fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800,
-            fontSize: '1.75rem',
-        },
-        h3: {
-            fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800,
-            fontSize: '1.375rem',
-        },
-        h4: {
-            fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800,
-            fontSize: '1.25rem',
-        },
-        h5: {
-            fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 800,
-            fontSize: '1.125rem',
-        },
-        h6: {
-            textTransform: 'uppercase',
-            //fontFamily: "'Libre Franklin', sans-serif",
-            //fontWeight: 800 
-            fontSize: '0.75rem',
-        },
-        subtitle2: {
-            fontSize: 22,
-        },
-        button: {
-            fontWeight: 400
-        }
+    h1: {
+      fontFamily: "'Libre Franklin', sans-serif",
+      fontWeight: 800,
+      fontSize: '2.75rem',
     },
-    overrides: {
+    h2: {
+      fontFamily: "'Libre Franklin', sans-serif",
+      fontWeight: 800,
+      fontSize: '1.75rem',
     },
+    h3: {
+      fontFamily: "'Libre Franklin', sans-serif",
+      fontWeight: 800,
+      fontSize: '1.375rem',
+    },
+    h4: {
+      fontFamily: "'Libre Franklin', sans-serif",
+      fontWeight: 800,
+      fontSize: '1.25rem',
+    },
+    h5: {
+      fontFamily: "'Libre Franklin', sans-serif",
+      fontWeight: 800,
+      fontSize: '1.125rem',
+    },
+    h6: {
+      textTransform: 'uppercase',
+      //fontFamily: "'Libre Franklin', sans-serif",
+      //fontWeight: 800 
+      fontSize: '0.75rem',
+    },
+    subtitle2: {
+      fontSize: 22,
+    },
+    subtitle1: {
+      fontWeight: 700
+    },
+    button: {
+      fontWeight: 400
+    }
+  },
+  overrides: {
+  },
 });
 
 function App() {
-    const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-    const Contents = withRouter(({ history, location, match }) => {
-        return (
-            <CssBaseline>
-                <ThemeProvider theme={theme}>
-                    <ScrollToTop location={location}>
-                        <Switch location={location}>
-                            <Route exact path="/" component={Home} history={history} location={location} />
-                            <Route exact path="/intro" component={Intro} history={history} location={location} />
-                            <Route exact path="/trends" component={Trends} history={history} location={location} />
-                            <Route exact path="/hot-spots" component={HotSpots} history={history} location={location} />
-                            <Route exact path="/country" component={HotSpotCountry} history={history} location={location} />
-                            <Route exact path="/simulator" component={Simulator} history={history} location={location} />
-
-                            <Route exact path="**" component={Page} history={history} location={location} />
-                        </Switch>
-                    </ScrollToTop>
-                </ThemeProvider>
-            </CssBaseline>
-        );
-    });
-
+  const Contents = withRouter(({ history, location, match }) => {
     return (
-        <StateContext.Provider value={state}>
-            <DispatchContext.Provider value={dispatch}>
-                <BrowserRouter>
-                    <Contents />
-                </BrowserRouter>
-            </DispatchContext.Provider>
-        </StateContext.Provider>
+      <CssBaseline>
+        <ThemeProvider theme={theme}>
+          <ScrollToTop location={location}>
+            <Switch location={location}>
+              <Route exact path="/" component={Home} history={history} location={location} />
+              <Route exact path="/intro" component={Intro} history={history} location={location} />
+              <Route exact path="/trends" component={Trends} history={history} location={location} />
+              <Route exact path="/hot-spots" component={HotSpots} history={history} location={location} />
+              <Route exact path="/country" component={HotSpotCountry} history={history} location={location} />
+              <Route exact path="/simulator" component={Simulator} history={history} location={location} />
+
+              <Route exact path="**" component={Page} history={history} location={location} />
+            </Switch>
+          </ScrollToTop>
+        </ThemeProvider>
+      </CssBaseline>
     );
+  });
+
+  return (
+    <StateContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        <BrowserRouter>
+          <Contents />
+        </BrowserRouter>
+      </DispatchContext.Provider>
+    </StateContext.Provider>
+  );
 }
 
 export default App;

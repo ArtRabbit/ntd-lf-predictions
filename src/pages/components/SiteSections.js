@@ -12,7 +12,7 @@ import ArrowHover from '../../images/arrow-right-hover.svg';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(4, 6),
+    padding: theme.spacing(8, 6, 4, 6),
     '&.gutter': {
       paddingTop: theme.spacing(12),
     }
