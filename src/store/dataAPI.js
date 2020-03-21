@@ -24,7 +24,7 @@ import {
   zip,
   mapValues as mapValuesS,
 } from 'lodash'
-import { interpolateReds, scaleSequential, color } from 'd3'
+import { interpolateReds, scaleSequential, color, interpolateCubehelixDefault } from 'd3'
 
 // helper that groups columns of the csv into object properties
 const groupProps = (obj, pattern) =>

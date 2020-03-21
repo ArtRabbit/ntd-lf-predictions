@@ -83,7 +83,7 @@ const Trends = (props) => {
           item
           md={5}
           xs={12}
-          style={{ position: 'relative', margin: '40px 0px 80px 0px' }}
+          style={{ position: 'relative', margin: '40px 500px 80px 0px' }}
         >
           <ExpandableInfo title="Kenya facts">
             <Box variant="body1">
@@ -104,7 +104,7 @@ const Trends = (props) => {
           md={12}
           xs={12}
           className={classes.headLeftColumn}
-          style={{ position: 'relative', padding: '80px 0px' }}
+          style={{ position: 'relative', padding: '0px 0px', zIndex: '120' }}
         >
           <Typography variant="h2" component="h2">
             Chart options demo
@@ -113,7 +113,7 @@ const Trends = (props) => {
           <ChartSettings
             action={settingsClickDemo}
             title="Settings"
-            buttonText="Update graphs"
+            buttonText="Update"
           >
             {/* settings form controls */}
             <FormControl className={classes.formControl}>
@@ -163,12 +163,15 @@ const Trends = (props) => {
         </Grid>
       </Grid>
 
+      <div style={{borderTop: "1px solid #BDBDBD",borderBottom: "1px solid #BDBDBD"}}>          
       <Map
         data={countryData?.data}
         features={countryFeatures}
-        height={500}
+        height={720}
         initialLevel={0}
+        disableZoom={true}
       />
+      </div>
 
       <Box className={classes.chartContainer}>
         <PanelContainer>
@@ -194,7 +197,7 @@ const Trends = (props) => {
 
       <Box className={classes.chartContainer}>
         {countryData && (
-          <Timeline data={Object.values(countryData.data)} width={600} />
+          <Timeline data={Object.values(countryData.data)} width={500} />
         )}
       </Box>
 

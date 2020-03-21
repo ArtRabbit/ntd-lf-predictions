@@ -68,23 +68,31 @@ const Intro = (props) => {
           <Inputs />
         </Grid>
       </Grid>
+      <Grid container spacing={0}>
+        <Grid item md={3} xs={12}>
+            <DiveDeeper
+            title="Dive deeper"
+            links={[
+              { to: '/trends', name: 'TRENDS' },
+              { to: '/hot-spots', name: 'PROBLEM AREAS' },
+            ]}
+          />
+        </Grid>
+        <Grid item md={9} xs={12} className={classes.headLeftColumn}>
+          <Box m={1} className={classes.map}>
+            <Map
+              data={countryData?.data}
+              features={countryFeatures}
+              height={720}
+              disableZoom={true}
+              initialLevel={0}
+            />
+          </Box>
+        </Grid>
+        
+      </Grid>
 
-      <Box m={1} className={classes.map}>
-        <Map
-          data={countryData?.data}
-          features={countryFeatures}
-          height={500}
-          initialLevel={0}
-        />
-      </Box>
-
-      <DiveDeeper
-        title="Dive deeper"
-        links={[
-          { to: '/trends', name: 'TRENDS' },
-          { to: '/hot-spots', name: 'PROBLEM AREAS' },
-        ]}
-      />
+      
     </Layout>
   )
 }
