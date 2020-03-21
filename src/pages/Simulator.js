@@ -34,8 +34,7 @@ import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 /* console.log('params')
 console.log(SimulatorEngine.params) */
 console.log(SimulatorEngine.simControler.params)
-
-// SimulatorEngine.documentReady();
+SimulatorEngine.simControler.documentReady()
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -99,8 +98,6 @@ TabPanel.propTypes = {
 
 const Simulator = props => {
   const classes = useStyles()
-  console.log('Simluator')
-  SimulatorEngine.simControler.documentReady()
 
   const [simParams, setSimParams] = useState({
     // ...SimulatorEngine.params, // default params
@@ -222,7 +219,7 @@ const Simulator = props => {
             <TabPanel value={tabIndex} index={2}>
               Scenario 3
               <div style={{ overflow: 'hidden', height: '800px' }}>
-                {scenarioResults[3]}
+                {scenarioResults[2]}
               </div>
             </TabPanel>
           </div>

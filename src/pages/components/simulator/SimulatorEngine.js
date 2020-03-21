@@ -132,6 +132,7 @@ export var SessionData = {
     ses.scenarios.splice(ind, 1)
     var toStore = JSON.stringify(ses)
     localStorage.setItem('sessionData', toStore)
+    console.log('ScenarioIndex deleteScenario', 0)
     ScenarioIndex.setIndex(0)
   },
 }
@@ -939,19 +940,19 @@ export var simControler = {
     //        console.log(paramsFromUI);
     this.params = { ...paramsFromUI }
     var i = SessionData.numScenarios()
+    console.log('ScenarioIndex', i)
     ScenarioIndex.setIndex(i)
     SessionData.createNewSession()
     // console.log(this);
     /*     simControler.fixInput(false); */
 
     if (SessionData.ran(i)) {
+      console.log('ScenarioIndex ran', i)
       ScenarioIndex.setIndex(i)
       // $("#settings-modal").modal("hide");
     } else {
       this.runMapSimulation(simulatorCallback)
       // simulatorCallback();
-      // return "aaaa";
-      // return houby;
     }
   },
   fixInput: fix_input => {
@@ -983,7 +984,8 @@ export var simControler = {
       -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma)
 
     SessionData.deleteSession()
-    ScenarioIndex.setIndex(0)
+    console.log('ScenarioIndex documentReady', -1)
+    ScenarioIndex.setIndex(-1)
   },
   params: {
     coverage: 90, // $("#MDACoverage").val(),
