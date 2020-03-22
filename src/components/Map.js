@@ -6,7 +6,7 @@ import { format } from 'd3'
 import useMapReducer from '../hooks/useMapReducer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-function Map({ data, features, width, height, initialLevel, filter }) {
+function Map({ data, features, width, height, initialLevel, disableZoom, filter }) {
   const [
     { year, level, viewport, feature, featureHover, popup, tooltip },
     dispatch,
@@ -30,7 +30,13 @@ function Map({ data, features, width, height, initialLevel, filter }) {
   const handleHover = event => {
     if (event.features) {
       const feature = event.features.find(f => f.layer.id === 'fill-layer')
-      if (feature) dispatch({ type: 'HOVER', payload: { feature, event } })
+      if (feature) { 
+        dispatch({ type: 'HOVER', payload: { feature, event } })
+      } else {
+        dispatch({ type: 'HOVEROUT', payload: { feature, event } })
+      }
+    } else {
+      dispatch({ type: 'HOVEROUT' })
     }
   }
 
@@ -38,12 +44,19 @@ function Map({ data, features, width, height, initialLevel, filter }) {
     dispatch({ type: 'DESELECT' })
   }
 
+  // old map style mapbox://styles/kpcarter100/ck7w5zz9l026d1imn43721owm
+  
+
   return (
+    
     <ReactMapGL
       {...viewport}
       width={width}
       height={height}
-      mapStyle="mapbox://styles/kpcarter100/ck7w5zz9l026d1imn43721owm"
+      attributionControl={false}
+      scrollZoom={disableZoom ? false: true}
+      doubleClickZoom={ disableZoom ? false : true }
+      mapStyle="mapbox://styles/kpcarter100/ck80d7xh004tt1irt06j8jkme"
       interactiveLayerIds={['fill-layer']}
       onViewportChange={handleViewportChange}
       onClick={handleClick}
@@ -67,8 +80,8 @@ function Map({ data, features, width, height, initialLevel, filter }) {
               'fill-outline-color': [
                 'case',
                 ['==', ['get', 'id'], feature?.properties.id || null],
-                'rgba(121, 145, 170, 1)',
-                'rgba(121, 145, 170, 0.3)',
+                'rgba(255, 145, 170, 1)',
+                'rgba(255, 145, 170, 0.3)',
               ],
             }}
           />
@@ -81,10 +94,10 @@ function Map({ data, features, width, height, initialLevel, filter }) {
               'line-color': [
                 'case',
                 ['==', ['get', 'id'], featureHover?.properties.id || null],
-                '#96B4D3',
+                '#6236FF',
                 'rgba(0,0,0,0)',
               ],
-              'line-width': 2,
+              'line-width': 1,
             }}
           />
         </Source>
@@ -104,11 +117,12 @@ function Map({ data, features, width, height, initialLevel, filter }) {
             </Typography>
             <div>Prevalence: {prevalenceSelected} %</div>
             <div>Population: {format(',')(selectedData.population)}</div>
+            <a href="/trends">Link</a>
             {level === 2 && <div>Endemicity: {selectedData.endemicity}</div>}
           </div>
         </Popup>
       )}
-      {featureHover && (
+      {featureHover && !selectedData && (
         <Tooltip
           title={`${featureHover.properties.name} ${
             data[featureHover?.properties.id]?.prevalence[`${year}`]
@@ -126,6 +140,7 @@ function Map({ data, features, width, height, initialLevel, filter }) {
         </Tooltip>
       )}
     </ReactMapGL>
+    
   )
 }
 

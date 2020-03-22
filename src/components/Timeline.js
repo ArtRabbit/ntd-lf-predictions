@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import { scaleLinear, line } from 'd3'
 import { first, last } from 'lodash'
-import { textColor, barColor } from '../utils'
+import { textColor, barColor, rankColor } from '../utils'
 
 // TODO: derive start/end from data
 const start = 2000
@@ -35,6 +35,10 @@ export default function Timeline({ data, width }) {
   }
 
   const nowX = xScale(new Date().getFullYear())
+  const startX = xScale(start)
+  const endX = xScale(end)
+  const yearWidth = xScale(start+1) - xScale(start)
+  const halfYearWidth = Math.round(yearWidth/2)
 
   return (
     <svg
@@ -43,27 +47,72 @@ export default function Timeline({ data, width }) {
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
       <g transform={`translate(${lPad},${yPad})`}>
-        {xScale.ticks().map(year => (
-          <g key={year}>
-            <text
-              x={xScale(year)}
-              y={height + 32}
-              textAnchor="middle"
-              fontSize="10"
-            >
-              {year}
-            </text>
-          </g>
-        ))}
 
-        {/* mark present */}
-        <line
-          x1={nowX}
-          x2={nowX}
-          y1={0}
-          y2={height + 16}
-          stroke="#cfcfcf"
-        ></line>
+        {/* lable start and end years */}
+        <g key={start}>
+            <text
+              x={startX-halfYearWidth}
+              y={height + 32}
+              textAnchor="left"
+              fontSize="12"
+            >
+              {start}
+            </text>
+        </g>
+        <g key={end}>
+            <text
+              x={endX-halfYearWidth}
+              y={height + 32}
+              textAnchor="right"
+              fontSize="12"
+            >
+              {end}
+            </text>
+        </g>
+
+        
+
+        {/* mark all years */}
+        {xScale.ticks().map(year => {
+            if ( year === start) {
+              return (
+                <line
+                  key={year}
+                  x1={xScale(year)-halfYearWidth}
+                  x2={xScale(year)-halfYearWidth}
+                  y1={5}
+                  y2={height + 15}
+                  stroke="#D8D8D8"
+                ></line>
+              )
+            } else if ( year === end ) {
+              return (
+                <line
+                  key={year}
+                  x1={xScale(year)+halfYearWidth}
+                  x2={xScale(year)+halfYearWidth}
+                  y1={5}
+                  y2={height + 15}
+                  stroke="#D8D8D8"
+                ></line>
+              )
+            }
+            return (
+              <line
+                key={year}
+                x1={xScale(year)}
+                x2={xScale(year)}
+                y1={5}
+                y2={height + 15}
+                stroke="#D8D8D8"
+                strokeDasharray="4 3"
+              ></line>
+            )
+          })}
+
+        
+
+        
 
         {/* bars */}
         {data.map(({ ranks, id }) => {
@@ -104,12 +153,19 @@ export default function Timeline({ data, width }) {
                 fontWeight={id === selected ? 800 : 500}
                 x={-lPad}
                 y={yScale(b.rank)}
+                textAnchor="start"
                 dominantBaseline="middle"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
-                fill={textColor(a, id === selected)}
+                
               >
-                {b.rank} {name}
+                <tspan
+                  fill={rankColor(a, id === selected)}
+                >{b.rank}</tspan>
+                <tspan
+                  fill={textColor(a, id === selected)}
+                  x={-lPad+40}
+                >{name}</tspan>
               </text>
               <text
                 fontSize="12"

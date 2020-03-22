@@ -2,6 +2,7 @@ import { useReducer } from 'react'
 import { WebMercatorViewport, LinearInterpolator } from 'react-map-gl'
 import { merge } from 'lodash'
 import bbox from '@turf/bbox'
+import { easeCubic } from 'd3'
 
 // TODO: not needed anymore
 const settings = [
@@ -31,9 +32,9 @@ const initialState = {
   Regime: 'No MDA',
   Endemicity: 0,
   viewport: {
-    latitude: 0,
+    latitude: -4,
     longitude: 20,
-    zoom: 2.7,
+    zoom: 3,
   },
 }
 
@@ -55,6 +56,12 @@ const reduce = (state, { type, payload }) => {
         featureHover: payload.feature,
         tooltip: payload.event.point,
       }
+    case 'HOVEROUT':
+        return {
+          ...state,
+          featureHover: null,
+          tooltip: null,
+        }
     case 'SELECT':
       const { feature, event } = payload
       const [minLng, minLat, maxLng, maxLat] = bbox(feature)
@@ -79,10 +86,16 @@ const reduce = (state, { type, payload }) => {
           transitionInterpolator: new LinearInterpolator({
             around: [event.offsetCenter.x, event.offsetCenter.y],
           }),
-          transitionDuration: 1000,
+          transitionEasing: easeCubic,
+          transitionDuration: 600,
         },
       })
     case 'DESELECT':
+      console.log('Deselect')
+      return merge({}, state, {
+        feature:null,
+        viewport: initialState.viewport,
+      })
       return { ...state, feature: null }
     default:
       return state
