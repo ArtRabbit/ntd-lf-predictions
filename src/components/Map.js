@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import ReactMapGL, { Source, Layer, Popup } from 'react-map-gl'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { Tooltip, Typography } from '@material-ui/core'
 import { format } from 'd3'
@@ -11,6 +12,9 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
     { year, viewport, feature, featureHover, popup, tooltip },
     dispatch,
   ] = useMapReducer()
+
+  const history = useHistory()
+  const match = useRouteMatch('/:section')
 
   const selectedFeatureID = feature?.properties.id
   const selectedData = data ? data[selectedFeatureID] : null
@@ -33,6 +37,7 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
     const feature = event.features.find(f => f.layer.id === 'fill-layer')
     if (feature) {
       dispatch({ type: 'SELECT', payload: { feature, event } })
+      history.push(`/${match.params.section}/${feature.properties.id}`)
     }
   }
 
