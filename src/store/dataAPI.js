@@ -16,8 +16,17 @@ import {
   pickBy as pickByFP,
   sortBy as sortByFP,
 } from 'lodash/fp'
-import { sortBy, merge, min, max, zip, mapValues } from 'lodash'
-import { interpolateReds, scaleSequential, color } from 'd3'
+
+import {
+  sortBy,
+  pick,
+  merge,
+  min,
+  max,
+  zip,
+  mapValues as mapValuesS,
+} from 'lodash'
+import { interpolateReds, scaleSequential, color, interpolateCubehelixDefault } from 'd3'
 
 const emptyFeatureCollection = { type: 'FeatureCollection', features: [] }
 
@@ -144,7 +153,7 @@ function mergeFeatures(data, featureCollection, key) {
     const prevalenceOverTime = d[id]?.prevalence ?? {}
 
     // get color from scale if prevalence value available
-    const colorsByYear = mapValues(prevalenceOverTime, p_prevalence =>
+    const colorsByYear = mapValuesFP(prevalenceOverTime, p_prevalence =>
       isFinite(p_prevalence) ? color(colorScale(p_prevalence)).hex() : null
     )
 
