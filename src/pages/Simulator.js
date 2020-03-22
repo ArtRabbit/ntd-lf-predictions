@@ -28,12 +28,6 @@ import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
-// import "./components/simulator/SimulatorEngine";
-
-// let SimulatorEngine = await import("./components/simulator/SimulatorEngine");
-/* console.log('params')
-console.log(SimulatorEngine.params) */
-//console.log(SimulatorEngine.simControler.params)
 SimulatorEngine.simControler.documentReady()
 
 const useStyles = makeStyles(theme => ({
@@ -111,15 +105,13 @@ const Simulator = props => {
     setTabIndex(newValue)
   }
   const handleInputChange = event => {
-    // setFrequency(event.target.value);
     setSimParams({ ...simParams, species: event.target.value })
   }
   const handleInputChange2 = event => {
-    // setFrequency(event.target.value);
     setSimParams({ ...simParams, mdaSixMonths: event.target.value })
   }
   useEffect(() => {
-    console.log('tab updated', tabIndex)
+    //    console.log('tab updated', tabIndex)
     //    console.log(scenarioInputs[tabIndex])
     if (typeof scenarioInputs[tabIndex] != 'undefined') {
       // set input arams if you have them
@@ -152,18 +144,18 @@ const Simulator = props => {
       console.log('Simulation returned results!')
 
       if (typeof scenarioResults[tabIndex] === 'undefined') {
-        console.log('scenarioResults')
+        // console.log('scenarioResults')
         setScenarioResults([...scenarioResults, JSON.parse(resultObject)])
         setScenarioInputs([
           ...scenarioInputs,
           JSON.parse(resultObject).params.inputs,
         ])
       } else {
-        console.log('tabIndex', tabIndex)
-        console.log('newScenario', newScenario)
+        //        console.log('tabIndex', tabIndex)
+        //        console.log('newScenario', newScenario)
         let correctTabIndex = newScenario === true ? tabIndex + 1 : tabIndex
         // let correctTabIndex = tabIndex + 1
-        console.log('correctTabIndex', correctTabIndex)
+        //        console.log('correctTabIndex', correctTabIndex)
 
         let scenarioResultsNew = [...scenarioResults] // 1. Make a shallow copy of the items
         let resultItem = scenarioResultsNew[correctTabIndex] // 2. Make a shallow copy of the resultItem you want to mutate
@@ -193,16 +185,16 @@ const Simulator = props => {
   }
   const runNewScenario = () => {
     if (!simInProgress) {
-      setSimInProgress(true)
       if (tabLength < 5) {
-        console.log('settingTabLength', tabLength + 1)
+        setSimInProgress(true)
+        // console.log('settingTabLength', tabLength + 1)
         setTabIndex(tabLength)
         setTabLength(tabLength + 1)
         console.log(tabIndex, simParams)
         SimulatorEngine.simControler.newScenario = true
         SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
       } else {
-        alert('No free slots!')
+        alert('Sorry maximum number of Scenarios is 5.')
       }
     }
   }
@@ -335,7 +327,7 @@ const Simulator = props => {
             />
           </FormControl>
 
-          {/* <Typography className={classes.title} variant="h5" component="h2">
+          <Typography className={classes.title} variant="h5" component="h2">
             Intervention
           </Typography>
           <FormControl className={classes.formControl}>
@@ -351,7 +343,7 @@ const Simulator = props => {
               <MenuItem value={12}>Annual</MenuItem>
               <MenuItem value={6}>Every 6 months</MenuItem>
             </Select>
-          </FormControl>*/}
+          </FormControl>
           <FormControl className={classes.formControl}>
             <Typography gutterBottom>Target coverage</Typography>
             <InputLabel htmlFor="coverage"></InputLabel>
@@ -374,7 +366,6 @@ const Simulator = props => {
               id="demo-simple-select-helper"
               value={simParams.mdaRegimen}
               onChange={event => {
-                // setFrequency(event.target.value);
                 setSimParams({ ...simParams, mdaRegimen: event.target.value })
               }}
             >

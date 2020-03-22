@@ -844,7 +844,6 @@ export var simControler = {
 
     // simControler.dump(scenario);
     // $("#scenario-statistic")[0].innerHTML = JSON.stringify(obj);
-    console.log('this.newScenario', simControler.newScenario)
     simulatorCallback(JSON.stringify(scenario), simControler.newScenario)
     // console.log(JSON.stringify(scenario));
     // return JSON.stringify(scenario);
