@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { observer } from 'mobx-react'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { useDataAPI } from '../../hooks/stateHooks'
+import { useDataAPI, useUIState } from '../../hooks/stateHooks'
 
 import Box from '@material-ui/core/Box'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -54,13 +54,9 @@ const useStyles = makeStyles(theme => ({
 
 const Inputs = props => {
   const classes = useStyles()
-  const [regime, setRegime] = useState(10)
 
-  const handleChange = event => {
-    setRegime(event.target.value)
-  }
-
-  const { countrySuggestions } = useDataAPI()
+  const { countrySuggestions, regimes } = useDataAPI()
+  const { regime, setRegime } = useUIState()
 
   return (
     <Box className={classes.root}>
@@ -78,18 +74,18 @@ const Inputs = props => {
         <FormHelperText>Some important helper text</FormHelperText>
       </FormControl>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-simple-select-helper-label">
-          Treatment regime
-        </InputLabel>
+        <InputLabel id="demo-simple-select-helper-label">{regime}</InputLabel>
         <Select
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
           value={regime}
-          onChange={handleChange}
+          onChange={setRegime}
         >
-          <MenuItem value={10}>WHO guidelines</MenuItem>
-          <MenuItem value={20}>WHO guidelines 2</MenuItem>
-          <MenuItem value={30}>WHO guidelines 3</MenuItem>
+          {regimes.map(r => (
+            <MenuItem key={r} value={r}>
+              {r}
+            </MenuItem>
+          ))}
         </Select>
         <div className={classes.largeTooltip}>
           <Typography variant="subtitle2" color="inherit" component="p">

@@ -1,8 +1,9 @@
 import { observable, action, decorate } from 'mobx'
+import { REGIME_NO_MDA } from '../constants'
 
 class UiState {
   country = null
-  regime = 'No MDA'
+  regime = REGIME_NO_MDA
   endemicity = null
 
   constructor(rootStore) {
@@ -17,8 +18,8 @@ class UiState {
     this.endemicity = endemicity
   }
 
-  setRegime(regime) {
-    this.regime = regime
+  setRegime(event) {
+    this.regime = event.target.value
   }
 }
 

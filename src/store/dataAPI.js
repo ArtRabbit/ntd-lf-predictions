@@ -18,6 +18,12 @@ import {
 } from 'lodash/fp'
 import { sortBy, merge, min, max, zip, mapValues } from 'lodash'
 import { interpolateReds, scaleSequential, color } from 'd3'
+import {
+  REGIME_COVERAGE,
+  REGIME_WHO,
+  REGIME_FREQUENCY,
+  REGIME_NO_MDA,
+} from '../constants'
 
 const emptyFeatureCollection = { type: 'FeatureCollection', features: [] }
 
@@ -324,7 +330,6 @@ class DataAPI {
     const countries = this.filteredCountriesWithMeta
 
     if (countries) {
-      debugger
       const result = flow(
         map(({ id, name }) => ({ id, name })),
         sortByFP('name')
@@ -333,6 +338,10 @@ class DataAPI {
     }
 
     return []
+  }
+
+  get regimes() {
+    return [REGIME_NO_MDA, REGIME_WHO, REGIME_COVERAGE, REGIME_FREQUENCY]
   }
 }
 
@@ -352,6 +361,7 @@ decorate(DataAPI, {
   filteredIUsWithMeta: computed,
   rowFilter: computed,
   countrySuggestions: computed,
+  regimes: computed,
 })
 
 export default DataAPI
