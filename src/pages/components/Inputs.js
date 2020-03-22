@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
+import { observer } from 'mobx-react'
+
 import { makeStyles } from '@material-ui/core/styles'
+import { useDataAPI } from '../../hooks/stateHooks'
 
 import Box from '@material-ui/core/Box'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -57,23 +60,14 @@ const Inputs = props => {
     setRegime(event.target.value)
   }
 
-  const countries = []
-  //   const countries = useMemo(
-  //     () =>
-  //       flow(
-  //         values,
-  //         map(({ id, name }) => ({ id, name })),
-  //         sortBy('name')
-  //       )(data),
-  //     [data]
-  //   )
+  const { countrySuggestions } = useDataAPI()
 
   return (
     <Box className={classes.root}>
       <FormControl className={classes.formControl}>
         <Autocomplete
           id="combo-box-demo"
-          options={countries}
+          options={countrySuggestions}
           getOptionLabel={option => option.name}
           style={{ width: 300 }}
           renderInput={params => (
@@ -107,4 +101,4 @@ const Inputs = props => {
   )
 }
 
-export default Inputs
+export default observer(Inputs)

@@ -1,6 +1,5 @@
 import { computed, decorate } from 'mobx'
 import {
-  mapValues,
   groupBy,
   keyBy,
   flow,
@@ -13,18 +12,14 @@ import {
   filter,
   mapKeys,
   omit,
+  mapValues as mapValuesFP,
   pickBy as pickByFP,
+  sortBy as sortByFP,
 } from 'lodash/fp'
-import {
-  sortBy,
-  pick,
-  merge,
-  min,
-  max,
-  zip,
-  mapValues as mapValuesS,
-} from 'lodash'
+import { sortBy, merge, min, max, zip, mapValues } from 'lodash'
 import { interpolateReds, scaleSequential, color } from 'd3'
+
+const emptyFeatureCollection = { type: 'FeatureCollection', features: [] }
 
 // helper that groups columns of the csv into object properties
 const groupProps = (obj, pattern) =>
@@ -52,7 +47,7 @@ function addRankingAndStats(data) {
     // group all values by year
     groupBy('year'),
     // add year and rank
-    mapValues(v =>
+    mapValuesFP(v =>
       sortBy(v, ['prevalence', 'id']).map((x, i) => ({
         ...x,
         year: +x.year,
@@ -64,11 +59,11 @@ function addRankingAndStats(data) {
     flatten,
     // build rank series
     groupBy('id'),
-    mapValues(ranks => map(omit('id'))(ranks))
+    mapValuesFP(ranks => map(omit('id'))(ranks))
   )(dataMap)
 
   // add rankings to entries
-  const processed = mapValues(x => ({ ...x, ranks: rankings[x.id] }))(dataMap)
+  const processed = mapValuesFP(x => ({ ...x, ranks: rankings[x.id] }))(dataMap)
 
   // create stats
   const extremes = flow(
@@ -88,7 +83,7 @@ function addRankingAndStats(data) {
   return { data: processed, stats }
 }
 
-function transformRow({ data, relations, key }) {
+function addIDRelations({ data, relations, key }) {
   const groupRelByKey = groupBy(key)(relations)
   return flow(
     map(row => {
@@ -118,7 +113,7 @@ function transformRow({ data, relations, key }) {
         name,
         population: round(Population, 0),
         endemicity: row.Endemicity,
-        prevalence: mapValues(roundPrevalence)(prev),
+        prevalence: mapValuesFP(roundPrevalence)(prev),
         probability,
         lower,
         upper,
@@ -149,7 +144,7 @@ function mergeFeatures(data, featureCollection, key) {
     const prevalenceOverTime = d[id]?.prevalence ?? {}
 
     // get color from scale if prevalence value available
-    const colorsByYear = mapValuesS(prevalenceOverTime, p_prevalence =>
+    const colorsByYear = mapValues(prevalenceOverTime, p_prevalence =>
       isFinite(p_prevalence) ? color(colorScale(p_prevalence)).hex() : null
     )
 
@@ -163,22 +158,25 @@ function mergeFeatures(data, featureCollection, key) {
   return { type: 'FeatureCollection', features }
 }
 
-const rowFilter = ({ endemicity, regime }) =>
-  !!endemicity ? { Regime: regime, Endemicity: endemicity } : { Regime: regime }
-
 class DataAPI {
   constructor(rootStore) {
     this.dataStore = rootStore.dataStore
     this.uiState = rootStore.uiState
   }
 
+  get rowFilter() {
+    const { endemicity, regime } = this.uiState
+    return !!endemicity
+      ? { Regime: regime, Endemicity: endemicity }
+      : { Regime: regime }
+  }
+
   // filter countries by endemicity and regime
   get filteredCountries() {
     const { countries } = this.dataStore
-    const { endemicity, regime } = this.uiState
 
     if (countries) {
-      return filter(rowFilter({ endemicity, regime }))(countries)
+      return filter(this.rowFilter)(countries)
     }
 
     return null
@@ -187,10 +185,9 @@ class DataAPI {
   // filter states by endemicity and regime
   get filteredStates() {
     const { states } = this.dataStore
-    const { endemicity, regime } = this.uiState
 
     if (states) {
-      return filter(rowFilter({ endemicity, regime }))(states)
+      return filter(this.rowFilter)(states)
     }
 
     return null
@@ -199,10 +196,9 @@ class DataAPI {
   // filter states by endemicity and regime
   get filteredIU() {
     const { ius } = this.dataStore
-    const { endemicity, regime } = this.uiState
 
     if (ius) {
-      return filter(rowFilter({ endemicity, regime }))(ius)
+      return filter(this.rowFilter)(ius)
     }
 
     return null
@@ -214,7 +210,7 @@ class DataAPI {
     const { relations } = this.dataStore
 
     if (countries && relations) {
-      return transformRow({ data: countries, relations, key: 'Country' })
+      return addIDRelations({ data: countries, relations, key: 'Country' })
     }
 
     return null
@@ -226,7 +222,7 @@ class DataAPI {
     const { relations } = this.dataStore
 
     if (states && relations) {
-      return transformRow({ data: states, relations, key: 'StateCode' })
+      return addIDRelations({ data: states, relations, key: 'StateCode' })
     }
 
     return null
@@ -238,7 +234,7 @@ class DataAPI {
     const { relations } = this.dataStore
 
     if (ius && relations) {
-      return transformRow({ data: ius, relations, key: 'IUID' })
+      return addIDRelations({ data: ius, relations, key: 'IUID' })
     }
 
     return null
@@ -273,7 +269,7 @@ class DataAPI {
     if (states && relations) {
       return flow(
         groupBy(x => x.relatedCountries[0]),
-        mapValues(addRankingAndStats)
+        mapValuesFP(addRankingAndStats)
       )(states)
     }
 
@@ -299,7 +295,7 @@ class DataAPI {
       return mergeFeatures(data, featureCollection, 'ADMIN0ISO3')
     }
 
-    return { type: 'FeatureCollection', features: [] }
+    return emptyFeatureCollection
   }
 
   get stateFeatures() {
@@ -310,7 +306,7 @@ class DataAPI {
       return mergeFeatures(data, featureCollection, 'ADMIN1ID')
     }
 
-    return { type: 'FeatureCollection', features: [] }
+    return emptyFeatureCollection
   }
 
   get iuFeatures() {
@@ -321,7 +317,22 @@ class DataAPI {
       return mergeFeatures(data, featureCollection, 'IU_ID')
     }
 
-    return { type: 'FeatureCollection', features: [] }
+    return emptyFeatureCollection
+  }
+
+  get countrySuggestions() {
+    const countries = this.filteredCountriesWithMeta
+
+    if (countries) {
+      debugger
+      const result = flow(
+        map(({ id, name }) => ({ id, name })),
+        sortByFP('name')
+      )(countries)
+      return result
+    }
+
+    return []
   }
 }
 
@@ -339,6 +350,8 @@ decorate(DataAPI, {
   filteredCountriesWithMeta: computed,
   filteredStatesWithMeta: computed,
   filteredIUsWithMeta: computed,
+  rowFilter: computed,
+  countrySuggestions: computed,
 })
 
 export default DataAPI
