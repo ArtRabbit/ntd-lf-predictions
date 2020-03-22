@@ -202,7 +202,7 @@ con.connect(function(err) {
                 console.log(thisCountryStates)
                 let outputString = thisCountryStates
                   .map(e => e.join(','))
-                  .join('\n')
+                  .join('\r\n')
                 fs.writeFileSync(
                   '../countries/' + countryCode + '.json',
                   outputString,
