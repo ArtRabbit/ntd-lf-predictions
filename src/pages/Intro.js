@@ -43,23 +43,19 @@ const Intro = (props) => {
     }
   }
 
+
   return (
     <Layout>
       <Grid container spacing={0}>
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
           <Head
             transparent={true}
-            title="Lympahtic filariasis Predicted outcome 2030"
-            text={`The main point here is to use
-            show hot spots but combine
-            it with population affected
-            In my head we don’t have this
-            version of the map yet or we 
-            use the normal country
-            level map and overlay
-            this (not just on hover, but
-            always) with affected
-            population numbers.`}
+            title="Lympahtic filariasis Projections"
+            text={`Welcome to the NTD Modelling Projections. 
+            The projections on this website provide guidance 
+            on the impact of more frequent, longer or higher 
+            coverate treatment would have on achieving elimination 
+            as a public health problem.`}
             actionLabel={'PLAY SCENARIO'}
             action={playScenario}
           />
@@ -73,8 +69,9 @@ const Intro = (props) => {
             <DiveDeeper
             title="Dive deeper"
             links={[
+              { to: '/about-lf', name: 'MORE ABOUT LF' },
               { to: '/trends', name: 'TRENDS' },
-              { to: '/hot-spots', name: 'PROBLEM AREAS' },
+              { to: '/hot-spots', name: 'HOTSPOTS' },
             ]}
           />
         </Grid>
