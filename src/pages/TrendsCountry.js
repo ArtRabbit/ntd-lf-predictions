@@ -1,11 +1,12 @@
 import React from 'react'
 import { observer } from 'mobx-react'
-
-import { Layout } from '../layout'
-import { makeStyles } from '@material-ui/core/styles'
 import { Box, Typography, Grid } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 
-import { useUIState, useDataAPI } from '../hooks/stateHooks'
+import { useDataAPI, useUIState } from '../hooks/stateHooks'
+import { Layout } from '../layout'
+import Map from '../components/Map'
+
 import Head from './components/Head'
 import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
@@ -27,7 +28,8 @@ const useStyles = makeStyles(theme => ({
 
 const TrendsCountry = props => {
   const classes = useStyles()
-  const { selectedCountry } = useDataAPI()
+  const { selectedCountry, countryData, countryFeatures } = useDataAPI()
+  const { country } = useUIState()
 
   return (
     <Layout>
@@ -56,6 +58,22 @@ const TrendsCountry = props => {
           </ReadMore>
         </Grid>
       </Grid>
+
+      <div
+        style={{
+          borderTop: '1px solid #BDBDBD',
+          borderBottom: '1px solid #BDBDBD',
+        }}
+      >
+        <Map
+          data={countryData?.data}
+          features={countryFeatures}
+          height={720}
+          initialLevel={0}
+          disableZoom={true}
+          country={country}
+        />
+      </div>
 
       <DiveDeeper
         title="Dive deeper"

@@ -346,7 +346,6 @@ class DataAPI {
 
     if (country && countryMap) {
       const selected = countryMap.data[country]
-      debugger
       return selected
     }
 

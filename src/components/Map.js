@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactMapGL, { Source, Layer, Popup } from 'react-map-gl'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { Tooltip, Typography } from '@material-ui/core'
@@ -6,15 +6,24 @@ import { format } from 'd3'
 import useMapReducer from '../hooks/useMapReducer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-function Map({ data, features, width, height, initialLevel, disableZoom, filter }) {
+function Map({ data, country, features, width, height, disableZoom, filter }) {
   const [
-    { year, level, viewport, feature, featureHover, popup, tooltip },
+    { year, viewport, feature, featureHover, popup, tooltip },
     dispatch,
-  ] = useMapReducer({ initialLevel })
+  ] = useMapReducer()
 
   const selectedFeatureID = feature?.properties.id
   const selectedData = data ? data[selectedFeatureID] : null
   const prevalenceSelected = selectedData?.prevalence[`${year}`]
+
+  useEffect(() => {
+    if (country) {
+      const focus = features.features.find(f => f.properties.id === country)
+      if (focus) {
+        dispatch({ type: 'FOCUS', payload: { feature: focus } })
+      }
+    }
+  }, [features, country, dispatch])
 
   const handleViewportChange = payload => {
     dispatch({ type: 'VIEWPORT', payload })
@@ -30,7 +39,7 @@ function Map({ data, features, width, height, initialLevel, disableZoom, filter 
   const handleHover = event => {
     if (event.features) {
       const feature = event.features.find(f => f.layer.id === 'fill-layer')
-      if (feature) { 
+      if (feature) {
         dispatch({ type: 'HOVER', payload: { feature, event } })
       } else {
         dispatch({ type: 'HOVEROUT', payload: { feature, event } })
@@ -45,17 +54,15 @@ function Map({ data, features, width, height, initialLevel, disableZoom, filter 
   }
 
   // old map style mapbox://styles/kpcarter100/ck7w5zz9l026d1imn43721owm
-  
 
   return (
-    
     <ReactMapGL
       {...viewport}
       width={width}
       height={height}
       attributionControl={false}
-      scrollZoom={disableZoom ? false: true}
-      doubleClickZoom={ disableZoom ? false : true }
+      scrollZoom={disableZoom ? false : true}
+      doubleClickZoom={disableZoom ? false : true}
       mapStyle="mapbox://styles/kpcarter100/ck80d7xh004tt1irt06j8jkme"
       interactiveLayerIds={['fill-layer']}
       onViewportChange={handleViewportChange}
@@ -66,7 +73,6 @@ function Map({ data, features, width, height, initialLevel, disableZoom, filter 
         <Source id="africa" type="geojson" data={features}>
           <Layer
             id="fill-layer"
-            // beforeId={level === 0 ? 'admin-1-boundary-bg' : 'admin-0-boundary'}
             beforeId="admin-0-boundary"
             filter={['has', `${year}`]}
             type="fill"
@@ -118,7 +124,7 @@ function Map({ data, features, width, height, initialLevel, disableZoom, filter 
             <div>Prevalence: {prevalenceSelected} %</div>
             <div>Population: {format(',')(selectedData.population)}</div>
             <a href="/trends">Link</a>
-            {level === 2 && <div>Endemicity: {selectedData.endemicity}</div>}
+            <div>Endemicity: {selectedData.endemicity}</div>
           </div>
         </Popup>
       )}
@@ -140,7 +146,6 @@ function Map({ data, features, width, height, initialLevel, disableZoom, filter 
         </Tooltip>
       )}
     </ReactMapGL>
-    
   )
 }
 
