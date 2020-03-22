@@ -70,11 +70,16 @@ const reduce = (state, { type, payload }) => {
       })
     case 'DESELECT':
       // TODO: deselect should jump back to overview
-      console.log('Deselect')
       return merge({}, state, {
         feature: null,
         viewport: initialState.viewport,
       })
+    case 'FOCUSBACK':
+      let newState = merge({}, state, fit(payload.feature, state.viewport))
+      newState.featureHover = null
+      newState.tooltip = null
+      newState.feature = null
+      return newState
     default:
       return state
   }

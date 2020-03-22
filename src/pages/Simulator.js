@@ -472,7 +472,7 @@ const Simulator = props => {
       <DiveDeeper
         title="Get an overview"
         links={[
-          { to: '/hot-spots', name: 'TRENDS FOR ALL COUNTRIES' },
+          { to: '/hotspots', name: 'TRENDS FOR ALL COUNTRIES' },
           { to: '/country', name: 'PROBLEM AREAS FOR ALL COUNTRIES' },
         ]}
       />

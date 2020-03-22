@@ -50,7 +50,7 @@ const Intro = (props) => {
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
           <Head
             transparent={true}
-            title="Lympahtic filariasis Projections"
+            title="Lymphatic filariasis Projections"
             text={`Welcome to the NTD Modelling Projections. 
             The projections on this website provide guidance 
             on the impact of more frequent, longer or higher 
@@ -71,7 +71,7 @@ const Intro = (props) => {
             links={[
               { to: '/about-lf', name: 'MORE ABOUT LF' },
               { to: '/trends', name: 'TRENDS' },
-              { to: '/hot-spots', name: 'HOTSPOTS' },
+              { to: '/hotspots', name: 'HOTSPOTS' },
             ]}
           />
         </Grid>

@@ -7,7 +7,7 @@ import { format } from 'd3'
 import useMapReducer from '../hooks/useMapReducer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-function Map({ data, country, features, width, height, disableZoom, filter }) {
+function Map({ data, country, features, width, height, disableZoom, filter, countryFeatures }) {
   const [
     { year, viewport, feature, featureHover, popup, tooltip },
     dispatch,
@@ -21,9 +21,15 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
   const selectedData = data ? data[selectedFeatureID] : null
   const prevalenceSelected = selectedData?.prevalence[`${year}`]
 
+
   useEffect(() => {
     if (country) {
-      const focus = features.features.find(f => f.properties.id === country)
+      let focus = null
+      if ( !countryFeatures ) {
+        focus = features.features.find(f => f.properties.id === country)
+      } else {
+        focus = countryFeatures.features.find(f => f.properties.id === country)
+      }
       if (focus) {
         dispatch({ type: 'FOCUS', payload: { feature: focus } })
       }
@@ -35,13 +41,28 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
   }
 
   const handleClick = event => {
-    const feature = event.features.find(f => f.layer.id === 'fill-layer')
-    if (feature) {
-      if (matchesDetails) {
+    if ( !selectedFeatureID ) {
+      const feature = event.features.find(f => f.layer.id === 'fill-layer')
+      if (feature) {
         dispatch({ type: 'SELECT', payload: { feature, event } })
       }
-      history.push(`/${match.params.section}/${feature.properties.id}`)
     }
+  }
+
+  const selectCountryClickHotspots = countryId => {
+    if ( match.params.section != 'trends' ) {
+      match.params.section = 'hotspots'
+    }
+
+    history.push(`/${match.params.section}/${countryId}`)
+  }
+
+  const selectCountryClickTrends = countryId => {
+    if ( match.params.section != 'trends' ) {
+      match.params.section = 'trends'
+    }
+
+    history.push(`/${match.params.section}/${countryId}`)
   }
 
   const handleHover = event => {
@@ -58,7 +79,19 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
   }
 
   const handleClose = () => {
-    dispatch({ type: 'DESELECT' })
+    if (country) {
+      let focus = null
+      if ( !countryFeatures ) {
+        focus = features.features.find(f => f.properties.id === country)
+      } else {
+        focus = countryFeatures.features.find(f => f.properties.id === country)
+      }
+      if (focus) {
+        dispatch({ type: 'FOCUSBACK', payload: { feature: focus } })
+      }
+    } else {
+      dispatch({ type: 'DESELECT', payload: { country: country } })
+    }
   }
 
   // old map style mapbox://styles/kpcarter100/ck7w5zz9l026d1imn43721owm
@@ -131,8 +164,9 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
             </Typography>
             <div>Prevalence: {prevalenceSelected} %</div>
             <div>Population: {format(',')(selectedData.population)}</div>
-            <a href="/trends">Link</a>
             <div>Endemicity: {selectedData.endemicity}</div>
+            <p><a style={{color:'green'}} onClick={()=>selectCountryClickHotspots(feature.properties.id)}>Hotspots {feature.properties.name}</a> | 
+            <a style={{color:'green'}} onClick={()=>selectCountryClickTrends(feature.properties.id)}>Trends {feature.properties.name}</a></p>
           </div>
         </Popup>
       )}

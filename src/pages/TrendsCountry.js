@@ -6,11 +6,20 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useDataAPI, useUIState } from '../hooks/stateHooks'
 import { Layout } from '../layout'
 import Map from '../components/Map'
-
+import BumpChart from '../components/BumpChart'
 import Head from './components/Head'
 import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
 import ReadMore from './components/ReadMore'
+import ExpandableInfo from './components/ExpandableInfo'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import TextField from '@material-ui/core/TextField'
+import Slider from '@material-ui/core/Slider'
+import ChartSettings from './components/ChartSettings'
+import SectionTitle from './components/SectionTitle'
+import Timeline from '../components/Timeline'
+
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -26,9 +35,20 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
+const PanelContainer = ({ children }) => (
+  <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>
+    {children}
+  </div>
+)
+
 const TrendsCountry = props => {
   const classes = useStyles()
-  const { selectedCountry, countryData, countryFeatures } = useDataAPI()
+  const { stateData, stateFeatures, selectedCountry, countryData, countryFeatures, stateByCountryData } = useDataAPI()
+
+  const settingsClickDemo = event => {
+    alert('update graphs')
+  }
+
   const { country } = useUIState()
 
   return (
@@ -37,7 +57,7 @@ const TrendsCountry = props => {
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
           <Head
             transparent={true}
-            title={`Trends by country - ${selectedCountry?.name || '...'}`}
+            title={`Lymphatic filariasis Trends: ${selectedCountry?.name || '...'}`}
           />
         </Grid>
         <Grid item md={7} xs={12} className={classes.headRightColumn}>
@@ -46,40 +66,92 @@ const TrendsCountry = props => {
       </Grid>
 
       <Grid container spacing={0}>
-        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Typography variant="h2" component="h2">
-            Single country
-          </Typography>
-          <ReadMore>
-            <Typography variant="body1" component="div">
-              This is what we are showing here This is what we are showing here
-              This is what we are showing here This is what we are showing here
-            </Typography>
-          </ReadMore>
+        <Grid
+          item
+          md={5}
+          xs={12}
+          style={{ position: 'relative', margin: '40px 500px 80px 0px' }}
+        >
+          <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
+            <Box variant="body1">
+              <Typography component="p">
+                Population xxx
+                <br />
+                50k people affected in 2030
+                <br />3 districts with high prevalence
+              </Typography>
+            </Box>
+          </ExpandableInfo>
         </Grid>
       </Grid>
 
-      <div
-        style={{
-          borderTop: '1px solid #BDBDBD',
-          borderBottom: '1px solid #BDBDBD',
-        }}
-      >
-        <Map
-          data={countryData?.data}
-          features={countryFeatures}
-          height={720}
-          initialLevel={0}
-          disableZoom={true}
-          country={country}
-        />
-      </div>
+      <SectionTitle top={true} headline="People still needing intervention" text={`Districts in 2020 and 2030`} />
+      <img src={'http://ntd.artrabbit.studio/static/circle-graph.png'} alt="circle graph" />
+     
+      <SectionTitle headline="Timeline" text={`Showing prevalence and probable eradication over time`} />
+
+      <Box className={classes.chartContainer}>
+        {stateData && (
+          <Timeline data={Object.values(stateData.data)} width={500} />
+        )}
+      </Box> 
+
+
+      <Grid container justify="center">
+        <Grid sm={12} item>
+          <Box className={classes.chartContainer}>
+
+            <ChartSettings
+              action={settingsClickDemo}
+              title="Settings"
+              buttonText="Update graphs"
+            >
+              <FormControl className={classes.formControl}>
+                <Typography id="non-linear-slider1" variant="subtitle1" gutterBottom>Time period</Typography>
+                <Slider
+                  value={[2021, 2029]}
+                  step={1}
+                  min={2019}
+                  max={2030}
+                  marks={[{ value: 2019, label: '2019', }, { value: 2030, label: '2030' }]}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Typography id="non-linear-slider2" variant="subtitle1" gutterBottom>Clip scale</Typography>
+                <Slider
+                  value={40}
+                  step={1}
+                  min={0}
+                  max={100}
+                  marks={[{ value: 0, label: '0', }, { value: 100, label: '100' }]}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+
+              </FormControl>
+            </ChartSettings>
+            <SectionTitle top={true} headline="Development state or district" text={`Prevalence development, get an overview of how each state or district developed over time`} />
+            {countryData && (
+              <BumpChart data={Object.values(countryData.data)} width={800} />
+            )}
+
+          </Box>
+        </Grid>
+      </Grid>
+
+
+
+
+      
+
+
 
       <DiveDeeper
         title="Dive deeper"
         links={[
-          { to: '/hot-spots', name: 'HOTSPOTS' },
-          { to: '/country', name: 'SELECT COUNTRY' },
+          { to: `/hotspots/${country}`, name: `HOTSPOTS ${selectedCountry?.name || '...'}` },
         ]}
       />
     </Layout>

@@ -73,7 +73,7 @@ const SiteSections = (props) => {
             <ul>
               <Typography component="li" variant="h3"><Link component={RouterLink} to="/intro" color="inherit">Introduction</Link></Typography>
               <Typography component="li" variant="h3"><Link component={RouterLink} to="/trends" color="inherit">Trends</Link></Typography>
-              <Typography component="li" variant="h3"><Link component={RouterLink} to="/hot-spots" color="inherit">Hotspots</Link></Typography>
+              <Typography component="li" variant="h3"><Link component={RouterLink} to="/hotspots" color="inherit">Hotspots</Link></Typography>
               <Typography component="li" variant="h3"><Link component={RouterLink} to="/simulator" color="inherit">Simulator</Link></Typography>
             </ul>
           </Grid>
