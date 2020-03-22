@@ -10,6 +10,7 @@ import Simulator from './pages/Simulator'
 import Trends from './pages/Trends'
 import TrendsCountry from './pages/TrendsCountry'
 import HotSpotCountry from './pages/HotSpotCountry'
+import AboutLF from './pages/AboutLF'
 
 import 'typeface-roboto'
 import 'typeface-libre-franklin'
@@ -120,6 +121,7 @@ function App() {
             <Route exact path="/hot-spots" component={HotSpots} />
             <Route exact path="/country" component={HotSpotCountry} />
             <Route exact path="/simulator" component={Simulator} />
+            <Route exact path="/about-lf" component={AboutLF} />
             <Route exact path="**" component={Page} />
           </Switch>
         </ScrollToTop>
