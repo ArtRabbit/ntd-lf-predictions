@@ -132,7 +132,6 @@ export var SessionData = {
     ses.scenarios.splice(ind, 1)
     var toStore = JSON.stringify(ses)
     localStorage.setItem('sessionData', toStore)
-    console.log('ScenarioIndex deleteScenario', 0)
     ScenarioIndex.setIndex(0)
   },
 }
@@ -832,8 +831,8 @@ export var simControler = {
     dyrs = stats.doses
     ryrs = stats.reduction
 
-    console.log(ts)
-    console.log(dyrs)
+    //    console.log(ts) // !!!!!!!!!!!!!!! not working properly!
+    //    console.log(dyrs) // !!!!!!!!!!!!!!! not working properly!
     SessionData.storeStats({
       ts: ts,
       prev_reds: ryrs,
@@ -894,8 +893,8 @@ export var simControler = {
       scenario['results'][0]['ts']
         ? scenario['results'][0]['ts'].length
         : 0 // this is just a hotfix so it doesn't crash, however things don't work as they are supposed to
-    console.log('T')
-    console.log(T)
+    //    console.log('T')
+    //    console.log(T)
     var prev0
     var totR = new Array(T)
     var doses = new Array(T)
@@ -940,14 +939,12 @@ export var simControler = {
     //        console.log(paramsFromUI);
     this.params = { ...paramsFromUI }
     var i = SessionData.numScenarios()
-    console.log('ScenarioIndex', i)
     ScenarioIndex.setIndex(i)
     SessionData.createNewSession()
     // console.log(this);
     /*     simControler.fixInput(false); */
 
     if (SessionData.ran(i)) {
-      console.log('ScenarioIndex ran', i)
       ScenarioIndex.setIndex(i)
       // $("#settings-modal").modal("hide");
     } else {
@@ -984,7 +981,6 @@ export var simControler = {
       -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma)
 
     SessionData.deleteSession()
-    console.log('ScenarioIndex documentReady', -1)
     ScenarioIndex.setIndex(-1)
   },
   params: {
