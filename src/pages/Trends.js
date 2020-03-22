@@ -56,7 +56,7 @@ const Trends = props => {
     <Layout>
       <Grid container spacing={0}>
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Head transparent={true} title="Lympahtic filariasis Trends" />
+          <Head transparent={true} title="Lymphatic filariasis Trends" />
         </Grid>
         <Grid item md={7} xs={12} className={classes.headRightColumn}>
           <Inputs />
