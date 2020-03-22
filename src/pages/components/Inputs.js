@@ -60,16 +60,18 @@ const Inputs = props => {
   const { countrySuggestions, regimes } = useDataAPI()
   const { regime, setRegime, country } = useUIState()
   const history = useHistory()
-  const matchTop = useRouteMatch('/:section')
-  const { section } = matchTop.params
+  const matchSection = useRouteMatch('/:section')
 
   const handleCountryChange = (event, value) => {
-    // country has been selected
-    if (value) {
-      history.push({ pathname: `/${section}/${value.id}` })
-      // country has been deselected
-    } else {
-      history.push({ pathname: `/${section}` })
+    if (matchSection) {
+      const { section } = matchSection.params
+      // country has been selected
+      if (value) {
+        history.push({ pathname: `/${section}/${value.id}` })
+        // country has been deselected
+      } else {
+        history.push({ pathname: `/${section}` })
+      }
     }
   }
 
