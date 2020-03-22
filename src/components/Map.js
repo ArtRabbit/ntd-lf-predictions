@@ -15,6 +15,7 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
 
   const history = useHistory()
   const match = useRouteMatch('/:section')
+  const matchesDetails = useRouteMatch('/:section/:country')
 
   const selectedFeatureID = feature?.properties.id
   const selectedData = data ? data[selectedFeatureID] : null
@@ -36,7 +37,9 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
   const handleClick = event => {
     const feature = event.features.find(f => f.layer.id === 'fill-layer')
     if (feature) {
-      dispatch({ type: 'SELECT', payload: { feature, event } })
+      if (matchesDetails) {
+        dispatch({ type: 'SELECT', payload: { feature, event } })
+      }
       history.push(`/${match.params.section}/${feature.properties.id}`)
     }
   }
