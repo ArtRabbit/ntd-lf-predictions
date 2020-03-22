@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react'
+import { match, useRouteMatch } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { useDataAPI, useUIState } from '../../hooks/stateHooks'
+import { useHistory } from 'react-router-dom'
 
 import Box from '@material-ui/core/Box'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -56,7 +58,22 @@ const Inputs = props => {
   const classes = useStyles()
 
   const { countrySuggestions, regimes } = useDataAPI()
-  const { regime, setRegime } = useUIState()
+  const { regime, setRegime, country } = useUIState()
+  const history = useHistory()
+  const matchTop = useRouteMatch('/:section')
+  const { section } = matchTop.params
+
+  const handleCountryChange = (event, value) => {
+    // country has been selected
+    if (value) {
+      history.push({ pathname: `/${section}/${value.id}` })
+      // country has been deselected
+    } else {
+      history.push({ pathname: `/${section}` })
+    }
+  }
+
+  const selected = countrySuggestions.find(x => x.id === country)
 
   return (
     <Box className={classes.root}>
@@ -66,10 +83,11 @@ const Inputs = props => {
           options={countrySuggestions}
           getOptionLabel={option => option.name}
           style={{ width: 300 }}
+          value={selected ?? { name: 'Select country' }}
           renderInput={params => (
             <TextField {...params} label="View - Countries" />
           )}
-          //   onChange={handleCountryChange}
+          onChange={handleCountryChange}
         />
         <FormHelperText>Some important helper text</FormHelperText>
       </FormControl>

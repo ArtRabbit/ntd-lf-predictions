@@ -21,24 +21,22 @@ const useStyles = makeStyles(theme => ({
   },
   chartContainer: {
     position: 'relative',
-    width: '100%'
-  }
+    width: '100%',
+  },
 }))
 
-const TrendsCountry = (props) => {
-
+const TrendsCountry = props => {
   const classes = useStyles()
-
-  const countryIdent = props.match.params.country;
-
-  const { country } = useUIState()
-  const { countryData, countryFeatures, stateByCountryData } = useDataAPI()
+  const { selectedCountry } = useDataAPI()
 
   return (
     <Layout>
       <Grid container spacing={0}>
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Head transparent={true} title={`Trends by country - ${countryIdent}`} />
+          <Head
+            transparent={true}
+            title={`Trends by country - ${selectedCountry?.name || '...'}`}
+          />
         </Grid>
         <Grid item md={7} xs={12} className={classes.headRightColumn}>
           <Inputs />
@@ -66,7 +64,7 @@ const TrendsCountry = (props) => {
           { to: '/country', name: 'SELECT COUNTRY' },
         ]}
       />
-    </Layout >
+    </Layout>
   )
 }
 export default observer(TrendsCountry)

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Switch, Route, useLocation } from 'react-router-dom'
+import useSyncRouteState from './hooks/useSyncRouteState'
 
 import ScrollToTop from './pages/components/ScrollToTop'
 import Home from './pages/Home'
@@ -14,7 +15,6 @@ import AboutLF from './pages/AboutLF'
 
 import 'typeface-roboto'
 import 'typeface-libre-franklin'
-
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
@@ -108,6 +108,7 @@ const theme = createMuiTheme({
 
 function App() {
   const location = useLocation()
+  useSyncRouteState()
 
   return (
     <CssBaseline>

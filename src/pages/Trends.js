@@ -43,10 +43,9 @@ const PanelContainer = ({ children }) => (
   </div>
 )
 
-const Trends = (props) => {
+const Trends = props => {
   const classes = useStyles()
 
-  const { country } = useUIState()
   const { countryData, countryFeatures, stateByCountryData } = useDataAPI()
 
   const settingsClickDemo = event => {
@@ -163,14 +162,19 @@ const Trends = (props) => {
         </Grid>
       </Grid>
 
-      <div style={{borderTop: "1px solid #BDBDBD",borderBottom: "1px solid #BDBDBD"}}>          
-      <Map
-        data={countryData?.data}
-        features={countryFeatures}
-        height={720}
-        initialLevel={0}
-        disableZoom={true}
-      />
+      <div
+        style={{
+          borderTop: '1px solid #BDBDBD',
+          borderBottom: '1px solid #BDBDBD',
+        }}
+      >
+        <Map
+          data={countryData?.data}
+          features={countryFeatures}
+          height={720}
+          initialLevel={0}
+          disableZoom={true}
+        />
       </div>
 
       <Box className={classes.chartContainer}>

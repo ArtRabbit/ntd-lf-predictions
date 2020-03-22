@@ -340,6 +340,19 @@ class DataAPI {
     return []
   }
 
+  get selectedCountry() {
+    const { country } = this.uiState
+    const countryMap = this.countryData
+
+    if (country && countryMap) {
+      const selected = countryMap.data[country]
+      debugger
+      return selected
+    }
+
+    return null
+  }
+
   get regimes() {
     return [REGIME_NO_MDA, REGIME_WHO, REGIME_COVERAGE, REGIME_FREQUENCY]
   }
@@ -362,6 +375,7 @@ decorate(DataAPI, {
   rowFilter: computed,
   countrySuggestions: computed,
   regimes: computed,
+  selectedCountry: computed,
 })
 
 export default DataAPI
