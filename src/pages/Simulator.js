@@ -145,28 +145,35 @@ const Simulator = props => {
   const [simulationProgress, setSimulationProgress] = useState(0)
   const [scenarioInputs, setScenarioInputs] = useState([])
   const [scenarioResults, setScenarioResults] = useState([])
-  const simulatorCallback = par => {
-    if (typeof par == 'number') {
-      setSimulationProgress(par)
+  const simulatorCallback = (resultObject, newScenario) => {
+    if (typeof resultObject == 'number') {
+      setSimulationProgress(resultObject)
     } else {
       console.log('Simulation returned results!')
 
       if (typeof scenarioResults[tabIndex] === 'undefined') {
         console.log('scenarioResults')
-        setScenarioResults([...scenarioResults, JSON.parse(par)])
-        setScenarioInputs([...scenarioInputs, JSON.parse(par).params.inputs])
+        setScenarioResults([...scenarioResults, JSON.parse(resultObject)])
+        setScenarioInputs([
+          ...scenarioInputs,
+          JSON.parse(resultObject).params.inputs,
+        ])
       } else {
+        console.log('tabIndex', tabIndex)
+        console.log('newScenario', newScenario)
         let correctTabIndex = newScenario === true ? tabIndex + 1 : tabIndex
+        // let correctTabIndex = tabIndex + 1
+        console.log('correctTabIndex', correctTabIndex)
 
         let scenarioResultsNew = [...scenarioResults] // 1. Make a shallow copy of the items
         let resultItem = scenarioResultsNew[correctTabIndex] // 2. Make a shallow copy of the resultItem you want to mutate
-        resultItem = JSON.parse(par) // 3. Replace the property you're intested in
+        resultItem = JSON.parse(resultObject) // 3. Replace the property you're intested in
         scenarioResultsNew[correctTabIndex] = resultItem // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
         setScenarioResults(scenarioResultsNew) // 5. Set the state to our new copy
 
         let scenarioInputsNew = [...scenarioInputs]
         let inputsItem = scenarioInputsNew[correctTabIndex]
-        inputsItem = JSON.parse(par).params.inputs
+        inputsItem = JSON.parse(resultObject).params.inputs
         scenarioInputsNew[correctTabIndex] = inputsItem
         setScenarioInputs(scenarioInputsNew)
       }
@@ -176,25 +183,23 @@ const Simulator = props => {
   useEffect(() => {
     console.log('scenarioInputs', scenarioInputs)
   }, [scenarioInputs])
-  const [newScenario, setNewScenario] = useState(true)
   const runCurrentScenario = () => {
     if (!simInProgress) {
       setSimInProgress(true)
-      setNewScenario(false)
-      console.log(simParams)
+      console.log(tabIndex, simParams)
+      SimulatorEngine.simControler.newScenario = false
       SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
     }
   }
   const runNewScenario = () => {
     if (!simInProgress) {
       setSimInProgress(true)
-      setNewScenario(true)
-      // console.log(tabIndex)
       if (tabLength < 5) {
         console.log('settingTabLength', tabLength + 1)
         setTabIndex(tabLength)
         setTabLength(tabLength + 1)
-        console.log(simParams)
+        console.log(tabIndex, simParams)
+        SimulatorEngine.simControler.newScenario = true
         SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
       } else {
         alert('No free slots!')
