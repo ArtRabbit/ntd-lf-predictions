@@ -187,7 +187,7 @@ con.connect(function(err) {
               }
             })
             console.log(thisRegime)
-            let outputString = thisRegime.map(e => e.join(',')).join('\n')
+            let outputString = thisRegime.map(e => e.join(',')).join('\r\n')
             let noSpaceRegime = regime.replace(/ /g, '')
             fs.writeFileSync(
               '../regimes/' + noSpaceRegime + '.csv',

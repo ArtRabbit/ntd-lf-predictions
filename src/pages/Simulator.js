@@ -33,7 +33,7 @@ import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 // let SimulatorEngine = await import("./components/simulator/SimulatorEngine");
 /* console.log('params')
 console.log(SimulatorEngine.params) */
-console.log(SimulatorEngine.simControler.params)
+//console.log(SimulatorEngine.simControler.params)
 SimulatorEngine.simControler.documentReady()
 
 const useStyles = makeStyles(theme => ({
@@ -104,11 +104,12 @@ const Simulator = props => {
     ...SimulatorEngine.simControler.params, // params editable via UI
   })
 
+  const [simInProgress, setSimInProgress] = useState(false)
+  const [tabLength, setTabLength] = useState(0)
   const [tabIndex, setTabIndex] = useState(0)
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue)
   }
-
   const handleInputChange = event => {
     // setFrequency(event.target.value);
     setSimParams({ ...simParams, species: event.target.value })
@@ -117,21 +118,14 @@ const Simulator = props => {
     // setFrequency(event.target.value);
     setSimParams({ ...simParams, mdaSixMonths: event.target.value })
   }
-
-  /* useEffect(() => {
-    console.log(
-      simParams.mdaSixMonths,
-      simParams.coverage,
-      simParams.mdaRegimen,
-      simParams.runs
-    )
-  }, [simParams]) */
-  /*   useEffect(() => {
-       setSimParams({
-        ...simParams,
-        runs: 80
-      });
-    }, []); */
+  useEffect(() => {
+    console.log('tab updated', tabIndex)
+    //    console.log(scenarioInputs[tabIndex])
+    if (typeof scenarioInputs[tabIndex] != 'undefined') {
+      // set input arams if you have them
+      setSimParams(scenarioInputs[tabIndex])
+    }
+  }, [tabIndex])
 
   const handleCoverageChange = (event, newValue) => {
     // this used to be a special occastion. If nothing changes we can use the handleSlerChanges handler instead.
@@ -149,17 +143,63 @@ const Simulator = props => {
     })
   }
   const [simulationProgress, setSimulationProgress] = useState(0)
+  const [scenarioInputs, setScenarioInputs] = useState([])
   const [scenarioResults, setScenarioResults] = useState([])
   const simulatorCallback = par => {
     if (typeof par == 'number') {
       setSimulationProgress(par)
     } else {
       console.log('Simulation returned results!')
-      setScenarioResults([...scenarioResults, par])
+
+      if (typeof scenarioResults[tabIndex] === 'undefined') {
+        console.log('scenarioResults')
+        setScenarioResults([...scenarioResults, JSON.parse(par)])
+        setScenarioInputs([...scenarioInputs, JSON.parse(par).params.inputs])
+      } else {
+        let correctTabIndex = newScenario === true ? tabIndex + 1 : tabIndex
+
+        let scenarioResultsNew = [...scenarioResults] // 1. Make a shallow copy of the items
+        let resultItem = scenarioResultsNew[correctTabIndex] // 2. Make a shallow copy of the resultItem you want to mutate
+        resultItem = JSON.parse(par) // 3. Replace the property you're intested in
+        scenarioResultsNew[correctTabIndex] = resultItem // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+        setScenarioResults(scenarioResultsNew) // 5. Set the state to our new copy
+
+        let scenarioInputsNew = [...scenarioInputs]
+        let inputsItem = scenarioInputsNew[correctTabIndex]
+        inputsItem = JSON.parse(par).params.inputs
+        scenarioInputsNew[correctTabIndex] = inputsItem
+        setScenarioInputs(scenarioInputsNew)
+      }
+      setSimInProgress(false)
     }
   }
-  const runScenario = () => {
-    SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
+  useEffect(() => {
+    console.log('scenarioInputs', scenarioInputs)
+  }, [scenarioInputs])
+  const [newScenario, setNewScenario] = useState(true)
+  const runCurrentScenario = () => {
+    if (!simInProgress) {
+      setSimInProgress(true)
+      setNewScenario(false)
+      console.log(simParams)
+      SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
+    }
+  }
+  const runNewScenario = () => {
+    if (!simInProgress) {
+      setSimInProgress(true)
+      setNewScenario(true)
+      // console.log(tabIndex)
+      if (tabLength < 5) {
+        console.log('settingTabLength', tabLength + 1)
+        setTabIndex(tabLength)
+        setTabLength(tabLength + 1)
+        console.log(simParams)
+        SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
+      } else {
+        alert('No free slots!')
+      }
+    }
   }
 
   return (
@@ -196,30 +236,40 @@ const Simulator = props => {
                 aria-label="simple tabs example"
               >
                 <Tab label="Scenario 1" {...a11yProps(0)} />
-                {scenarioResults.length > 1 && (
-                  <Tab label="Scenario 2" {...a11yProps(1)} />
-                )}
-                {scenarioResults.length > 2 && (
-                  <Tab label="Scenario 3" {...a11yProps(2)} />
-                )}
+                {tabLength > 1 && <Tab label="Scenario 2" {...a11yProps(1)} />}
+                {tabLength > 2 && <Tab label="Scenario 3" {...a11yProps(2)} />}
+                {tabLength > 3 && <Tab label="Scenario 4" {...a11yProps(3)} />}
+                {tabLength > 4 && <Tab label="Scenario 5" {...a11yProps(4)} />}
               </Tabs>
             </AppBar>
             <TabPanel value={tabIndex} index={0}>
               Scenario 1
               <div style={{ overflow: 'hidden', height: '800px' }}>
-                {scenarioResults[0]}
+                {JSON.stringify(scenarioResults[0])}
               </div>
             </TabPanel>
             <TabPanel value={tabIndex} index={1}>
               Scenario 2
               <div style={{ overflow: 'hidden', height: '800px' }}>
-                {scenarioResults[1]}
+                {JSON.stringify(scenarioResults[1])}
               </div>
             </TabPanel>
             <TabPanel value={tabIndex} index={2}>
               Scenario 3
               <div style={{ overflow: 'hidden', height: '800px' }}>
-                {scenarioResults[2]}
+                {JSON.stringify(scenarioResults[2])}
+              </div>
+            </TabPanel>
+            <TabPanel value={tabIndex} index={3}>
+              Scenario 4
+              <div style={{ overflow: 'hidden', height: '800px' }}>
+                {JSON.stringify(scenarioResults[3])}
+              </div>
+            </TabPanel>
+            <TabPanel value={tabIndex} index={4}>
+              Scenario 5
+              <div style={{ overflow: 'hidden', height: '800px' }}>
+                {JSON.stringify(scenarioResults[4])}
               </div>
             </TabPanel>
           </div>
@@ -280,7 +330,7 @@ const Simulator = props => {
             />
           </FormControl>
 
-          <Typography className={classes.title} variant="h5" component="h2">
+          {/* <Typography className={classes.title} variant="h5" component="h2">
             Intervention
           </Typography>
           <FormControl className={classes.formControl}>
@@ -296,7 +346,7 @@ const Simulator = props => {
               <MenuItem value={12}>Annual</MenuItem>
               <MenuItem value={6}>Every 6 months</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl>*/}
           <FormControl className={classes.formControl}>
             <Typography gutterBottom>Target coverage</Typography>
             <InputLabel htmlFor="coverage"></InputLabel>
@@ -396,10 +446,20 @@ const Simulator = props => {
             </p>
           </FormControl>
           <div className={classes.buttons}>
-            <Button variant="contained" color="primary" onClick={runScenario}>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={simInProgress || scenarioInputs.length === 0}
+              onClick={runCurrentScenario}
+            >
               UPDATE SCENARIO
             </Button>
-            <Button variant="contained" color="primary" onClick={runScenario}>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={simInProgress}
+              onClick={runNewScenario}
+            >
               NEW SCENARIO
             </Button>
           </div>
