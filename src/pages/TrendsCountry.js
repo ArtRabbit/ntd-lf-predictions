@@ -78,7 +78,7 @@ const TrendsCountry = props => {
       <DiveDeeper
         title="Dive deeper"
         links={[
-          { to: '/hot-spots', name: 'PROBLEM AREAS' },
+          { to: '/hot-spots', name: 'HOTSPOTS' },
           { to: '/country', name: 'SELECT COUNTRY' },
         ]}
       />

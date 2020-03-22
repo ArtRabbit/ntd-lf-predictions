@@ -44,7 +44,7 @@ const Home = (props) => {
       <Grid container spacing={0}>
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
           <Head
-            title="Lympahtic filariasis Prediction Maps"
+            title="Lymphatic filariasis Prediction Maps"
             text={
               `Welcome to the NTD Modelling Prediction Maps.
                         The predictions in this website provide guidance on

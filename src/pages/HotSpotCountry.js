@@ -31,8 +31,8 @@ const HotSpotCountry = (props) => {
         <Grid item md={5} xs={12} className={classes.headLeftColumn}>
           <Head
             transparent={true}
-            title="Lympahtic filariasis
-                        Problem areas
+            title="Lymphatic filariasis
+                        Hotspots
                         Kenya"
           />
         </Grid>
@@ -43,7 +43,7 @@ const HotSpotCountry = (props) => {
 
       <DiveDeeper
         title="Dive deeper"
-        links={[{ to: '/hot-spots', name: 'PROBLEM AREAS' }, { to: '/country', name: 'SELECT COUNTRY' }]}
+        links={[{ to: '/trends', name: 'TRENDS' }, { to: '/country', name: 'SELECT COUNTRY' }]}
       />
 
     </Layout >
