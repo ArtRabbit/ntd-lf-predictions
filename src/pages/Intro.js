@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Intro = (props) => {
+const Intro = props => {
   const classes = useStyles()
   const { countryData, countryFeatures } = useDataAPI()
 
@@ -42,7 +42,6 @@ const Intro = (props) => {
       alert('Playing')
     }
   }
-
 
   return (
     <Layout>
@@ -66,7 +65,7 @@ const Intro = (props) => {
       </Grid>
       <Grid container spacing={0}>
         <Grid item md={3} xs={12}>
-            <DiveDeeper
+          <DiveDeeper
             title="Dive deeper"
             links={[
               { to: '/about-lf', name: 'MORE ABOUT LF' },
@@ -78,18 +77,14 @@ const Intro = (props) => {
         <Grid item md={9} xs={12} className={classes.headLeftColumn}>
           <Box m={1} className={classes.map}>
             <Map
-              data={countryData?.data}
-              features={countryFeatures}
+              countryFeatures={countryFeatures}
               height={720}
               disableZoom={true}
               initialLevel={0}
             />
           </Box>
         </Grid>
-        
       </Grid>
-
-      
     </Layout>
   )
 }

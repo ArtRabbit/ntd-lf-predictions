@@ -53,7 +53,7 @@ const reduce = (state, { type, payload }) => {
         tooltip: null,
       }
     case 'FOCUS':
-      return merge({}, state, fit(payload.feature, state.viewport))
+      return merge({}, state, fit(payload, state.viewport))
     case 'SELECT':
       const { feature, event } = payload
 

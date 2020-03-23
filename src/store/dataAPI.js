@@ -132,34 +132,41 @@ function addIDRelations({ data, relations, key }) {
   )(data)
 }
 
-function mergeFeatures(data, featureCollection, key) {
-  const { data: d, stats } = data
+function mergeFeatures(dataAndStats, featureCollection, key) {
+  const { data, stats } = dataAndStats
 
   // TODO: add bins
   const colorScale = scaleSequential(interpolateReds)
     .domain([0, stats.prevalence.max])
     .nice(5)
 
-  const ticks = colorScale
-    .ticks(5)
-    .map(value => ({ value, color: colorScale(value) }))
-
-  const features = featureCollection.features.map(feature => {
-    // get IU id
-    const id = feature.properties[key]
-    const prevalenceOverTime = d[id]?.prevalence ?? {}
-
-    // get color from scale if prevalence value available
-    const colorsByYear = mapValues(prevalenceOverTime, p_prevalence =>
-      isFinite(p_prevalence) ? color(colorScale(p_prevalence)).hex() : null
-    )
-
-    return merge({}, feature, {
-      properties: {
-        ...colorsByYear,
-      },
+  const features = featureCollection.features
+    // only take features, which are in the data
+    .filter(feature => {
+      const id = feature.properties[key]
+      return data[id] ?? false
     })
-  })
+    .map(feature => {
+      const id = feature.properties[key]
+      const featureData = data[id]
+      const prevalenceOverTime = featureData?.prevalence ?? {}
+      const population = featureData?.population ?? '–'
+      const endemicity = featureData?.endemicity ?? '–'
+
+      // get color from scale if prevalence value available
+      const colorsByYear = mapValues(prevalenceOverTime, p_prevalence =>
+        isFinite(p_prevalence) ? color(colorScale(p_prevalence)).hex() : null
+      )
+
+      return merge({}, feature, {
+        properties: {
+          ...mapKeys(year => `color-${year}`)(colorsByYear),
+          ...mapKeys(year => `prev-${year}`)(prevalenceOverTime),
+          population,
+          endemicity,
+        },
+      })
+    })
 
   return { type: 'FeatureCollection', features }
 }
@@ -306,10 +313,22 @@ class DataAPI {
 
   get stateFeatures() {
     const featureCollection = this.dataStore.featuresLevel1
-    const data = this.stateData
+    const states = this.stateData
+    const { country } = this.uiState
 
-    if (featureCollection && data) {
-      return mergeFeatures(data, featureCollection, 'ADMIN1ID')
+    if (featureCollection && states) {
+      let d = states
+
+      if (country) {
+        d = {
+          ...states,
+          data: pickByFP(x => x.relatedCountries.includes(country))(
+            states.data
+          ),
+        }
+      }
+
+      return mergeFeatures(d, featureCollection, 'ADMIN1ID')
     }
 
     return emptyFeatureCollection

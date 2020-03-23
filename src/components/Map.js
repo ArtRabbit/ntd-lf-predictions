@@ -7,7 +7,15 @@ import { format } from 'd3'
 import useMapReducer from '../hooks/useMapReducer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-function Map({ data, country, features, width, height, disableZoom, filter }) {
+function Map({
+  country,
+  countryFeatures,
+  stateFeatures,
+  width,
+  height,
+  disableZoom,
+  filter,
+}) {
   const [
     { year, viewport, feature, featureHover, popup, tooltip },
     dispatch,
@@ -17,25 +25,28 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
   const match = useRouteMatch('/:section')
   const matchesDetails = useRouteMatch('/:section/:country')
 
-  const selectedFeatureID = feature?.properties.id
-  const selectedData = data ? data[selectedFeatureID] : null
-  const prevalenceSelected = selectedData?.prevalence[`${year}`]
+  const interactiveLayers = [
+    ...(!!countryFeatures ? ['fill-countries'] : []),
+    ...(!!stateFeatures ? ['fill-states'] : []),
+  ]
 
   useEffect(() => {
     if (country) {
-      const focus = features.features.find(f => f.properties.id === country)
+      const focus = countryFeatures.features.find(
+        f => f.properties.id === country
+      )
       if (focus) {
-        dispatch({ type: 'FOCUS', payload: { feature: focus } })
+        dispatch({ type: 'FOCUS', payload: focus })
       }
     }
-  }, [features, country, dispatch])
+  }, [countryFeatures, country, dispatch])
 
   const handleViewportChange = payload => {
     dispatch({ type: 'VIEWPORT', payload })
   }
 
   const handleClick = event => {
-    const feature = event.features.find(f => f.layer.id === 'fill-layer')
+    const feature = event.features.find(f => f.layer.id === 'fill-countries')
     if (feature) {
       if (matchesDetails) {
         dispatch({ type: 'SELECT', payload: { feature, event } })
@@ -46,11 +57,11 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
 
   const handleHover = event => {
     if (event.features) {
-      const feature = event.features.find(f => f.layer.id === 'fill-layer')
+      const feature = event.features[0]
       if (feature) {
         dispatch({ type: 'HOVER', payload: { feature, event } })
       } else {
-        dispatch({ type: 'HOVEROUT', payload: { feature, event } })
+        dispatch({ type: 'HOVEROUT' })
       }
     } else {
       dispatch({ type: 'HOVEROUT' })
@@ -58,7 +69,8 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
   }
 
   const handleClose = () => {
-    dispatch({ type: 'DESELECT' })
+    history.push('/trends')
+    // dispatch({ type: 'DESELECT' })
   }
 
   // old map style mapbox://styles/kpcarter100/ck7w5zz9l026d1imn43721owm
@@ -72,22 +84,67 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
       scrollZoom={disableZoom ? false : true}
       doubleClickZoom={disableZoom ? false : true}
       mapStyle="mapbox://styles/kpcarter100/ck80d7xh004tt1irt06j8jkme"
-      interactiveLayerIds={['fill-layer']}
+      interactiveLayerIds={interactiveLayers}
       onViewportChange={handleViewportChange}
       onClick={handleClick}
       onHover={handleHover}
     >
-      {features && (
-        <Source id="africa" type="geojson" data={features}>
+      {countryFeatures && (
+        <Source id="africa-countries" type="geojson" data={countryFeatures}>
           <Layer
-            id="fill-layer"
+            id="fill-countries"
             beforeId="admin-0-boundary"
-            filter={['has', `${year}`]}
+            filter={['has', `color-${year}`]}
+            type="fill"
+            paint={{
+              'fill-color': [
+                'case',
+                !stateFeatures,
+                [
+                  'coalesce',
+                  ['get', `color-${year}`],
+                  // hide shape if no data available
+                  'rgba(0,0,0,0)',
+                ],
+                'rgba(0,0,0,0)',
+              ],
+              'fill-outline-color': [
+                'case',
+                ['==', ['get', 'id'], feature?.properties.id || null],
+                'rgba(255, 145, 170, 1)',
+                'rgba(255, 145, 170, 0.3)',
+              ],
+            }}
+          />
+          <Layer
+            id="hover-countries"
+            type="line"
+            filter={['has', `color-${year}`]}
+            layout={{ 'line-join': 'bevel' }}
+            paint={{
+              'line-color': [
+                'case',
+                ['==', ['get', 'id'], featureHover?.properties.id || null],
+                '#6236FF',
+                'rgba(0,0,0,0)',
+              ],
+              'line-width': 2,
+            }}
+          />
+        </Source>
+      )}
+
+      {stateFeatures && (
+        <Source id="africa-states" type="geojson" data={stateFeatures}>
+          <Layer
+            id="fill-states"
+            beforeId="admin-0-boundary"
+            filter={['has', `color-${year}`]}
             type="fill"
             paint={{
               'fill-color': [
                 'coalesce',
-                ['get', `${year}`],
+                ['get', `color-${year}`],
                 // hide shape if no data available
                 'rgba(0,0,0,0)',
               ],
@@ -100,9 +157,9 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
             }}
           />
           <Layer
-            id="hover-layer"
+            id="hover-states"
             type="line"
-            filter={['has', `${year}`]}
+            filter={['has', `color-${year}`]}
             layout={{ 'line-join': 'bevel' }}
             paint={{
               'line-color': [
@@ -116,7 +173,8 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
           />
         </Source>
       )}
-      {feature && selectedData && (
+
+      {feature && (
         <Popup
           latitude={popup[1]}
           longitude={popup[0]}
@@ -129,17 +187,18 @@ function Map({ data, country, features, width, height, disableZoom, filter }) {
             <Typography variant="subtitle1">
               {feature.properties.name}
             </Typography>
-            <div>Prevalence: {prevalenceSelected} %</div>
-            <div>Population: {format(',')(selectedData.population)}</div>
+            <div>Prevalence: {feature.properties[`prev-${year}`]} %</div>
+            <div>Population: {format(',')(feature.properties.population)}</div>
             <a href="/trends">Link</a>
-            <div>Endemicity: {selectedData.endemicity}</div>
+            <div>Endemicity: {feature.properties.endemicity}</div>
           </div>
         </Popup>
       )}
-      {featureHover && !selectedData && (
+
+      {featureHover && (
         <Tooltip
           title={`${featureHover.properties.name} ${
-            data[featureHover?.properties.id]?.prevalence[`${year}`]
+            featureHover.properties[`prev-${year}`]
           } %`}
           open
           placement="top"

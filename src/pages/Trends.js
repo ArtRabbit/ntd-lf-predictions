@@ -169,8 +169,7 @@ const Trends = props => {
         }}
       >
         <Map
-          data={countryData?.data}
-          features={countryFeatures}
+          countryFeatures={countryFeatures}
           height={720}
           initialLevel={0}
           disableZoom={true}

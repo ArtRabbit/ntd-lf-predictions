@@ -28,7 +28,12 @@ const useStyles = makeStyles(theme => ({
 
 const TrendsCountry = props => {
   const classes = useStyles()
-  const { selectedCountry, countryData, countryFeatures } = useDataAPI()
+  const {
+    selectedCountry,
+    countryData,
+    countryFeatures,
+    stateFeatures,
+  } = useDataAPI()
   const { country } = useUIState()
 
   return (
@@ -66,8 +71,8 @@ const TrendsCountry = props => {
         }}
       >
         <Map
-          data={countryData?.data}
-          features={countryFeatures}
+          countryFeatures={countryFeatures}
+          stateFeatures={stateFeatures}
           height={720}
           initialLevel={0}
           disableZoom={true}
