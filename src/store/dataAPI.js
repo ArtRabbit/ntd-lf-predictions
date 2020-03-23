@@ -1,4 +1,5 @@
 import { computed, decorate } from 'mobx'
+import centroid from '@turf/centroid'
 import {
   groupBy,
   keyBy,
@@ -311,6 +312,24 @@ class DataAPI {
     return emptyFeatureCollection
   }
 
+  get countryCentroids() {
+    const countries = this.countryFeatures
+
+    if (countries) {
+      const centroids = {
+        ...countries,
+        features: countries.features.map(f => {
+          const population = f.properties.population
+          const c = centroid(f)
+          return merge({}, c, { properties: { population } })
+        }),
+      }
+      return centroids
+    }
+
+    return emptyFeatureCollection
+  }
+
   get stateFeatures() {
     const featureCollection = this.dataStore.featuresLevel1
     const states = this.stateData
@@ -394,6 +413,7 @@ decorate(DataAPI, {
   countrySuggestions: computed,
   regimes: computed,
   selectedCountry: computed,
+  countryCentroids: computed,
 })
 
 export default DataAPI

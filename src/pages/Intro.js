@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 
 const Intro = props => {
   const classes = useStyles()
-  const { countryFeatures } = useDataAPI()
+  const { countryFeatures, countryCentroids } = useDataAPI()
   const mapRef = useRef()
 
   const playScenario = event => {
@@ -63,6 +63,7 @@ const Intro = props => {
         <Map
           ref={mapRef}
           countryFeatures={countryFeatures}
+          populationFeatures={countryCentroids}
           height={720}
           disableZoom={true}
           initialLevel={0}
