@@ -1,8 +1,8 @@
 import React, { useEffect, forwardRef, useImperativeHandle } from 'react'
 import ReactMapGL, { Source, Layer, Popup } from 'react-map-gl'
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useHistory, useRouteMatch, NavLink } from 'react-router-dom'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { Tooltip, Typography, Slider } from '@material-ui/core'
+import { Tooltip, Typography, Slider, Box, Link } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { format } from 'd3'
 import useMapReducer from '../hooks/useMapReducer'
@@ -257,36 +257,37 @@ function Map({
                 onClose={handleClose}
                 anchor="top"
               >
-                <div>
+                <Box display="block" variant="body1" component="div">
                   <Typography variant="subtitle1">
                     {feature.properties.name}
                   </Typography>
-                  <a href="/trends">Link</a>
+                  <Link href="/trends">Link</Link>
                   <div>Prevalence: {feature.properties[`prev-${year}`]} %</div>
                   <div>
                     Population: {format(',')(feature.properties.population)}
                   </div>
                   <div>Endemicity: {feature.properties.endemicity}</div>
-                  <p>
-                    <a
-                      style={{ color: 'green' }}
-                      onClick={() =>
-                        selectCountryClickHotspots(feature.properties.id)
-                      }
-                    >
-                      Hotspots {feature.properties.name}
-                    </a>{' '}
-                    |
-                    <a
-                      style={{ color: 'green' }}
-                      onClick={() =>
-                        selectCountryClickTrends(feature.properties.id)
-                      }
-                    >
-                      Trends {feature.properties.name}
-                    </a>
-                  </p>
-                </div>
+                  <ul className="links">
+                    <li>
+                      <Link href="#"
+                        onClick={() =>
+                          selectCountryClickHotspots(feature.properties.id)
+                        }
+                      >
+                        Hotspots {feature.properties.name}
+                      </Link >{' '}
+                    </li>
+                    <li>
+                      <Link href="#"
+                        onClick={() =>
+                          selectCountryClickTrends(feature.properties.id)
+                        }
+                      >
+                        Trends {feature.properties.name}
+                      </Link>
+                    </li>
+                  </ul>
+                </Box>
               </Popup>
             )}
 
@@ -294,7 +295,7 @@ function Map({
               <Tooltip
                 title={`${featureHover.properties.name} ${
                   featureHover.properties[`prev-${year}`]
-                } %`}
+                  } %`}
                 open
                 placement="top"
               >

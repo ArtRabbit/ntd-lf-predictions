@@ -1,4 +1,75 @@
 /** global styles **/
+
+$primary: #000000;
+$secondary: #616161;
+$main: #6236ff;
+$mainHover: #4425b2;
+$line: #bdbdbd;
+$cw: #fff;
+
+/** charts **/
 tspan {
   user-select: none;
+}
+
+/** mapbox **/
+#root {
+  .mapboxgl-popup-content {
+    background-color: $cw;
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+      0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    padding: 10px 20px;
+  }
+
+  .mapboxgl-popup-close-button {
+    border: none;
+    display: block;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    font-size: 20px;
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+      0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    min-height: 26px;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    background-color: $main;
+    color: $cw;
+    border-radius: 50%;
+    top: 10px;
+    right: 10px;
+
+    &:hover {
+      background-color: $mainHover;
+    }
+  }
+
+  .links {
+    display: block;
+    list-style-type: none;
+    white-space: nowrap;
+    padding: 0;
+    margin: 5px 0px;
+    li {
+      display: inline-block;
+      &:before {
+        content: '|';
+        display: inline-block;
+        vertical-align: top;
+        margin: 0px 5px;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      &:first-child {
+        &:before {
+          display: none;
+        }
+      }
+    }
+  }
 }
