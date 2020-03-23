@@ -328,15 +328,14 @@ export var Model = function(n) {
     return p / this.n
   }
 
-  this.MDAEvent = function() {
-    for (var i = 0; i < this.n; i++) {
-      if (s.normal(this.people[i].u, 1) < 0) {
-        //param->uniform_dist()<param->covMDA
-        this.people[i].M = params.mfPropMDA * this.people[i].M
-        this.people[i].WM = Math.floor(params.wPropMDA * this.people[i].WM)
-        this.people[i].WF = Math.floor(params.wPropMDA * this.people[i].WF)
+  this.MDAEvent = function(){
+    for(var i = 0; i<this.n; i++){
+        if (s.normal(this.people[i].u,1)<0){    //param->uniform_dist()<param->covMDA
+          this.people[i].M = params.mfPropMDA * this.people[i].M;
+          this.people[i].WM = Math.floor(params.wPropMDA * this.people[i].WM );
+          this.people[i].WF = Math.floor(params.wPropMDA * this.people[i].WF );
+          }
       }
-    }
   }
 
   this.bedNetEvent = function() {
@@ -378,102 +377,125 @@ export var Model = function(n) {
     return ryrs
   }
 
-  this.evolveAndSaves = function(tot_t) {
-    var t = 0
-    var icount = 0
-    var maxMDAt = 1200.0
-    var maxoldMDAt //used in triple drug treatment.
-    this.bedNetInt = 0
+  this.evolveAndSaves = function(tot_t, mdaJSON) {
+        var t = 0;
+        var icount = 0;
+        var maxMDAt = 1200.0;
+        var maxoldMDAt; //used in triple drug treatment.
 
-    for (var i = 0; i < this.n; i++) {
-      //infect everyone initially.
-      //this.people[i].WM = 1;
-      //this.people[i].WF = 1;
-      this.people[i].M = 1.0
-    }
-    maxMDAt = 1200.0 + params.nMDA * params.mdaFreq
-    if (params.IDAControl == 1) {
-      //if switching to IDA after five treatment rounds.
-      maxoldMDAt = 1200.0 + 5.0 * params.mdaFreq
-    } else {
-      maxoldMDAt = 2 * maxMDAt //this just makes maxoldMDAt larger than total treatment time so there is never a switch.
-    }
+        // location to take in the json from the file
+        // var myJSON = '{"time":[60, 96, 120,144, 180], "coverage":[0.9, 0.9,0.9,0.9,0.9], "adherence" : [1, 1, 1, 1, 1]}';
+        // var mdaJSON = JSON.parse(myJSON);
+        //
+        // // set mda round
+        var mdaRound = 0;
+        // how many mda's will we do and when will the next one be
+        var numMDA = mdaObj.time.length;
+        nextMDA = 1200 + mdaObj.time[mdaRound];
 
-    //double currentL3 = 0.5;
-    // console.log("mosquito species: ", params.mosquitoSpecies, "\n");
-    params.L3 = 5.0
-    // console.log("0----------100\n-");
-    while (t < tot_t * 12.0) {
-      //for 100 years update annually, then update monthly when recording and intervention is occuring.
-      if (t < 960.0) {
-        //1200.0
-        params.dt = 12.0
-      } else {
-        params.dt = 1.0
-      }
-      for (var i = 0; i < this.n; i++) {
-        this.people[i].react()
-      }
-      //update
-      t = this.people[0].t
-      if (t < 12.0 * 80.0) {
-        params.L3 = 2.0
-      } else {
-        params.L3 = this.L3()
-      }
-      if (t % 2 == 0 && t < Math.floor(t) + params.dt) {
-        //cout << "t = " << (double) t/12.0 << "\n";
-        this.saveOngoing(
-          t / 12.0,
-          this.prevalence(),
-          this.aPrevalence(),
-          params.L3
-        )
-      }
-      if (
-        Math.floor(t) % Math.floor((tot_t * 12.0) / 10.0) == 0 &&
-        t < Math.floor(t) + params.dt
-      ) {
-        //every 10% of time run.
-        // console.log("-");
-        //        $("#test1").append(" p : " + this.prevalence() + " t : " + t / 12.0);
-      }
-      if (t >= 1200.0 && t < 1200.0 + params.dt) {
-        //events that occur at start of treatment after 100 years.
-        // console.log("bednet event at ", t);
-        this.bedNetEvent()
-        this.bedNetInt = 1
-      }
 
-      if (t % params.mdaFreq == 0 && t < Math.floor(t) + params.dt) {
-        //things that need to occur annually
-        //if(t>maxoldMDAt){
-        //  params.mfPropMDA = (1-params.IDAchi);//0.0;
-        //  params.wPropMDA = (1-params.IDAtau);//0.0;
-        //}
-        if (t > 1200.0 && t <= maxMDAt) {
-          //if after one hundred years and less than 125 years.
-          this.MDAEvent()
+        this.bedNetInt = 0;
 
-          statFunctions.setBR(true) //intervention true.
-          statFunctions.setVH(true)
-          statFunctions.setMu(true)
-        } else {
-          statFunctions.setBR(false) //intervention false.
-          statFunctions.setVH(false)
-          statFunctions.setMu(false)
+        for (var i = 0; i < this.n; i++) {
+            //infect everyone initially.
+            //this.people[i].WM = 1;
+            //this.people[i].WF = 1;
+            this.people[i].M = 1.0;
         }
-      }
-      icount++
+
+
+
+        // maxMDAt = 1200.0 + params.nMDA * params.mdaFreq;
+        if (params.IDAControl == 1) {
+            //if switching to IDA after five treatment rounds.
+            maxoldMDAt = 1200.0 + 5.0 * params.mdaFreq;
+        } else {
+            maxoldMDAt = 2 * maxMDAt; //this just makes maxoldMDAt larger than total treatment time so there is never a switch.
+        }
+
+        //double currentL3 = 0.5;
+        // console.log("mosquito species: ", params.mosquitoSpecies, "\n");
+        params.L3 = 5.0;
+        // console.log("0----------100\n-");
+        while (t < tot_t * 12.0) {
+            //for 100 years update annually, then update monthly when recording and intervention is occuring.
+            if (t < 960.0) {
+                //1200.0
+                params.dt = 12.0;
+            } else {
+                params.dt = 1.0;
+            }
+            for (var i = 0; i < this.n; i++) {
+                this.people[i].react();
+            }
+            //update
+            t = this.people[0].t;
+            if (t < 12.0 * 80.0) {
+                params.L3 = 2.0;
+            } else {
+                params.L3 = this.L3();
+            }
+            if (t % 2 == 0 && t < Math.floor(t) + params.dt) {
+                //cout << "t = " << (double) t/12.0 << "\n";
+                this.saveOngoing(t / 12.0, this.prevalence(), this.aPrevalence(), params.L3);
+            }
+            if (Math.floor(t) % Math.floor((tot_t * 12.0) / 10.0) == 0 && t < Math.floor(t) + params.dt) {
+                //every 10% of time run.
+                // console.log("-");
+                //        $("#test1").append(" p : " + this.prevalence() + " t : " + t / 12.0);
+            }
+            if (t >= 1200.0 && t < 1200.0 + params.dt) {
+                //events that occur at start of treatment after 100 years.
+                // console.log("bednet event at ", t);
+                this.bedNetEvent();
+                this.bedNetInt = 1;
+            }
+
+
+            if (t >= nextMDA){
+              // get variables for this mda
+              params.covMDA = mdaObj.coverage[mdaRound];
+              params.rho = mdaObj.adherence[mdaRound];
+              params.sigma = params.rho / (1 - params.rho);
+              params.u0 = -NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma);
+
+
+                this.MDAEvent();
+
+                setBR(true); //intervention true.
+                setVH(true);
+                setMu(true);
+                if (mdaRound <= numMDA){
+                    // if we haven't done all the mda's yet,
+                    // update the mda round and the time for the next one
+                    mdaRound += 1
+                    nextMDA = 1200 + mdaJSON.time[mdaRound];
+
+                }
+                else
+                // if we have performed all the mda's already, then set the next mda time to infinity,
+                // so we will never check for mda's again
+                    {
+                    nextMDA = Infinity;
+
+                }
+
+            }
+
+            icount++;
+        }
+        this.Ws = this.Ws.slice(200, this.Ws.length);
+        this.Ms = this.Ms.slice(200, this.Ms.length);
+        this.Ls = this.Ls.slice(200, this.Ls.length);
+        var maxt = this.ts[200];
+        // this.ts = math.subtract(this.ts.slice(200, this.ts.length), maxt); // !!!!!!!!!!!!!!
+        this.ts = this.ts.slice(200, this.ts.length) - maxt;
+        //plot(this.ts,this.Ws,this.Ms,this.Ls);
     }
-    this.Ws = this.Ws.slice(200, this.Ws.length)
-    this.Ms = this.Ms.slice(200, this.Ms.length)
-    this.Ls = this.Ls.slice(200, this.Ls.length)
-    var maxt = this.ts[200]
-    // this.ts = math.subtract(this.ts.slice(200, this.ts.length), maxt); // !!!!!!!!!!!!!!
-    this.ts = this.ts.slice(200, this.ts.length) - maxt // I replaced the math.subtract() with a simple "-" operator - is that bad???
-    //plot(this.ts,this.Ws,this.Ms,this.Ls);
-  }
+
+
+
+
 }
 export var params = {
   riskMu1: 1.0,
@@ -795,6 +817,45 @@ export var statFunctions = {
       -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma)
   },
 }
+
+
+// !!!!!!!!!!!!!!! FUNCTION TO GENERATE MDA JSON IF THE FORM IS FILLED IN /// !!!!!!!!!!!!!!!
+
+
+function generateMDAFromForm(){
+    // !!!!!!!!!!!!!!! GRAB PARAMETERS FROM FORM /// !!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!! IS THIS THE CORRECT FUNCTION TO CALL??? /// !!!!!!!!!!!!!!!
+    var params = simControler.params;
+    var mdaJSON = [];
+    if (params.mdaSixMonths == "False"){
+        var mdaLength = 40;
+        var ts = 12;
+    }
+    else{
+        var mdaLength = 20;
+        var ts = 6;
+    }
+    var times = [];
+    var coverages = [];
+    var adherences= [];
+    for (var i = 0; i < mdaLength; i++) {
+        times.push(ts*(i+1));
+        coverages.push(params.coverage/100);
+        adherences.push(params.rho);
+    }
+    mdaJSON.push({
+              time: times,
+              coverage: coverages,
+              adherence: adherences,
+          });
+  mdaJSON = '{"time":[' + times.toString() + '], "coverage":[' + coverages.toString() + '], "adherence" : [' + adherences.toString() +']}';
+  var mdaJSON = JSON.parse(myJSON);
+  return mdaJSON
+}
+
+
+
+
 export var simControler = {
   /*
     DEFINE CLASS SESSION DATA TO STORE AND RETRIEVE RUNS.
@@ -863,6 +924,19 @@ export var simControler = {
     statFunctions.setInputParams({ nMDA: 40 })
     // var scenLabel = $("#inputScenarioLabel").val();
     //max number of mda rounds even if doing it six monthly.
+
+    if (FORM_FILLED_IN){
+        // !!!!!!!!!!!!!!! IF FORM IS FILLED IN, RUN THIS /// !!!!!!!!!!!!!!!
+            mdaJSON = generateMDAFromForm()
+        }
+        else{
+          // !!!!!!!!!!!!!!! IF FORM IS NOT FILLED IN, GET MDA JSON FROM INPUT FILE /// !!!!!!!!!!!!!!!
+            mdaJSON = MDA_STRAIGHT_FROM_INPUT_FILE
+        }
+
+
+
+
     var maxN = simControler.params.runs // Number($("#runs").val());
     var runs = []
     var progression = 0
@@ -870,7 +944,7 @@ export var simControler = {
 
     var progress = setInterval(() => {
       var m = new Model(800)
-      m.evolveAndSaves(120.0)
+      m.evolveAndSaves(120.0, mdaJSON)
       runs.push(SessionData.convertRun(m))
       simulatorCallback(parseInt((progression * 100) / maxN))
       if (progression === maxN) {
