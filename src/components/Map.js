@@ -18,6 +18,7 @@ function Map({
   country,
   countryFeatures,
   stateFeatures,
+  populationFeatures,
   width,
   height,
   disableZoom,
@@ -243,6 +244,33 @@ function Map({
                       'rgba(0,0,0,0)',
                     ],
                     'line-width': 1,
+                  }}
+                />
+              </Source>
+            )}
+
+            {populationFeatures && (
+              <Source
+                id="africa-countries-population"
+                type="geojson"
+                data={populationFeatures}
+              >
+                <Layer
+                  id="population-countries"
+                  type="circle"
+                  paint={{
+                    'circle-radius': [
+                      'interpolate',
+                      ['linear'],
+                      ['zoom'],
+                      3,
+                      ['/', ['sqrt', ['get', 'population']], 200],
+                      10,
+                      ['/', ['sqrt', ['get', 'population']], 40],
+                    ],
+                    'circle-color': 'rgba(255,0,0,0)',
+                    'circle-stroke-color': 'rgba(0,0,0,1)',
+                    'circle-stroke-width': 1,
                   }}
                 />
               </Source>

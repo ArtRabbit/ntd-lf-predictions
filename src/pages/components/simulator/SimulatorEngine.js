@@ -1,6 +1,4 @@
 import { Random } from './sim'
-import { subtract } from 'mathjs'
-
 export var s = new Random()
 export var SessionData = {
   storeResults: (results, scenLabel, stats) => {
@@ -380,11 +378,23 @@ export var Model = function(n) {
     return ryrs
   }
 
-  this.evolveAndSaves = function(tot_t) {
+  this.evolveAndSaves = function(tot_t, mdaJSON) {
     var t = 0
     var icount = 0
     var maxMDAt = 1200.0
     var maxoldMDAt //used in triple drug treatment.
+
+    // location to take in the json from the file
+    // var myJSON = '{"time":[60, 96, 120,144, 180], "coverage":[0.9, 0.9,0.9,0.9,0.9], "adherence" : [1, 1, 1, 1, 1]}';
+    // var mdaJSON = JSON.parse(myJSON);
+    //
+    // // set mda round
+    var mdaRound = 0
+    // how many mda's will we do and when will the next one be
+    // console.log(simControler.mdaObj)
+    var numMDA = simControler.mdaObj.time.length
+    var nextMDA = 1200 + simControler.mdaObj.time[mdaRound]
+
     this.bedNetInt = 0
 
     for (var i = 0; i < this.n; i++) {
@@ -393,8 +403,9 @@ export var Model = function(n) {
       //this.people[i].WF = 1;
       this.people[i].M = 1.0
     }
-    maxMDAt = 1200.0 + params.nMDA * params.mdaFreq
-    if (params.IDAControl == 1) {
+
+    // maxMDAt = 1200.0 + params.nMDA * params.mdaFreq;
+    if (params.IDAControl === 1) {
       //if switching to IDA after five treatment rounds.
       maxoldMDAt = 1200.0 + 5.0 * params.mdaFreq
     } else {
@@ -447,32 +458,40 @@ export var Model = function(n) {
         this.bedNetInt = 1
       }
 
-      if (t % params.mdaFreq == 0 && t < Math.floor(t) + params.dt) {
-        //things that need to occur annually
-        //if(t>maxoldMDAt){
-        //  params.mfPropMDA = (1-params.IDAchi);//0.0;
-        //  params.wPropMDA = (1-params.IDAtau);//0.0;
-        //}
-        if (t > 1200.0 && t <= maxMDAt) {
-          //if after one hundred years and less than 125 years.
-          this.MDAEvent()
+      if (t >= nextMDA) {
+        // get variables for this mda
+        params.covMDA = simControler.mdaObj.coverage[mdaRound]
+        params.rho = simControler.mdaObj.adherence[mdaRound]
+        params.sigma = params.rho / (1 - params.rho)
+        params.u0 =
+          -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma)
 
-          statFunctions.setBR(true) //intervention true.
-          statFunctions.setVH(true)
-          statFunctions.setMu(true)
-        } else {
-          statFunctions.setBR(false) //intervention false.
-          statFunctions.setVH(false)
-          statFunctions.setMu(false)
+        this.MDAEvent()
+
+        statFunctions.setBR(true) //intervention true.
+        statFunctions.setVH(true)
+        statFunctions.setMu(true)
+        if (mdaRound <= numMDA) {
+          // if we haven't done all the mda's yet,
+          // update the mda round and the time for the next one
+          mdaRound += 1
+          nextMDA = 1200 + mdaJSON.time[mdaRound]
+        }
+        // if we have performed all the mda's already, then set the next mda time to infinity,
+        // so we will never check for mda's again
+        else {
+          nextMDA = Infinity
         }
       }
+
       icount++
     }
     this.Ws = this.Ws.slice(200, this.Ws.length)
     this.Ms = this.Ms.slice(200, this.Ms.length)
     this.Ls = this.Ls.slice(200, this.Ls.length)
     var maxt = this.ts[200]
-    this.ts = subtract(this.ts.slice(200, this.ts.length), maxt)
+    // this.ts = math.subtract(this.ts.slice(200, this.ts.length), maxt); // !!!!!!!!!!!!!!
+    this.ts = this.ts.slice(200, this.ts.length) - maxt
     //plot(this.ts,this.Ws,this.Ms,this.Ls);
   }
 }
@@ -796,6 +815,48 @@ export var statFunctions = {
       -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma)
   },
 }
+
+// !!!!!!!!!!!!!!! FUNCTION TO GENERATE MDA JSON IF THE FORM IS FILLED IN /// !!!!!!!!!!!!!!!
+
+function generateMDAFromForm() {
+  // !!!!!!!!!!!!!!! GRAB PARAMETERS FROM FORM /// !!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!! IS THIS THE CORRECT FUNCTION TO CALL??? /// !!!!!!!!!!!!!!!
+  var params = simControler.params
+  var mdaJSON = []
+  //   if (params.mdaSixMonths == 'False') {
+  var mdaLength, ts
+  if (params.mdaSixMonths !== 6) {
+    mdaLength = 40
+    ts = 12
+  } else {
+    mdaLength = 20
+    ts = 6
+  }
+  var times = []
+  var coverages = []
+  var adherences = []
+  for (var i = 0; i < mdaLength; i++) {
+    times.push(ts * (i + 1))
+    coverages.push(params.coverage / 100)
+    adherences.push(params.rho)
+  }
+  mdaJSON.push({
+    time: times,
+    coverage: coverages,
+    adherence: adherences,
+  })
+  mdaJSON =
+    '{"time":[' +
+    times.toString() +
+    '], "coverage":[' +
+    coverages.toString() +
+    '], "adherence" : [' +
+    adherences.toString() +
+    ']}'
+  simControler.mdaObj = JSON.parse(mdaJSON)
+  return simControler.mdaObj
+}
+
 export var simControler = {
   /*
     DEFINE CLASS SESSION DATA TO STORE AND RETRIEVE RUNS.
@@ -864,6 +925,17 @@ export var simControler = {
     statFunctions.setInputParams({ nMDA: 40 })
     // var scenLabel = $("#inputScenarioLabel").val();
     //max number of mda rounds even if doing it six monthly.
+
+    //    if (FORM_FILLED_IN) {
+    // !!!!!!!!!!!!!!! IF FORM IS FILLED IN, RUN THIS /// !!!!!!!!!!!!!!!
+    var mdaJSON = generateMDAFromForm()
+    //  } else {
+    // !!!!!!!!!!!!!!! IF FORM IS NOT FILLED IN, GET MDA JSON FROM INPUT FILE /// !!!!!!!!!!!!!!!
+    //mdaJSON = MDA_STRAIGHT_FROM_INPUT_FILE
+    //    }
+
+    // reply: form is always filled.
+
     var maxN = simControler.params.runs // Number($("#runs").val());
     var runs = []
     var progression = 0
@@ -871,7 +943,7 @@ export var simControler = {
 
     var progress = setInterval(() => {
       var m = new Model(800)
-      m.evolveAndSaves(120.0)
+      m.evolveAndSaves(120.0, mdaJSON)
       runs.push(SessionData.convertRun(m))
       simulatorCallback(parseInt((progression * 100) / maxN))
       if (progression === maxN) {
@@ -1003,5 +1075,6 @@ export var simControler = {
     microfilaricide: 65, // $("#Microfilaricide").val(),
     runs: 5, // $("#runs").val()
   },
+  mdaObj: {}, // added explicitely
   newScenario: true,
 }
