@@ -28,6 +28,10 @@ const theme = createMuiTheme({
     primary: purple,
     secondary: grey
     */
+    tooltip: {
+      color: '#f1f1f1',
+      rippleBackgroundColor: 'blue'
+    },
     text: {
       primary: '#000000',
       secondary: '#616161',
@@ -47,7 +51,6 @@ const theme = createMuiTheme({
       main: '#aa2323',
     },
   },
-
   typography: {
     fontSize: 16,
     fontWeight: 400,
@@ -97,10 +100,12 @@ const theme = createMuiTheme({
     },
   },
   overrides: {
-    'section': {
-      'clear': 'both'
-    },
-
+    MuiTooltip: {
+      tooltip: {
+        color: "#fff",
+        backgroundColor: '#6236ff'
+      }
+    }
   },
   breakpoints: {
     values: {
