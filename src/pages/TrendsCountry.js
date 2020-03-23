@@ -65,31 +65,12 @@ const TrendsCountry = props => {
           '...'}`}
       />
 
-      <Grid container spacing={0}>
-        <Grid
-          item
-          md={5}
-          xs={12}
-          style={{ position: 'relative', margin: '40px 500px 80px 0px' }}
-        >
-          <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
-            <Box variant="body1">
-              <Typography component="p">
-                Population xxx
-                <br />
-                50k people affected in 2030
-                <br />3 districts with high prevalence
-              </Typography>
-            </Box>
-          </ExpandableInfo>
-        </Grid>
-      </Grid>
-
       <SectionTitle
         top={true}
         headline="People still needing intervention"
         text={`Districts in 2020 and 2030`}
       />
+
       <img
         src={'http://ntd.artrabbit.studio/static/circle-graph.png'}
         alt="circle graph"
@@ -98,7 +79,18 @@ const TrendsCountry = props => {
       <SectionTitle
         headline="Timeline"
         text={`Showing prevalence and probable eradication over time`}
-      />
+      >
+        <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
+          <Box variant="body1">
+            <Typography component="p">
+              Population xxx
+                <br />
+                50k people affected in 2030
+                <br />3 districts with high prevalence
+              </Typography>
+          </Box>
+        </ExpandableInfo>
+      </SectionTitle>
 
       <Box className={classes.chartContainer}>
         {stateData && (

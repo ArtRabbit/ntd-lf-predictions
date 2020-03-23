@@ -6,12 +6,31 @@ import Head from './Head'
 import Inputs from './Inputs'
 
 const useStyles = makeStyles(theme => ({
-  headLeftColumn: {
-    textAlign: 'left',
+  root: {
+    '&:after': {
+      content: `''`,
+      display: 'table',
+      clear: 'both'
+    }
   },
-  headRightColumn: {
+  head: {
+    float: 'left',
+    textAlign: 'left',
+    [theme.breakpoints.up('md')]: {
+      width: '50%',
+    },
+  },
+  inputs: {
     textAlign: 'right',
-    padding: theme.spacing(0, 0, 0, 2),
+    float: 'right',
+    padding: theme.spacing(0, 0, 18, 0),
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(0, 0, 6, 0),
+    },
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(0),
+      width: '50%',
+    },
   },
 }))
 
@@ -19,8 +38,11 @@ const HeadWithInputs = ({ title, text, subTitle, transparent, actionLabel, actio
   const classes = useStyles()
 
   return (
-    <Grid container spacing={0}>
-      <Grid item md={5} xs={12} className={classes.headLeftColumn}>
+    <div className={classes.root}>
+      <Grid item md={6} xs={12} className={classes.inputs}>
+        {disableInputs !== true && <Inputs />}
+      </Grid>
+      <Grid item md={6} xs={12} className={classes.head}>
         <Head
           transparent={transparent}
           title={title}
@@ -30,10 +52,7 @@ const HeadWithInputs = ({ title, text, subTitle, transparent, actionLabel, actio
           action={action}
         />
       </Grid>
-      <Grid item md={7} xs={12} className={classes.headRightColumn}>
-        {disableInputs !== true && <Inputs />}
-      </Grid>
-    </Grid>
+    </div>
   )
 }
 export default HeadWithInputs

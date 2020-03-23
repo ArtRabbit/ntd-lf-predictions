@@ -11,6 +11,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     cursor: 'pointer',
     padding: theme.spacing(0, 4, 0, 0),
+    maxWidth: '60%',
     '& > div': {
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',

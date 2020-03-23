@@ -12,8 +12,8 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer',
     padding: theme.spacing(2, 3, 0, 3),
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: theme.spacing(4),
+    left: theme.spacing(1),
     zIndex: 99,
     '& > div': {
       padding: theme.spacing(0, 3, 0, 0),
