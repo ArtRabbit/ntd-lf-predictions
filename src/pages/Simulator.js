@@ -23,21 +23,13 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 import Tooltip from '@material-ui/core/Tooltip'
 import Slider from '@material-ui/core/Slider'
 
-import Head from './components/Head'
-import Inputs from './components/Inputs'
+import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 SimulatorEngine.simControler.documentReady()
 
 const useStyles = makeStyles(theme => ({
-  headLeftColumn: {
-    textAlign: 'left',
-  },
-  headRightColumn: {
-    textAlign: 'right',
-    padding: theme.spacing(4, 2),
-  },
   tabs: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
@@ -201,23 +193,11 @@ const Simulator = props => {
 
   return (
     <Layout>
-      <Grid container spacing={0}>
-        <Grid item md={8} xs={12} className={classes.headLeftColumn}>
-          <Head
-            transparent={true}
-            title="Lympahtic filariasis Prevalence Simulator"
-          />
-        </Grid>
-        <Grid item md={4} xs={12} className={classes.headRightColumn}>
-          <Typography
-            className={classes.headline}
-            color="textSecondary"
-            gutterBottom
-          >
-            Number of runs (precision) type of mosquito systemic adherence
-          </Typography>
-        </Grid>
-      </Grid>
+      <HeadWithInputs
+        transparent={true}
+        disableInputs={true}
+        title="Lympahtic filariasis Prevalence Simulator"
+      />
 
       <Grid container spacing={4}>
         <Grid item md={8} xs={12} className={classes.contentLeftColumn}>

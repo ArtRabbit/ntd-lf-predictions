@@ -17,7 +17,7 @@ const TextContents = (props) => {
   return (
     <section className={`${classes.root}`}>
 
-      <Box display="block" variant="body2" component="div">
+      <Box display="block" variant="body2" component="article">
         {props.children}
       </Box>
     </section>

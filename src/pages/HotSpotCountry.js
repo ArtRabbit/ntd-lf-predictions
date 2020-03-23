@@ -8,19 +8,12 @@ import ExpandableInfo from './components/ExpandableInfo'
 import { Box, Typography, Grid } from '@material-ui/core'
 import Map from '../components/Map'
 import SlopeChart from '../components/SlopeChart'
-import Head from './components/Head';
-import Inputs from './components/Inputs';
+import HeadWithInputs from './components/HeadWithInputs';
 import DiveDeeper from './components/DiveDeeper';
 import SectionTitle from './components/SectionTitle'
 
 const useStyles = makeStyles(theme => ({
-  headLeftColumn: {
-    textAlign: 'left'
-  },
-  headRightColumn: {
-    textAlign: 'right',
-    padding: theme.spacing(2),
-  },
+
 }));
 
 const PanelContainer = ({ children }) => (
@@ -39,17 +32,10 @@ const HotSpotCountry = (props) => {
   return (
     <Layout>
 
-      <Grid container spacing={0}>
-        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Head
-            transparent={true}
-            title={`Lymphatic filariasis Hotspots: ${selectedCountry?.name || '...'}`}
-          />
-        </Grid>
-        <Grid item md={7} xs={12} className={classes.headRightColumn}>
-          <Inputs />
-        </Grid>
-      </Grid>
+      <HeadWithInputs
+        transparent={true}
+        title={`Lymphatic filariasis Hotspots: ${selectedCountry?.name || '...'}`}
+      />
 
       <Grid container spacing={0}>
         <Grid
@@ -87,13 +73,13 @@ const HotSpotCountry = (props) => {
           country={country}
         />
       </div>
-    
+
 
       <Box className={classes.chartContainer}>
         <SectionTitle headline="Top affected districts" text={`And their projected development over time`} />
         <img src={'http://ntd.artrabbit.studio/static/curve-rank.png'} alt="rank graph" />
       </Box>
-      
+
       <SectionTitle headline="Activity" text={`IU in each district that are improving, getting worse or are below the 1% threashold`} />
 
       <Box className={classes.chartContainer}>

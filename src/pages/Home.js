@@ -6,8 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 
-import Head from './components/Head';
-import Inputs from './components/Inputs'
+import HeadWithInputs from './components/HeadWithInputs';
 
 // demo
 import map from '../images/demo/map.png';
@@ -41,25 +40,19 @@ const Home = (props) => {
   return (
     <Layout classAdd="violet">
 
-      <Grid container spacing={0}>
-        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Head
-            title="Lymphatic filariasis Prediction Maps"
-            text={
-              `Welcome to the NTD Modelling Prediction Maps.
-                        The predictions in this website provide guidance on
-                        the impact of more frequent, longer, or higher
-                        coverage treatment would have on timelines to
-                        reach the WHO target.`
-            }
-            actionLabel={"Enter"}
-            action={showIntro}
-          />
-        </Grid>
-        <Grid item md={7} xs={12} className={classes.headRightColumn}>
-          <Inputs />
-        </Grid>
-      </Grid>
+      <HeadWithInputs
+        title="Lymphatic filariasis Prediction Maps"
+        text={
+          `Welcome to the NTD Modelling Prediction Maps.
+                    The predictions in this website provide guidance on
+                    the impact of more frequent, longer, or higher
+                    coverage treatment would have on timelines to
+                    reach the WHO target.`
+        }
+        actionLabel={"Enter"}
+        action={showIntro}
+      />
+
 
     </Layout >
   )
