@@ -24,19 +24,17 @@ const useStyles = makeStyles(theme => ({
   },
   formControl: {
     margin: theme.spacing(0, 0, 2, 0),
-    minWidth: 300,
+    width: 'calc(100% - 16px)',
     textAlign: 'left',
     '& > label': {},
     [theme.breakpoints.up('sm')]: {
       margin: theme.spacing(1, 1),
     },
     [theme.breakpoints.up('md')]: {
-      minWidth: 220,
+      width: 'calc(50% - 16px)'
 
     },
     [theme.breakpoints.up('lg')]: {
-      minWidth: 300,
-      width: 'calc(50% - 16px)'
     },
   },
   largeTooltip: {

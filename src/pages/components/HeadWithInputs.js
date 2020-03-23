@@ -14,18 +14,23 @@ const useStyles = makeStyles(theme => ({
     }
   },
   head: {
-    float: 'left',
     textAlign: 'left',
+    [theme.breakpoints.up('sm')]: {
+      float: 'left',
+    },
     [theme.breakpoints.up('md')]: {
       width: '50%',
     },
   },
   inputs: {
     textAlign: 'right',
-    float: 'right',
     padding: theme.spacing(0, 0, 18, 0),
+    minWidth: 300,
     [theme.breakpoints.up('sm')]: {
       padding: theme.spacing(0, 0, 6, 0),
+    },
+    [theme.breakpoints.up('sm')]: {
+      float: 'right',
     },
     [theme.breakpoints.up('md')]: {
       padding: theme.spacing(0),
