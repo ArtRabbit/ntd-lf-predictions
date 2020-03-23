@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     boxShadow:
       '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
     padding: theme.spacing(2, 4, 4, 4),
-    bottom: theme.spacing(4),
+    bottom: theme.spacing(16),
     left: theme.spacing(-4),
   },
 }))
