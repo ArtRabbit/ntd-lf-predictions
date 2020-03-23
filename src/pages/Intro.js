@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { observer } from 'mobx-react'
 
 import { Layout } from '../layout'
@@ -27,11 +27,11 @@ const useStyles = makeStyles(theme => ({
 const Intro = props => {
   const classes = useStyles()
   const { countryFeatures } = useDataAPI()
-  const [play, setPlay] = useState(false)
+  const mapRef = useRef()
 
   const playScenario = event => {
     if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {
-      setPlay(!play)
+      mapRef.current.start()
     }
   }
 
@@ -63,11 +63,11 @@ const Intro = props => {
         <Grid item md={9} xs={12} className={classes.headLeftColumn}>
           <Box m={1} className={classes.map}>
             <Map
+              ref={mapRef}
               countryFeatures={countryFeatures}
               height={720}
               disableZoom={true}
               initialLevel={0}
-              play={play}
             />
           </Box>
         </Grid>
