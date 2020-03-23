@@ -328,21 +328,12 @@ export var Model = function(n) {
     return p / this.n
   }
 
-  this.MDAEvent = function(cov){
-      if (cov == 1){
-          for(var i = 0; i<this.n; i++){
-              this.people[i].M = params.mfPropMDA * this.people[i].M;
-              this.people[i].WM = Math.floor(params.wPropMDA * this.people[i].WM );
-              this.people[i].WF = Math.floor(params.wPropMDA * this.people[i].WF );
-          }
-      } else{
-          for(var i = 0; i<this.n; i++){
-              this.people[i].u = s.normal(params.u0, Math.sqrt(params.sigma));
-              if (s.normal(this.people[i].u,1)<0){    //param->uniform_dist()<param->covMDA
-                  this.people[i].M = params.mfPropMDA * this.people[i].M;
-                  this.people[i].WM = Math.floor(params.wPropMDA * this.people[i].WM );
-                  this.people[i].WF = Math.floor(params.wPropMDA * this.people[i].WF );
-              }
+  this.MDAEvent = function(){
+    for(var i = 0; i<this.n; i++){
+        if (s.normal(this.people[i].u,1)<0){    //param->uniform_dist()<param->covMDA
+          this.people[i].M = params.mfPropMDA * this.people[i].M;
+          this.people[i].WM = Math.floor(params.wPropMDA * this.people[i].WM );
+          this.people[i].WF = Math.floor(params.wPropMDA * this.people[i].WF );
           }
       }
   }
@@ -398,15 +389,9 @@ export var Model = function(n) {
         //
         // // set mda round
         var mdaRound = 0;
-        //
-
-        // // update mda variables for this round of mda
-        params.covMDA = mdaJSON.coverage[mdaRound];
-        var nextMDA = 1200 + mdaJSON.time[mdaRound];
-        params.rho = 1 - mdaJSON.adherence[mdaRound];
-        params.sigma = params.rho / (1 - params.rho);
-        params.u0 = -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma);
-        var numMDA = mdaJSON.time.length;
+        // how many mda's will we do and when will the next one be
+        var numMDA = mdaObj.time.length;
+        nextMDA = 1200 + mdaObj.time[mdaRound];
 
 
         this.bedNetInt = 0;
@@ -468,25 +453,23 @@ export var Model = function(n) {
 
 
             if (t >= nextMDA){
-                // do MDA
-                // console.log("in mda = ",params.covMDA,params.rho, params.sigma, params.u0, numMDA)
-                // console.log(" time = ",t)
-                // console.log(" nextMDA = ",nextMDA)
-                // console.log("DO MDA DO MDA DO MDA DO MDA DO MDA DO MDA DO MDA DO MDA DO MDA ")
-                this.MDAEvent(params.covMDA);
+              // get variables for this mda
+              params.covMDA = mdaObj.coverage[mdaRound];
+              params.rho = mdaObj.adherence[mdaRound];
+              params.sigma = params.rho / (1 - params.rho);
+              params.u0 = -NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma);
+
+
+                this.MDAEvent();
 
                 setBR(true); //intervention true.
                 setVH(true);
                 setMu(true);
                 if (mdaRound <= numMDA){
-                    // if we haven't done all the mda's yet, update the variables for the next one
+                    // if we haven't done all the mda's yet,
+                    // update the mda round and the time for the next one
                     mdaRound += 1
-
-                    params.covMDA = mdaJSON.coverage[mdaRound];
                     nextMDA = 1200 + mdaJSON.time[mdaRound];
-                    params.rho = 1 - mdaJSON.adherence[mdaRound];
-                    params.sigma = params.rho / (1 - params.rho);
-                    params.u0 = -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma);
 
                 }
                 else
@@ -858,7 +841,7 @@ function generateMDAFromForm(){
     for (var i = 0; i < mdaLength; i++) {
         times.push(ts*(i+1));
         coverages.push(params.coverage/100);
-        adherences.push(1 - params.rho);
+        adherences.push(params.rho);
     }
     mdaJSON.push({
               time: times,
