@@ -844,7 +844,7 @@ export var simControler = {
 
     // simControler.dump(scenario);
     // $("#scenario-statistic")[0].innerHTML = JSON.stringify(obj);
-    simulatorCallback(JSON.stringify(scenario))
+    simulatorCallback(JSON.stringify(scenario), simControler.newScenario)
     // console.log(JSON.stringify(scenario));
     // return JSON.stringify(scenario);
     //fixInput(false);
@@ -1002,4 +1002,5 @@ export var simControler = {
     microfilaricide: 65, // $("#Microfilaricide").val(),
     runs: 5, // $("#runs").val()
   },
+  newScenario: true,
 }

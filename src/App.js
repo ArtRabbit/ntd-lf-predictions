@@ -119,8 +119,8 @@ function App() {
             <Route exact path="/intro" component={Intro} />
             <Route exact path="/trends" component={Trends} />
             <Route exact path="/trends/:country" component={TrendsCountry} />
-            <Route exact path="/hot-spots" component={HotSpots} />
-            <Route exact path="/country" component={HotSpotCountry} />
+            <Route exact path="/hotspots" component={HotSpots} />
+            <Route exact path="/hotspots/:country" component={HotSpotCountry} />
             <Route exact path="/simulator" component={Simulator} />
             <Route exact path="/about-lf" component={AboutLF} />
             <Route exact path="**" component={Page} />

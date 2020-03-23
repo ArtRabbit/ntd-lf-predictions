@@ -28,12 +28,6 @@ import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
-// import "./components/simulator/SimulatorEngine";
-
-// let SimulatorEngine = await import("./components/simulator/SimulatorEngine");
-/* console.log('params')
-console.log(SimulatorEngine.params) */
-//console.log(SimulatorEngine.simControler.params)
 SimulatorEngine.simControler.documentReady()
 
 const useStyles = makeStyles(theme => ({
@@ -111,15 +105,13 @@ const Simulator = props => {
     setTabIndex(newValue)
   }
   const handleInputChange = event => {
-    // setFrequency(event.target.value);
     setSimParams({ ...simParams, species: event.target.value })
   }
   const handleInputChange2 = event => {
-    // setFrequency(event.target.value);
     setSimParams({ ...simParams, mdaSixMonths: event.target.value })
   }
   useEffect(() => {
-    console.log('tab updated', tabIndex)
+    //    console.log('tab updated', tabIndex)
     //    console.log(scenarioInputs[tabIndex])
     if (typeof scenarioInputs[tabIndex] != 'undefined') {
       // set input arams if you have them
@@ -145,28 +137,35 @@ const Simulator = props => {
   const [simulationProgress, setSimulationProgress] = useState(0)
   const [scenarioInputs, setScenarioInputs] = useState([])
   const [scenarioResults, setScenarioResults] = useState([])
-  const simulatorCallback = par => {
-    if (typeof par == 'number') {
-      setSimulationProgress(par)
+  const simulatorCallback = (resultObject, newScenario) => {
+    if (typeof resultObject == 'number') {
+      setSimulationProgress(resultObject)
     } else {
       console.log('Simulation returned results!')
 
       if (typeof scenarioResults[tabIndex] === 'undefined') {
-        console.log('scenarioResults')
-        setScenarioResults([...scenarioResults, JSON.parse(par)])
-        setScenarioInputs([...scenarioInputs, JSON.parse(par).params.inputs])
+        // console.log('scenarioResults')
+        setScenarioResults([...scenarioResults, JSON.parse(resultObject)])
+        setScenarioInputs([
+          ...scenarioInputs,
+          JSON.parse(resultObject).params.inputs,
+        ])
       } else {
+        //        console.log('tabIndex', tabIndex)
+        //        console.log('newScenario', newScenario)
         let correctTabIndex = newScenario === true ? tabIndex + 1 : tabIndex
+        // let correctTabIndex = tabIndex + 1
+        //        console.log('correctTabIndex', correctTabIndex)
 
         let scenarioResultsNew = [...scenarioResults] // 1. Make a shallow copy of the items
         let resultItem = scenarioResultsNew[correctTabIndex] // 2. Make a shallow copy of the resultItem you want to mutate
-        resultItem = JSON.parse(par) // 3. Replace the property you're intested in
+        resultItem = JSON.parse(resultObject) // 3. Replace the property you're intested in
         scenarioResultsNew[correctTabIndex] = resultItem // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
         setScenarioResults(scenarioResultsNew) // 5. Set the state to our new copy
 
         let scenarioInputsNew = [...scenarioInputs]
         let inputsItem = scenarioInputsNew[correctTabIndex]
-        inputsItem = JSON.parse(par).params.inputs
+        inputsItem = JSON.parse(resultObject).params.inputs
         scenarioInputsNew[correctTabIndex] = inputsItem
         setScenarioInputs(scenarioInputsNew)
       }
@@ -176,28 +175,26 @@ const Simulator = props => {
   useEffect(() => {
     console.log('scenarioInputs', scenarioInputs)
   }, [scenarioInputs])
-  const [newScenario, setNewScenario] = useState(true)
   const runCurrentScenario = () => {
     if (!simInProgress) {
       setSimInProgress(true)
-      setNewScenario(false)
-      console.log(simParams)
+      console.log(tabIndex, simParams)
+      SimulatorEngine.simControler.newScenario = false
       SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
     }
   }
   const runNewScenario = () => {
     if (!simInProgress) {
-      setSimInProgress(true)
-      setNewScenario(true)
-      // console.log(tabIndex)
       if (tabLength < 5) {
-        console.log('settingTabLength', tabLength + 1)
+        setSimInProgress(true)
+        // console.log('settingTabLength', tabLength + 1)
         setTabIndex(tabLength)
         setTabLength(tabLength + 1)
-        console.log(simParams)
+        console.log(tabIndex, simParams)
+        SimulatorEngine.simControler.newScenario = true
         SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
       } else {
-        alert('No free slots!')
+        alert('Sorry maximum number of Scenarios is 5.')
       }
     }
   }
@@ -330,7 +327,7 @@ const Simulator = props => {
             />
           </FormControl>
 
-          {/* <Typography className={classes.title} variant="h5" component="h2">
+          <Typography className={classes.title} variant="h5" component="h2">
             Intervention
           </Typography>
           <FormControl className={classes.formControl}>
@@ -346,7 +343,7 @@ const Simulator = props => {
               <MenuItem value={12}>Annual</MenuItem>
               <MenuItem value={6}>Every 6 months</MenuItem>
             </Select>
-          </FormControl>*/}
+          </FormControl>
           <FormControl className={classes.formControl}>
             <Typography gutterBottom>Target coverage</Typography>
             <InputLabel htmlFor="coverage"></InputLabel>
@@ -369,7 +366,6 @@ const Simulator = props => {
               id="demo-simple-select-helper"
               value={simParams.mdaRegimen}
               onChange={event => {
-                // setFrequency(event.target.value);
                 setSimParams({ ...simParams, mdaRegimen: event.target.value })
               }}
             >
@@ -472,7 +468,7 @@ const Simulator = props => {
       <DiveDeeper
         title="Get an overview"
         links={[
-          { to: '/hot-spots', name: 'TRENDS FOR ALL COUNTRIES' },
+          { to: '/hotspots', name: 'TRENDS FOR ALL COUNTRIES' },
           { to: '/country', name: 'PROBLEM AREAS FOR ALL COUNTRIES' },
         ]}
       />

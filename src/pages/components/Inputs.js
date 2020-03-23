@@ -32,24 +32,24 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     maxWidth: 345,
     minWidth: 320,
-    background: theme.palette.error.main,
+    textAlign: 'left',
+    background: theme.palette.primary.main,
     color: 'white',
     padding: theme.spacing(2),
     position: 'absolute',
     top: '5rem',
     left: '50%',
     transform: 'translate(-50%, 0%)',
-    textAlign: 'center',
     '&::after': {
       content: `''`,
       position: 'absolute',
-      left: '50%',
+      left: '30%',
       top: '-2rem',
       transform: 'translate(-50%, 0%)',
       width: '0',
       height: '0',
       border: '1rem solid transparent',
-      borderBottomColor: theme.palette.error.main,
+      borderBottomColor: theme.palette.primary.main,
     },
   },
 }))
@@ -63,9 +63,13 @@ const Inputs = props => {
   const matchSection = useRouteMatch('/:section')
 
   const handleCountryChange = (event, value) => {
+
     if (matchSection) {
-      const { section } = matchSection.params
-      // country has been selected
+      let { section } = matchSection.params
+      // country has been selected // are we already on a page that can show country data
+      if ( section !== 'trends' && section !== 'hotspots' ) {
+        section = 'trends'
+      }
       if (value) {
         history.push({ pathname: `/${section}/${value.id}` })
         // country has been deselected
@@ -85,13 +89,12 @@ const Inputs = props => {
           options={countrySuggestions}
           getOptionLabel={option => option.name}
           style={{ width: 300 }}
-          value={selected ?? { name: 'Select country' }}
+          value={selected ?? { name: 'All countries' }}
           renderInput={params => (
-            <TextField {...params} label="View - Countries" />
+            <TextField {...params} label="View" />
           )}
           onChange={handleCountryChange}
         />
-        <FormHelperText>Some important helper text</FormHelperText>
       </FormControl>
       <FormControl className={classes.formControl}>
         <InputLabel id="demo-simple-select-helper-label">{regime}</InputLabel>
@@ -108,7 +111,7 @@ const Inputs = props => {
           ))}
         </Select>
         <div className={classes.largeTooltip}>
-          <Typography variant="subtitle2" color="inherit" component="p">
+          <Typography color="inherit" component="p">
             See how other treatement regimes can save lives
           </Typography>
         </div>

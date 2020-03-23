@@ -51,8 +51,23 @@ function Map({
       if (matchesDetails) {
         dispatch({ type: 'SELECT', payload: { feature, event } })
       }
-      history.push(`/${match.params.section}/${feature.properties.id}`)
     }
+  }
+
+  const selectCountryClickHotspots = countryId => {
+    if (match.params.section != 'trends') {
+      match.params.section = 'hotspots'
+    }
+
+    history.push(`/${match.params.section}/${countryId}`)
+  }
+
+  const selectCountryClickTrends = countryId => {
+    if (match.params.section != 'trends') {
+      match.params.section = 'trends'
+    }
+
+    history.push(`/${match.params.section}/${countryId}`)
   }
 
   const handleHover = event => {
@@ -69,8 +84,16 @@ function Map({
   }
 
   const handleClose = () => {
-    history.push('/trends')
-    // dispatch({ type: 'DESELECT' })
+    if (country) {
+      const focus = countryFeatures.features.find(
+        f => f.properties.id === country
+      )
+      if (focus) {
+        dispatch({ type: 'FOCUSBACK', payload: { feature: focus } })
+      }
+    } else {
+      dispatch({ type: 'DESELECT' })
+    }
   }
 
   // old map style mapbox://styles/kpcarter100/ck7w5zz9l026d1imn43721owm
@@ -187,10 +210,27 @@ function Map({
             <Typography variant="subtitle1">
               {feature.properties.name}
             </Typography>
+            <a href="/trends">Link</a>
             <div>Prevalence: {feature.properties[`prev-${year}`]} %</div>
             <div>Population: {format(',')(feature.properties.population)}</div>
-            <a href="/trends">Link</a>
             <div>Endemicity: {feature.properties.endemicity}</div>
+            <p>
+              <a
+                style={{ color: 'green' }}
+                onClick={() =>
+                  selectCountryClickHotspots(feature.properties.id)
+                }
+              >
+                Hotspots {feature.properties.name}
+              </a>{' '}
+              |
+              <a
+                style={{ color: 'green' }}
+                onClick={() => selectCountryClickTrends(feature.properties.id)}
+              >
+                Trends {feature.properties.name}
+              </a>
+            </p>
           </div>
         </Popup>
       )}
