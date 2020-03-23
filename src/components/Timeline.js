@@ -148,7 +148,7 @@ function Timeline({ data, width }) {
                 x={-lPad}
                 y={yScale(b.rank)}
                 textAnchor="start"
-                dominantBaseline="middle"
+                dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
               >
@@ -163,7 +163,7 @@ function Timeline({ data, width }) {
                 x={-labelOffset}
                 y={yScale(b.rank)}
                 textAnchor="end"
-                dominantBaseline="middle"
+                dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
                 fill={textColor(a, id === selected)}
@@ -175,7 +175,7 @@ function Timeline({ data, width }) {
                 fontWeight={id === selected ? 800 : 500}
                 x={xScale(b.year) + labelOffset}
                 y={yScale(b.rank)}
-                dominantBaseline="middle"
+                dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
                 fill={textColor(b, id === selected)}

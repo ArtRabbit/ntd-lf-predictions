@@ -71,7 +71,7 @@ const HotSpots = props => {
             sortBy(values(countryData.data), 'performance').map(country => {
               const { id, name, performance } = country
               return (
-                <Box key={id}>
+                <Box key={id} p={1} mb={1}>
                   <Typography variant="h3" component="h3">
                     {name} / performance: {performance}
                   </Typography>
@@ -79,6 +79,7 @@ const HotSpots = props => {
                     data={[country]}
                     width={800}
                     height={100}
+                    yDomain={30}
                     clipDomain
                   />
                 </Box>

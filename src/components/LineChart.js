@@ -6,7 +6,13 @@ import { first, last, flatten, max } from 'lodash'
 const start = 2000
 const end = 2030
 
-export default function SlopeChart({ data, width, height, clipDomain }) {
+export default function SlopeChart({
+  data,
+  width,
+  height,
+  clipDomain,
+  yDomain,
+}) {
   const [selected, setSelected] = useState()
 
   const xPad = 64
@@ -20,13 +26,14 @@ export default function SlopeChart({ data, width, height, clipDomain }) {
     .domain([start, end])
     .range([0, width])
 
-  const domain = max(flatten(data.map(d => d.ranks.map(r => r.prevalence))))
+  const domain =
+    yDomain || max(flatten(data.map(d => d.ranks.map(r => r.prevalence))))
 
   const yScale = scaleLinear()
     .domain(clipDomain ? [0, domain] : [0, 100])
     .range([height, 0])
 
-  const yTicks = yScale.ticks(5)
+  const yTicks = yScale.ticks(4)
   const xTicks = xScale.ticks(5)
 
   const handleEnter = id => {
@@ -46,7 +53,7 @@ export default function SlopeChart({ data, width, height, clipDomain }) {
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
       <g transform={`translate(${xPad},${yPad})`}>
-        <rect width={width} height={height} fill="#f0f0f0"></rect>
+        {/* <rect width={width} height={height} fill="#f0f0f0"></rect> */}
 
         {/* x-axis labels */}
         {xTicks.map(year => (
@@ -67,7 +74,13 @@ export default function SlopeChart({ data, width, height, clipDomain }) {
           const y = yScale(t)
           return (
             <g key={t}>
-              <text x={-16} y={y} textAnchor="end" fontSize="10">
+              <text
+                x={-16}
+                y={y}
+                textAnchor="end"
+                dominantBaseline="central"
+                fontSize="10"
+              >
                 {t}%
               </text>
               <line x1="0" x2={width} y1={y} y2={y} stroke="#cfcfcf"></line>
@@ -137,7 +150,7 @@ export default function SlopeChart({ data, width, height, clipDomain }) {
                 x={xScale(a.year) - labelOffset}
                 y={y(a)}
                 textAnchor="end"
-                dominantBaseline="middle"
+                dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
                 fill={id === selected ? 'blue' : 'black'}
@@ -149,7 +162,7 @@ export default function SlopeChart({ data, width, height, clipDomain }) {
                 fontWeight="800"
                 x={xScale(b.year) + labelOffset}
                 y={y(b)}
-                dominantBaseline="middle"
+                dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
                 fill={id === selected ? 'blue' : 'black'}

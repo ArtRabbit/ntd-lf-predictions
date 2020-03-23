@@ -123,7 +123,7 @@ function BumpChart({ data, width }) {
                 x={xScale(a.year) - labelOffset}
                 y={yScale(a.rank)}
                 textAnchor="end"
-                dominantBaseline="middle"
+                dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
                 fill={id === selected ? 'blue' : 'black'}
@@ -137,7 +137,7 @@ function BumpChart({ data, width }) {
                 }
                 x={xScale(b.year) + labelOffset}
                 y={yScale(b.rank)}
-                dominantBaseline="middle"
+                dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
                 fill={id === selected ? 'blue' : 'black'}
