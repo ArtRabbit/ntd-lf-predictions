@@ -1,25 +1,26 @@
 import React, { Fragment, useState } from 'react'
 import { scaleLinear, line } from 'd3'
 import { first, last } from 'lodash'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
 // TODO: derive start/end from data
 const start = 2000
 const end = 2030
 
-export default function BumpChart({ data, width }) {
+function BumpChart({ data, width }) {
   const [selected, setSelected] = useState()
 
   const height = data.length * 30
-  const xPad = 128
+  const xPad = 200
   const yPad = 32
   const svgHeight = height + yPad * 2
-  const svgWidth = width + xPad * 2
+  const svgWidth = width
 
   const labelOffset = 16
 
   const xScale = scaleLinear()
     .domain([start, end])
-    .range([0, width])
+    .range([0, width - xPad * 2])
 
   const yScale = scaleLinear()
     .domain([data.length, 0])
@@ -150,3 +151,9 @@ export default function BumpChart({ data, width }) {
     </svg>
   )
 }
+
+export default props => (
+  <AutoSizer disableHeight>
+    {({ width }) => <BumpChart {...props} width={width} />}
+  </AutoSizer>
+)

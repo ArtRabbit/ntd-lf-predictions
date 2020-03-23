@@ -268,14 +268,19 @@ class DataAPI {
   get stateData() {
     const states = this.filteredStatesWithMeta
     const { relations } = this.dataStore
+    const { country } = this.uiState
 
     if (states && relations) {
-      return addRankingAndStats(states)
+      const stateSelection = country
+        ? filter(['relatedCountries.0', country])(states)
+        : states
+      return addRankingAndStats(stateSelection)
     }
 
     return null
   }
 
+  // returns all states grouped by country
   get stateByCountryData() {
     const states = this.filteredStatesWithMeta
     const { relations } = this.dataStore
