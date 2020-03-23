@@ -7,7 +7,7 @@ import { useDataAPI, useUIState } from '../hooks/stateHooks'
 import { Layout } from '../layout'
 import Map from '../components/Map'
 import BumpChart from '../components/BumpChart'
-import Head from './components/Head'
+import HeadWithInputs from './components/HeadWithInputs'
 import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
 import ReadMore from './components/ReadMore'
@@ -58,18 +58,12 @@ const TrendsCountry = props => {
 
   return (
     <Layout>
-      <Grid container spacing={0}>
-        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Head
-            transparent={true}
-            title={`Lymphatic filariasis Trends: ${selectedCountry?.name ||
-              '...'}`}
-          />
-        </Grid>
-        <Grid item md={7} xs={12} className={classes.headRightColumn}>
-          <Inputs />
-        </Grid>
-      </Grid>
+
+      <HeadWithInputs
+        transparent={true}
+        title={`Lymphatic filariasis Trends: ${selectedCountry?.name ||
+          '...'}`}
+      />
 
       <Grid container spacing={0}>
         <Grid

@@ -12,8 +12,7 @@ import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Slider from '@material-ui/core/Slider'
 
-import Head from './components/Head'
-import Inputs from './components/Inputs'
+import HeadWithInputs from './components/HeadWithInputs'
 import SectionTitle from './components/SectionTitle'
 import DiveDeeper from './components/DiveDeeper'
 import ReadMore from './components/ReadMore'
@@ -23,13 +22,6 @@ import Map from '../components/Map'
 import Timeline from '../components/Timeline'
 
 const useStyles = makeStyles(theme => ({
-  headLeftColumn: {
-    textAlign: 'left',
-  },
-  headRightColumn: {
-    textAlign: 'right',
-    padding: theme.spacing(2),
-  },
   chartContainer: {
     position: 'relative',
     width: '100%',
@@ -53,14 +45,11 @@ const Trends = props => {
 
   return (
     <Layout>
-      <Grid container spacing={0}>
-        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Head transparent={true} title="Lymphatic filariasis Trends" />
-        </Grid>
-        <Grid item md={7} xs={12} className={classes.headRightColumn}>
-          <Inputs />
-        </Grid>
-      </Grid>
+
+      <HeadWithInputs
+        transparent={true}
+        title="Lymphatic filariasis Trends"
+      />
 
       <SectionTitle
         top={true}

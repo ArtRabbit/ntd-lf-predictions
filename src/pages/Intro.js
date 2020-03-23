@@ -6,8 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 
-import Head from './components/Head'
-import Inputs from './components/Inputs'
+import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
 import SiteSections from './components/SiteSections'
 
@@ -23,14 +22,6 @@ const useStyles = makeStyles(theme => ({
     //marginBottom: '-300px',
     clear: 'both',
   },
-
-  headLeftColumn: {
-    textAlign: 'left',
-  },
-  headRightColumn: {
-    textAlign: 'right',
-    padding: theme.spacing(0, 0, 0, 2),
-  },
 }))
 
 const Intro = props => {
@@ -45,24 +36,18 @@ const Intro = props => {
 
   return (
     <Layout>
-      <Grid container spacing={0}>
-        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Head
-            transparent={true}
-            title="Lymphatic filariasis Projections"
-            text={`Welcome to the NTD Modelling Projections. 
-            The projections on this website provide guidance 
-            on the impact of more frequent, longer or higher 
-            coverate treatment would have on achieving elimination 
-            as a public health problem.`}
-            actionLabel={'PLAY SCENARIO'}
-            action={playScenario}
-          />
-        </Grid>
-        <Grid item md={7} xs={12} className={classes.headRightColumn}>
-          <Inputs />
-        </Grid>
-      </Grid>
+      <HeadWithInputs
+        transparent={true}
+        title="Lymphatic filariasis Projections"
+        text={`Welcome to the NTD Modelling Projections. 
+          The projections on this website provide guidance 
+          on the impact of more frequent, longer or higher 
+          coverate treatment would have on achieving elimination 
+          as a public health problem.`}
+        actionLabel={'PLAY SCENARIO'}
+        action={playScenario}
+      />
+
       <Grid container spacing={0}>
         <Grid item md={3} xs={12}>
           <DiveDeeper

@@ -6,8 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Box, Typography, Grid } from '@material-ui/core'
 import SectionTitle from './components/SectionTitle'
 
-import Head from './components/Head'
-import Inputs from './components/Inputs'
+import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
 import SiteSections from './components/SiteSections'
 import SlopeChart from '../components/SlopeChart'
@@ -16,13 +15,7 @@ import Map from '../components/Map'
 import { useDataAPI } from '../hooks/stateHooks'
 
 const useStyles = makeStyles(theme => ({
-  headLeftColumn: {
-    textAlign: 'left',
-  },
-  headRightColumn: {
-    textAlign: 'right',
-    padding: theme.spacing(2),
-  },
+
 }))
 
 const PanelContainer = ({ children }) => (
@@ -37,14 +30,12 @@ const HotSpots = props => {
 
   return (
     <Layout>
-      <Grid container spacing={0}>
-        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Head transparent={true} title="Lymphatic filariasis Hotspots" />
-        </Grid>
-        <Grid item md={7} xs={12} className={classes.headRightColumn}>
-          <Inputs />
-        </Grid>
-      </Grid>
+
+      <HeadWithInputs
+        transparent={true}
+        title="Lymphatic filariasis Hotspots"
+      />
+
       <SectionTitle
         top={true}
         headline="District hotspots"
