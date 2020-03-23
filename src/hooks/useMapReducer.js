@@ -7,6 +7,7 @@ import { easeCubic } from 'd3'
 const initialState = {
   // TODO: should be controlled by app state
   year: 2020,
+  playing: false,
   viewport: {
     latitude: -4,
     longitude: 20,
@@ -38,6 +39,12 @@ const fit = (feature, vp) => {
 
 const reduce = (state, { type, payload }) => {
   switch (type) {
+    case 'CHANGE_YEAR':
+      return { ...state, year: payload }
+    case 'START_PLAY':
+      return { ...state, year: 2000, playing: true }
+    case 'STOP_PLAY':
+      return { ...state, playing: false }
     case 'VIEWPORT':
       return { ...state, viewport: payload }
     case 'HOVER':
@@ -84,6 +91,6 @@ const reduce = (state, { type, payload }) => {
   }
 }
 
-export default function useMapReducer() {
-  return useReducer(reduce, initialState)
+export default function useMapReducer(props) {
+  return useReducer(reduce, merge({}, initialState, props))
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { observer } from 'mobx-react'
 
 import { Layout } from '../layout'
@@ -35,11 +35,12 @@ const useStyles = makeStyles(theme => ({
 
 const Intro = props => {
   const classes = useStyles()
-  const { countryData, countryFeatures } = useDataAPI()
+  const { countryFeatures } = useDataAPI()
+  const [play, setPlay] = useState(false)
 
   const playScenario = event => {
     if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {
-      alert('Playing')
+      setPlay(!play)
     }
   }
 
@@ -81,6 +82,7 @@ const Intro = props => {
               height={720}
               disableZoom={true}
               initialLevel={0}
+              play={play}
             />
           </Box>
         </Grid>
