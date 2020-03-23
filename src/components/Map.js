@@ -44,7 +44,8 @@ function Map({
 
   const interactiveLayers = [
     ...(!!countryFeatures ? ['fill-countries'] : []),
-    ...(!!stateFeatures ? ['fill-states'] : []),
+    // the states layer is only active if a country is selected
+    ...(!!stateFeatures && country ? ['fill-states'] : []),
   ]
 
   useEffect(() => {
@@ -173,6 +174,7 @@ function Map({
                         // hide shape if no data available
                         'rgba(0,0,0,0)',
                       ],
+                      // hide country features if stateFeatures are available
                       'rgba(0,0,0,0)',
                     ],
                     'fill-outline-color': [
@@ -229,6 +231,7 @@ function Map({
                 />
                 <Layer
                   id="hover-states"
+                  source="africa-states"
                   type="line"
                   filter={['has', `color-${year}`]}
                   layout={{ 'line-join': 'bevel' }}
@@ -297,16 +300,18 @@ function Map({
                   <div>Endemicity: {feature.properties.endemicity}</div>
                   <ul className="links">
                     <li>
-                      <Link href="#"
+                      <Link
+                        href="#"
                         onClick={() =>
                           selectCountryClickHotspots(feature.properties.id)
                         }
                       >
                         Hotspots {feature.properties.name}
-                      </Link >{' '}
+                      </Link>{' '}
                     </li>
                     <li>
-                      <Link href="#"
+                      <Link
+                        href="#"
                         onClick={() =>
                           selectCountryClickTrends(feature.properties.id)
                         }
@@ -323,7 +328,7 @@ function Map({
               <Tooltip
                 title={`${featureHover.properties.name} ${
                   featureHover.properties[`prev-${year}`]
-                  } %`}
+                } %`}
                 open
                 placement="top"
               >

@@ -45,11 +45,7 @@ const Trends = props => {
 
   return (
     <Layout>
-
-      <HeadWithInputs
-        transparent={true}
-        title="Lymphatic filariasis Trends"
-      />
+      <HeadWithInputs transparent={true} title="Lymphatic filariasis Trends" />
 
       <SectionTitle
         top={true}
@@ -88,7 +84,6 @@ const Trends = props => {
           countryFeatures={countryFeatures}
           stateFeatures={stateFeatures}
           height={720}
-          initialLevel={0}
           disableZoom={true}
         />
       </div>

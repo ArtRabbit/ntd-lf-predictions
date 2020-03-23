@@ -14,9 +14,7 @@ import SlopeChart from '../components/SlopeChart'
 import Map from '../components/Map'
 import { useDataAPI } from '../hooks/stateHooks'
 
-const useStyles = makeStyles(theme => ({
-
-}))
+const useStyles = makeStyles(theme => ({}))
 
 const PanelContainer = ({ children }) => (
   <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>
@@ -26,11 +24,10 @@ const PanelContainer = ({ children }) => (
 
 const HotSpots = props => {
   const classes = useStyles()
-  const { stateFeatures, stateByCountryData } = useDataAPI()
+  const { countryFeatures, stateFeatures, stateByCountryData } = useDataAPI()
 
   return (
     <Layout>
-
       <HeadWithInputs
         transparent={true}
         title="Lymphatic filariasis Hotspots"
@@ -49,9 +46,9 @@ const HotSpots = props => {
         }}
       >
         <Map
+          countryFeatures={countryFeatures}
           stateFeatures={stateFeatures}
           height={720}
-          initialLevel={0}
           disableZoom={true}
         />
       </div>

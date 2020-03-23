@@ -66,7 +66,6 @@ const Intro = props => {
           populationFeatures={countryCentroids}
           height={720}
           disableZoom={true}
-          initialLevel={0}
         />
 
         <Box className={classes.links}>
