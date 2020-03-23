@@ -1,4 +1,6 @@
 import { Random } from './sim'
+import { subtract } from 'mathjs'
+
 export var s = new Random()
 export var SessionData = {
   storeResults: (results, scenLabel, stats) => {
@@ -470,8 +472,7 @@ export var Model = function(n) {
     this.Ms = this.Ms.slice(200, this.Ms.length)
     this.Ls = this.Ls.slice(200, this.Ls.length)
     var maxt = this.ts[200]
-    // this.ts = math.subtract(this.ts.slice(200, this.ts.length), maxt); // !!!!!!!!!!!!!!
-    this.ts = this.ts.slice(200, this.ts.length) - maxt // I replaced the math.subtract() with a simple "-" operator - is that bad???
+    this.ts = subtract(this.ts.slice(200, this.ts.length), maxt)
     //plot(this.ts,this.Ws,this.Ms,this.Ls);
   }
 }
