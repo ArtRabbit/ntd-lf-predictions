@@ -19,17 +19,10 @@ import 'typeface-libre-franklin'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
+// root element styles
+import './App.scss';
+
 const theme = createMuiTheme({
-  /*
-  '@global': {
-      'a': {
-          'color': 'red'    // Make all links red.
-      },
-      'body': {
-          'color': 'red'    // Make all links red.
-      }
-  },
-  */
   palette: {
     /*
     primary: purple,
@@ -103,7 +96,21 @@ const theme = createMuiTheme({
       fontWeight: 400,
     },
   },
-  overrides: {},
+  overrides: {
+    'section': {
+      'clear': 'both'
+    },
+
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1556
+    }
+  }
 })
 
 function App() {
