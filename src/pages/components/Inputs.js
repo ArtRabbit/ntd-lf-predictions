@@ -23,10 +23,19 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
   },
   formControl: {
-    margin: theme.spacing(0, 1),
-    minWidth: 220,
+    margin: theme.spacing(0, 0, 2, 0),
+    width: 'calc(100% - 16px)',
     textAlign: 'left',
     '& > label': {},
+    [theme.breakpoints.up('sm')]: {
+      margin: theme.spacing(1, 1),
+    },
+    [theme.breakpoints.up('md')]: {
+      width: 'calc(50% - 16px)'
+
+    },
+    [theme.breakpoints.up('lg')]: {
+    },
   },
   largeTooltip: {
     width: '100%',
@@ -67,7 +76,7 @@ const Inputs = props => {
     if (matchSection) {
       let { section } = matchSection.params
       // country has been selected // are we already on a page that can show country data
-      if ( section !== 'trends' && section !== 'hotspots' ) {
+      if (section !== 'trends' && section !== 'hotspots') {
         section = 'trends'
       }
       if (value) {
@@ -88,7 +97,6 @@ const Inputs = props => {
           id="combo-box-demo"
           options={countrySuggestions}
           getOptionLabel={option => option.name}
-          style={{ width: 300 }}
           value={selected ?? { name: 'All countries' }}
           renderInput={params => (
             <TextField {...params} label="View" />

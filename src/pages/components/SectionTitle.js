@@ -7,7 +7,7 @@ import Arrow from '../../images/arrow-drop-down.svg';
 import ArrowHover from '../../images/arrow-drop-down-hover.svg';
 
 const useStyles = makeStyles(theme => ({
-  
+
   container: {
     padding: theme.spacing(10, 0, 3, 0),
   },
@@ -15,7 +15,10 @@ const useStyles = makeStyles(theme => ({
   containerTop: {
     padding: theme.spacing(3, 0, 3, 0),
   },
-  
+  rightCol: {
+    position: 'relative',
+  },
+
 }));
 
 const SectionTitle = ({ children, headline, text, top }) => {
@@ -23,17 +26,20 @@ const SectionTitle = ({ children, headline, text, top }) => {
 
   return (
     <Grid container spacing={0} className={top ? `${classes.containerTop}` : `${classes.container}`}>
-        <Grid item md={5} xs={12} className={classes.headLeftColumn}>
-          <Typography variant="h2" component="h2">
-            {headline}
+      <Grid item md={6} xs={12}>
+        <Typography variant="h2" component="h2">
+          {headline}
+        </Typography>
+        <ReadMore>
+          <Typography variant="body1" component="div">
+            {text}
           </Typography>
-          <ReadMore>
-            <Typography variant="body1" component="div">
-              {text}
-            </Typography>
-          </ReadMore>
-        </Grid>
+        </ReadMore>
       </Grid>
+      <Grid item md={6} xs={12} className={classes.rightCol}>
+        {children}
+      </Grid>
+    </Grid>
   );
 }
 export default SectionTitle;

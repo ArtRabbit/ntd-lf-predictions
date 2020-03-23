@@ -18,9 +18,19 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     position: 'relative',
     zIndex: 1,
-    //top: '-300px',
-    //marginBottom: '-300px',
+    top: theme.spacing(-20),
     clear: 'both',
+    margin: theme.spacing(0, 0, -20, 0),
+  },
+  links: {
+    zIndex: 9,
+    position: 'absolute',
+    backgroundColor: '#fff',
+    boxShadow:
+      '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
+    padding: theme.spacing(2, 4, 4, 4),
+    bottom: theme.spacing(4),
+    left: theme.spacing(-4),
   },
 }))
 
@@ -38,7 +48,7 @@ const Intro = props => {
   return (
     <Layout>
       <HeadWithInputs
-        transparent={true}
+        transparent={false}
         title="Lymphatic filariasis Projections"
         text={`Welcome to the NTD Modelling Projections. 
           The projections on this website provide guidance 
@@ -49,8 +59,16 @@ const Intro = props => {
         action={playScenario}
       />
 
-      <Grid container spacing={0}>
-        <Grid item md={3} xs={12}>
+      <Box m={1} className={classes.map}>
+        <Map
+          ref={mapRef}
+          countryFeatures={countryFeatures}
+          height={720}
+          disableZoom={true}
+          initialLevel={0}
+        />
+
+        <Box className={classes.links}>
           <DiveDeeper
             title="Dive deeper"
             links={[
@@ -59,19 +77,8 @@ const Intro = props => {
               { to: '/hotspots', name: 'HOTSPOTS' },
             ]}
           />
-        </Grid>
-        <Grid item md={9} xs={12} className={classes.headLeftColumn}>
-          <Box m={1} className={classes.map}>
-            <Map
-              ref={mapRef}
-              countryFeatures={countryFeatures}
-              height={720}
-              disableZoom={true}
-              initialLevel={0}
-            />
-          </Box>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Layout>
   )
 }

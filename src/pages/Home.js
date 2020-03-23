@@ -51,6 +51,7 @@ const Home = (props) => {
         }
         actionLabel={"Enter"}
         action={showIntro}
+        transparent={true}
       />
 
 
