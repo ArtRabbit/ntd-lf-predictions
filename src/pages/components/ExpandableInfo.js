@@ -15,6 +15,10 @@ const useStyles = makeStyles(theme => ({
     top: theme.spacing(4),
     left: theme.spacing(1),
     zIndex: 99,
+    [theme.breakpoints.up('md')]: {
+      width: 'calc(50% - 16px)'
+
+    },
     '& > div': {
       padding: theme.spacing(0, 3, 0, 0),
       overflow: 'hidden',
@@ -64,9 +68,13 @@ const useStyles = makeStyles(theme => ({
 
   },
 
+  standalone: {
+    top: theme.spacing(-2),
+  },
+
 }));
 
-const ExpandableInfo = ({ title, text, children }) => {
+const ExpandableInfo = ({ title, children, standalone }) => {
 
   const classes = useStyles();
   const [showMore, setShowMore] = useState(true);
@@ -79,9 +87,9 @@ const ExpandableInfo = ({ title, text, children }) => {
   }
 
   return title ? (
-    <Paper elevation={3} onClick={(event) => showHide(event)} onKeyDown={(event) => showHide(event)} className={`${classes.root} ${showMore ? 'expanded' : ''}`}>
+    <Paper elevation={3} onClick={(event) => showHide(event)} onKeyDown={(event) => showHide(event)} className={`${classes.root} ${standalone ? classes.standalone : ''} ${showMore ? 'expanded' : ''}`}>
       <Typography display="block" variant="h3" component="h3">{title}</Typography>
-      <Box display="block" variant="body2" component="div">
+      <Box display="block" variant="body1" component="div">
         {children}
       </Box>
     </Paper>

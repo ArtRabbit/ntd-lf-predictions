@@ -4,7 +4,8 @@ import { observer } from 'mobx-react'
 import { Layout } from '../layout';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDataAPI, useUIState } from '../hooks/stateHooks'
-import ExpandableInfo from './components/ExpandableInfo'
+import ExpandableInfoStandalone from './components/ExpandableInfoStandalone'
+
 import { Box, Typography, Grid } from '@material-ui/core'
 import Map from '../components/Map'
 import SlopeChart from '../components/SlopeChart'
@@ -37,25 +38,15 @@ const HotSpotCountry = (props) => {
         title={`Lymphatic filariasis Hotspots: ${selectedCountry?.name || '...'}`}
       />
 
-      <Grid container spacing={0}>
-        <Grid
-          item
-          md={5}
-          xs={12}
-          style={{ position: 'relative', margin: '40px 500px 80px 0px' }}
-        >
-          <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
-            <Box variant="body1">
-              <Typography component="p">
-                Population xxx
-                <br />
-                50k people affected in 2030
-                <br />3 districts with high prevalence
-              </Typography>
-            </Box>
-          </ExpandableInfo>
-        </Grid>
-      </Grid>
+      <ExpandableInfoStandalone title={`${selectedCountry?.name || '...'} facts`}>
+        <Typography component="p">
+          Population xxx
+            <br />
+            50k people affected in 2030
+            <br />3 districts with high prevalence
+          </Typography>
+      </ExpandableInfoStandalone>
+
 
       <div
         style={{
