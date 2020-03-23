@@ -286,7 +286,7 @@ function Map({
                 anchor="top"
               >
                 <Box display="block" variant="body1" component="div">
-                  <Typography variant="subtitle1">
+                  <Typography variant="subtitle1" gutterBottom>
                     {feature.properties.name}
                   </Typography>
                   <Link href="/trends">Link</Link>
