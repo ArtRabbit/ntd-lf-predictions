@@ -62,7 +62,7 @@ const Trends = props => {
       />
 
       <Box className={classes.chartContainer}>
-        {countryData && <Timeline data={Object.values(countryData.data)} />}
+        {countryData && <Timeline dataAndStats={countryData} />}
       </Box>
 
       <SectionTitle

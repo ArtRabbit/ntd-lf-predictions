@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
-import { scaleLinear, line } from 'd3'
-import { first, last } from 'lodash'
+import { scaleLinear, line, scaleSqrt } from 'd3'
+import { first, last, sortBy } from 'lodash'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { textColor, barColor, rankColor } from '../utils'
 
@@ -8,25 +8,32 @@ import { textColor, barColor, rankColor } from '../utils'
 const start = 2000
 const end = 2030
 
-function Timeline({ data, width }) {
+function Timeline({ dataAndStats, width }) {
+  const { data: dataMap, stats } = dataAndStats
+  const { min: pMin, max: pMax } = stats.prevalence
+
+  const data = sortBy(Object.values(dataMap), 'name')
+
   const [selected, setSelected] = useState()
 
   const height = data.length * 20
-  const lPad = 250
+  const lPad = 200
   const rPad = 32
   const yPad = 32
   const svgHeight = height + yPad * 2
   const svgWidth = width
 
-  const labelOffset = 32
-
   const xScale = scaleLinear()
     .domain([start, end])
     .range([0, width - (rPad + lPad)])
 
+  const radiusScale = scaleSqrt()
+    .domain([pMin, pMax])
+    .range([0, (width - (rPad + lPad)) / (end - start) / 2])
+
   const yScale = scaleLinear()
-    .domain([data.length, 0])
-    .range([height, 0])
+    .domain([0, data.length - 1])
+    .range([0, height])
 
   const handleEnter = id => {
     setSelected(id)
@@ -35,12 +42,6 @@ function Timeline({ data, width }) {
     setSelected(null)
   }
 
-  const nowX = xScale(new Date().getFullYear())
-  const startX = xScale(start)
-  const endX = xScale(end)
-  const yearWidth = xScale(start + 1) - xScale(start)
-  const halfYearWidth = Math.round(yearWidth / 2)
-
   return (
     <svg
       width={svgWidth}
@@ -48,141 +49,49 @@ function Timeline({ data, width }) {
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
       <g transform={`translate(${lPad},${yPad})`}>
-        {/* lable start and end years */}
-        <g key={start}>
-          <text
-            x={startX - halfYearWidth}
-            y={height + 32}
-            textAnchor="left"
-            fontSize="12"
-          >
-            {start}
-          </text>
-        </g>
-        <g key={end}>
-          <text
-            x={endX - halfYearWidth}
-            y={height + 32}
-            textAnchor="right"
-            fontSize="12"
-          >
-            {end}
-          </text>
-        </g>
-
         {/* mark all years */}
         {xScale.ticks().map(year => {
-          if (year === start) {
-            return (
-              <line
-                key={year}
-                x1={xScale(year) - halfYearWidth}
-                x2={xScale(year) - halfYearWidth}
-                y1={5}
-                y2={height + 15}
-                stroke="#D8D8D8"
-              ></line>
-            )
-          } else if (year === end) {
-            return (
-              <line
-                key={year}
-                x1={xScale(year) + halfYearWidth}
-                x2={xScale(year) + halfYearWidth}
-                y1={5}
-                y2={height + 15}
-                stroke="#D8D8D8"
-              ></line>
-            )
-          }
           return (
-            <line
+            <text
               key={year}
-              x1={xScale(year)}
-              x2={xScale(year)}
-              y1={5}
-              y2={height + 15}
-              stroke="#D8D8D8"
-              strokeDasharray="4 3"
-            ></line>
+              x={xScale(year)}
+              y={height + 32}
+              textAnchor="middle"
+              fontSize="12"
+            >
+              {year}
+            </text>
           )
         })}
 
-        {/* bars */}
-        {data.map(({ ranks, id }) => {
-          const barWidth = width / (ranks.length - 1)
-          const finalRank = last(ranks).rank
-          const isSelected = id === selected
-
-          return ranks.map(entry => {
-            const { year, rank } = entry
-            return (
-              <g
-                key={`bar-${year}-${rank}`}
-                transform={`translate(${xScale(year) - barWidth / 2}, ${yScale(
-                  finalRank
-                ) - 4})`}
-              >
-                <rect
-                  width={barWidth}
-                  height="8"
-                  fill={barColor(entry, isSelected)}
-                  onMouseEnter={() => handleEnter(id)}
-                  onMouseLeave={handleLeave}
-                ></rect>
-              </g>
-            )
-          })
-        })}
-
-        {/* labels */}
-        {data.map(({ state, ranks, id, prevalence, name }) => {
-          const a = first(ranks)
-          const b = last(ranks)
-
+        {/* symbols */}
+        {data.map(({ ranks, id, name }, i) => {
           return (
-            <Fragment key={`label-${state}-${id}`}>
+            <g key={name} transform={`translate(${0},${yScale(i)})`}>
               <text
                 fontSize="12"
-                fontWeight={id === selected ? 800 : 500}
+                fontWeight="500"
                 x={-lPad}
-                y={yScale(b.rank)}
+                y={0}
                 textAnchor="start"
                 dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
               >
-                <tspan fill={rankColor(a, id === selected)}>{b.rank}</tspan>
-                <tspan fill={textColor(a, id === selected)} x={-lPad + 40}>
-                  {name}
-                </tspan>
+                {name}
               </text>
-              <text
-                fontSize="12"
-                fontWeight={id === selected ? 800 : 500}
-                x={-labelOffset}
-                y={yScale(b.rank)}
-                textAnchor="end"
-                dominantBaseline="central"
-                onMouseEnter={() => handleEnter(id)}
-                onMouseLeave={handleLeave}
-                fill={textColor(a, id === selected)}
-              >
-                {a.prevalence}%
-              </text>
-              <text
-                fontSize="12"
-                fontWeight={id === selected ? 800 : 500}
-                x={xScale(b.year) + labelOffset}
-                y={yScale(b.rank)}
-                dominantBaseline="central"
-                onMouseEnter={() => handleEnter(id)}
-                onMouseLeave={handleLeave}
-                fill={textColor(b, id === selected)}
-              >
-                {b.prevalence}%
-              </text>
-            </Fragment>
+              {ranks.map(({ year, prevalence }) => {
+                return (
+                  <circle
+                    key={year}
+                    fill={prevalence <= 1 ? '#03D386' : '#6236FD'}
+                    fillOpacity={0.7}
+                    r={radiusScale(prevalence)}
+                    cx={xScale(year)}
+                  ></circle>
+                )
+              })}
+            </g>
           )
         })}
       </g>
