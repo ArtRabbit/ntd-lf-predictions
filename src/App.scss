@@ -47,6 +47,7 @@ tspan {
 
     h6 {
       font-size: 1rem !important;
+      padding-right: 60px;
     }
 
     a {
@@ -55,9 +56,23 @@ tspan {
   }
 
   .mapboxgl-popup-close-button {
-    @extend %btn;
-    top: 10px;
-    right: 10px;
+    border: none;
+    color: transparent;
+    font-size: 0;
+    display: block;
+    -webkit-appearance: none;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    top: 5px;
+    right: 4px;
+    background: url('./images/close.svg') no-repeat center center transparent;
+    background-size: 14px 14px;
+    &:hover {
+      background: url('./images/close-hover.svg') no-repeat center center
+        transparent;
+      background-size: 14px 14px;
+    }
   }
 
   .links {
