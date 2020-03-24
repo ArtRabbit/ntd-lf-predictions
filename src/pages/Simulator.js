@@ -86,21 +86,55 @@ const Simulator = props => {
   const classes = useStyles()
 
   const [simParams, setSimParams] = useState({
-    // ...SimulatorEngine.params, // default params
     ...SimulatorEngine.simControler.params, // params editable via UI
   })
 
+  /* MDA object */
+  useEffect(() => {
+    // handleFrequencyChange()
+    populateMDA()
+  }, [simParams.mdaSixMonths])
+  const populateMDA = () => {
+    var MDAtime = []
+    for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
+      MDAtime.push(
+        (simParams.mdaSixMonths / 12) * 12 +
+          (simParams.mdaSixMonths / 12) * 12 * i
+      )
+    }
+    setSimMDAtime([...MDAtime])
+    // SimulatorEngine.simControler.mdaObj.time = [...MDAtime]
+    var MDAcoverage = []
+    for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
+      MDAcoverage.push(simParams.coverage)
+    }
+    setSimMDAcoverage([...MDAcoverage])
+
+    var MDAadherence = []
+    for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
+      MDAadherence.push(simParams.rho)
+    }
+    setSimMDAadherence([...MDAadherence])
+
+    // console.log(SimulatorEngine.simControler.mdaObj)
+  }
+  const [curMDARound, setCurMDARound] = useState(-1)
+  const [simMDAtime, setSimMDAtime] = useState([])
+  const [simMDAcoverage, setSimMDAcoverage] = useState([])
+  const [simMDAadherence, setSimMDAadherence] = useState([])
+  useEffect(() => {
+    // console.log(simMDAtime, simMDAcoverage, simMDAadherence)
+    SimulatorEngine.simControler.mdaObj.time = [...simMDAtime]
+    SimulatorEngine.simControler.mdaObj.coverage = [...simMDAcoverage]
+    SimulatorEngine.simControler.mdaObj.adherence = [...simMDAadherence]
+  }, [simMDAtime, simMDAcoverage, simMDAadherence])
+
+  /* Simuilation, tabs etc */
   const [simInProgress, setSimInProgress] = useState(false)
   const [tabLength, setTabLength] = useState(0)
   const [tabIndex, setTabIndex] = useState(0)
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue)
-  }
-  const handleInputChange = event => {
-    setSimParams({ ...simParams, species: event.target.value })
-  }
-  const handleInputChange2 = event => {
-    setSimParams({ ...simParams, mdaSixMonths: event.target.value })
   }
   useEffect(() => {
     //    console.log('tab updated', tabIndex)
@@ -117,6 +151,10 @@ const Simulator = props => {
       ...simParams,
       coverage: newValue, // / 100
     })
+  }
+  const handleFrequencyChange = event => {
+    setDoseSettingsOpen(false)
+    setSimParams({ ...simParams, mdaSixMonths: event.target.value })
   }
   const handleSliderChanges = (newValue, paramPropertyName) => {
     let newObject = {}
@@ -164,9 +202,9 @@ const Simulator = props => {
       setSimInProgress(false)
     }
   }
-  useEffect(() => {
+  /*   useEffect(() => {
     console.log('scenarioInputs', scenarioInputs)
-  }, [scenarioInputs])
+  }, [scenarioInputs]) */
   const runCurrentScenario = () => {
     if (!simInProgress) {
       setSimInProgress(true)
@@ -199,7 +237,13 @@ const Simulator = props => {
         ...simParams,
         endemicity: parseInt(basePrevalance),
       })
+    // console.log(simParams)
   })
+  const [doseSettingsOpen, setDoseSettingsOpen] = useState(false)
+  const [doseSettingsLeft, setDoseSettingsLeft] = useState(0)
+  const removeDose = params => {}
+  const updateDose = params => {}
+
   return (
     <Layout>
       <HeadWithInputs
@@ -311,7 +355,9 @@ const Simulator = props => {
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               value={simParams.species}
-              onChange={handleInputChange}
+              onChange={event => {
+                setSimParams({ ...simParams, species: event.target.value })
+              }}
             >
               <MenuItem value={0}>Anopheles</MenuItem>
               <MenuItem value={1}>Culex</MenuItem>
@@ -372,7 +418,7 @@ const Simulator = props => {
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               value={simParams.mdaSixMonths}
-              onChange={handleInputChange2}
+              onChange={handleFrequencyChange}
             >
               <MenuItem value={12}>Annual</MenuItem>
               <MenuItem value={6}>Every 6 months</MenuItem>
@@ -435,27 +481,143 @@ const Simulator = props => {
           )}
         </Grid>
       </Grid>
-      <Grid item md={6} xs={12} className={classes.contentRightColumn}>
-        <FormControl className={classes.formControl}>
-          <Typography gutterBottom>Systemic adherence</Typography>
-          <InputLabel htmlFor="rho"></InputLabel>
-          <Slider
-            value={simParams.rho}
-            min={1}
-            step={1}
-            max={100}
-            onChange={(event, newValue) => {
-              handleSliderChanges(newValue, 'rho')
-            }}
-            valueLabelDisplay="auto"
-            aria-labelledby="slider"
-          />
-          {/*             <p style={{ marginBottom: 0 }}>
+      <Grid item md={12} xs={12} className={classes.contentRightColumn}>
+        <div
+          style={{
+            display: 'flex',
+            height: 100,
+            justifyContent: 'space-around',
+            marginBottom: 20,
+            cursor: 'hand',
+          }}
+        >
+          {/* {(12 / simParams.mdaSixMonths) * 20} */}
+          {simMDAtime.map((e, i) => (
+            <div
+              key={i}
+              style={{
+                background: 'grey',
+                height: 100,
+                minWidth: 10,
+                borderWidth: 1,
+                borderColor: 'white',
+                borderStyle: 'solid',
+              }}
+              onMouseOver={a => {
+                // a.target.style.borderColor = '#aa2323'
+              }}
+              onMouseOut={a => {
+                // a.target.style.borderColor = 'white'
+              }}
+              onClick={a => {
+                // a.target.style.backgroundColor = '#aa2323'
+                setCurMDARound(i)
+                setDoseSettingsOpen(true)
+                setDoseSettingsLeft(a.pageX - 100)
+              }}
+              title={
+                simMDAtime[i] +
+                ', ' +
+                simMDAcoverage[i] +
+                ', ' +
+                simMDAadherence[i]
+              }
+            >
+              <span
+                style={{
+                  display: 'block',
+                  background:
+                    i === curMDARound ? '#aa2323' : 'rgb(98, 54, 255)',
+                  height: simMDAcoverage[i],
+                  minWidth: 10,
+                }}
+              ></span>
+            </div>
+          ))}
+        </div>
+      </Grid>
+      {doseSettingsOpen && (
+        <Grid
+          item
+          md={3}
+          xs={12}
+          className={classes.contentRightColumn}
+          style={{ marginLeft: doseSettingsLeft }}
+        >
+          <Typography className={classes.title} variant="h5" component="h2">
+            MDA round #{curMDARound + 1}
+          </Typography>
+          <FormControl className={classes.formControl}>
+            <Typography gutterBottom>Coverage</Typography>
+            <InputLabel htmlFor="rho"></InputLabel>
+            <Slider
+              value={simMDAcoverage[curMDARound]}
+              min={1}
+              step={1}
+              max={100}
+              onChange={(event, newValue) => {
+                let newArray = [...simMDAcoverage]
+                newArray[curMDARound] = newValue
+                setSimMDAcoverage([...newArray])
+              }}
+              valueLabelDisplay="auto"
+              aria-labelledby="slider"
+            />
+            {/*             <p style={{ marginBottom: 0 }}>
               Controls how randomly coverage is applied. For 0, coverage is
               completely random. For 1, the same individuals are always treated.
             </p> */}
-        </FormControl>
-      </Grid>
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <Typography gutterBottom>Systemic adherence</Typography>
+            <InputLabel htmlFor="rho"></InputLabel>
+            <Slider
+              value={simMDAadherence[curMDARound]}
+              min={0}
+              step={0.1}
+              max={1}
+              onChange={(event, newValue) => {
+                let newArray = [...simMDAadherence]
+                newArray[curMDARound] = newValue
+                setSimMDAadherence([...newArray])
+              }}
+              valueLabelDisplay="auto"
+              aria-labelledby="slider"
+            />
+            {/*             <p style={{ marginBottom: 0 }}>
+              Controls how randomly coverage is applied. For 0, coverage is
+              completely random. For 1, the same individuals are always treated.
+            </p> */}
+          </FormControl>
+          <div className={classes.buttons}>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={simInProgress}
+              onClick={() => {
+                let newArray = [...simMDAcoverage]
+                newArray[curMDARound] = 0
+                setSimMDAcoverage([...newArray])
+                setCurMDARound(-1)
+                setDoseSettingsOpen(false)
+              }}
+            >
+              REMOVE
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={simInProgress}
+              onClick={() => {
+                setCurMDARound(-1)
+                setDoseSettingsOpen(false)
+              }}
+            >
+              UPDATE
+            </Button>
+          </div>
+        </Grid>
+      )}
 
       <DiveDeeper
         title="Get an overview"

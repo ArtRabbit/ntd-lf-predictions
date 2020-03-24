@@ -1,4 +1,6 @@
 import React, { Fragment, useState } from 'react'
+import AutoSizer from 'react-virtualized-auto-sizer'
+
 import { scaleLinear, line } from 'd3'
 import { first, last, flatten, max } from 'lodash'
 
@@ -6,7 +8,7 @@ import { first, last, flatten, max } from 'lodash'
 const start = 2000
 const end = 2030
 
-export default function SlopeChart({
+function SlopeChart({
   data,
   width,
   height,
@@ -14,17 +16,19 @@ export default function SlopeChart({
   yDomain,
 }) {
   const [selected, setSelected] = useState()
-
-  const xPad = 64
+  const [selectedYear, setSelectedYear] = useState()
+  const lPad = 50
+  const rPad = 32
   const yPad = 32
   const svgHeight = height + yPad * 2
-  const svgWidth = width + xPad * 2
+  const svgWidth = width
 
   const labelOffset = 32
 
   const xScale = scaleLinear()
     .domain([start, end])
-    .range([0, width])
+    .range([0, width - (rPad + lPad)])
+
 
   const domain =
     yDomain || max(flatten(data.map(d => d.ranks.map(r => r.prevalence))))
@@ -41,10 +45,22 @@ export default function SlopeChart({
   }
   const handleLeave = () => {
     setSelected(null)
+    setSelectedYear(null)
+  }
+
+  const handleEnterYear = (year,id) => {
+    console.log('setting year ',year)
+    setSelected(id)
+    setSelectedYear(year)
   }
 
   const y = d => yScale(d.prevalence)
   const nowX = xScale(new Date().getFullYear())
+  const startX = xScale(start)
+  const endX = xScale(end)
+  const yearWidth = xScale(start + 1) - xScale(start)
+  const halfYearWidth = Math.round(yearWidth / 2)
+
 
   return (
     <svg
@@ -52,22 +68,93 @@ export default function SlopeChart({
       height={svgHeight}
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
-      <g transform={`translate(${xPad},${yPad})`}>
+      
+
+      <g transform={`translate(${lPad},${yPad})`}>
         {/* <rect width={width} height={height} fill="#f0f0f0"></rect> */}
 
-        {/* x-axis labels */}
-        {xTicks.map(year => (
-          <g key={year}>
-            <text
-              x={xScale(year)}
-              y={height + 32}
-              textAnchor="middle"
-              fontSize="10"
-            >
-              {year}
-            </text>
-          </g>
-        ))}
+        {/* lable start and end years */}
+        {xScale.ticks().map(year => {
+           if (year === start) {
+              return (
+                <g key={start}>
+                <text
+                  x={startX - halfYearWidth}
+                  y={height + 32}
+                  textAnchor="left"
+                  fontSize="12"
+                >
+                  {start}
+                </text>
+                </g>)
+           } else if ( year === end ) {
+             return (
+              <g key={end}>
+              <text
+                x={endX - halfYearWidth}
+                y={height + 32}
+                textAnchor="right"
+                fontSize="12"
+              >
+                {end}
+              </text>
+              </g>)
+           } else {
+              const yearOutput = '‘'+year.toString().substr(-2)
+              return (<g key={year}>
+              <text
+                x={xScale(year)}
+                y={height + 32}
+                textAnchor="middle"
+                fontSize="12"
+              >
+                {yearOutput}
+              </text>
+              </g>)
+
+           }
+        })}
+
+        {xScale.ticks().map(year => {
+          if (year === start) {
+            return (
+              <line
+                key={year}
+                x1={xScale(year)}
+                x2={xScale(year)}
+                y1={-5}
+                y2={height + 15}
+                stroke="#D8D8D8"
+              ></line>
+            )
+          } else if (year === end) {
+            return (
+              <line
+                key={year}
+                x1={xScale(year)}
+                x2={xScale(year)}
+                y1={-5}
+                y2={height + 15}
+                stroke="#D8D8D8"
+              ></line>
+            )
+          }
+          return (
+            <line
+              key={year}
+              x1={xScale(year)}
+              x2={xScale(year)}
+              y1={-5}
+              y2={height + 15}
+              stroke="#D8D8D8"
+              strokeDasharray="4 3"
+            ></line>
+          )
+        })}
+
+        
+
+        
 
         {/* y-axis labels */}
         {yTicks.map(t => {
@@ -75,15 +162,15 @@ export default function SlopeChart({
           return (
             <g key={t}>
               <text
-                x={-16}
+                x={-lPad}
                 y={y}
-                textAnchor="end"
+                textAnchor="central"
                 dominantBaseline="central"
-                fontSize="10"
+                fontSize="12"
               >
                 {t}%
               </text>
-              <line x1="0" x2={width} y1={y} y2={y} stroke="#cfcfcf"></line>
+              <line x1={0} x2={(end-start)*yearWidth} y1={y} y2={y} stroke="#cfcfcf" strokeDasharray="4 3"></line>
             </g>
           )
         })}
@@ -93,49 +180,121 @@ export default function SlopeChart({
 
         {/* lines */}
         {data.map(({ state, id, ranks }) => {
-          const coords = ranks.map(d => {
+          let coords = ranks.map(d => {
             const { year } = d
             return [xScale(year), y(d)]
           })
+          coords.push([coords[coords.length-1][0],height])
+          coords.push([0,height])
+          coords.push([0,coords[0][1]])
           const l = line()(coords)
+
+          const hoverTargets = ranks.map(d => {
+            const { year } = d
+            return (
+              
+              <line
+                key={`${state}-${id}-${year}`}
+                x1={xScale(year)}
+                x2={xScale(year)}
+                y1={-halfYearWidth}
+                y2={height + 15}
+                strokeWidth={yearWidth}
+                stroke="transparent"
+                onMouseEnter={() => handleEnterYear(year,id)}
+                onMouseLeave={handleLeave}
+              ></line>
+            )
+          })
+
+          const hoverDisplay = ranks.map(d => {
+            const { year, rank, prevalence } = d
+            if ( year !== selectedYear ) return null
+              return (
+                <g
+                  key={`circle-${year}-${rank}`}
+                  transform={`translate(${xScale(year)}, ${y(d)})`}
+                >
+                  <circle
+                    r="18"
+                    fill={
+                      prevalence <= 1
+                        ? '#6ABD8E'
+                        : prevalence > 10
+                        ? '#FF4C73'
+                        : '#6236FF'
+                    }
+                  ></circle>
+                  <text x="1" y="5" textAnchor="middle" fill="white" fontSize="12px" fontFamily="Roboto" dy="-1px">{`${prevalence}%`}</text>
+                </g>)
+          })
+
+
+           
+          
+
           return (
-            <path
-              key={`ranks-${state}-${id}`}
-              d={l}
-              stroke={id === selected ? 'blue' : '#333'}
-              strokeWidth={id === selected ? 2 : 1}
-              fill="none"
-              onMouseEnter={() => handleEnter(id)}
-              onMouseLeave={handleLeave}
-            />
+            <g key={`${state}-${id}`}>
+              <path
+                key={`ranks-${state}-${id}`}
+                d={l}
+                fill="rgba(155,102,255,0.35)"
+              />
+              {hoverDisplay}
+              {hoverTargets}
+            </g>
           )
         })}
 
+        {/*
+        {xScale.ticks().map(year => {
+          return (
+            <line
+              key={year}
+              x1={xScale(year)}
+              x2={xScale(year)}
+              y1={-5}
+              y2={height + 15}
+              strokeWidth={10}
+              stroke="red"
+              onMouseEnter={() => handleEnterYear(year)}
+            ></line>
+          )
+        })}
+        */}
+        
         {/* grid */}
+        {/*
         {data.map(({ ranks }) => {
           return ranks.map(d => {
             const { year, rank, prevalence } = d
+            //console.log(year)
+            //console.log(selectedYear)
+            //console.log(selected)
+            if ( year !== selectedYear ) return null
             return (
               <g
                 key={`circle-${year}-${rank}`}
                 transform={`translate(${xScale(year)}, ${y(d)})`}
               >
                 <circle
-                  r="2"
+                  r="15"
                   fill={
                     prevalence <= 1
                       ? '#12df93'
                       : prevalence > 20
                       ? '#ff5e0d'
-                      : 'none'
+                      : 'blue'
                   }
                 ></circle>
               </g>
             )
           })
         })}
+        */}
 
         {/* labels */}
+        {/*
         {data.map(({ state, ranks, name, id }) => {
           const a = first(ranks)
           const b = last(ranks)
@@ -172,7 +331,14 @@ export default function SlopeChart({
             </Fragment>
           )
         })}
+        */}
       </g>
     </svg>
   )
 }
+
+export default props => (
+  <AutoSizer disableHeight>
+    {({ width }) => <SlopeChart {...props} width={width} />}
+  </AutoSizer>
+)

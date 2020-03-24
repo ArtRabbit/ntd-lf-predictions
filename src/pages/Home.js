@@ -163,7 +163,6 @@ const Home = (props) => {
         <Map
           ref={mapRef}
           countryFeatures={countryFeatures}
-          populationFeatures={countryCentroids}
           disableZoom={true}
         />
 

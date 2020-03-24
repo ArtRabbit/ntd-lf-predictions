@@ -835,6 +835,7 @@ export var statFunctions = {
 // !!!!!!!!!!!!!!! FUNCTION TO GENERATE MDA JSON IF THE FORM IS FILLED IN /// !!!!!!!!!!!!!!!
 
 function generateMDAFromForm() {
+  // Lukas: not being used simControler.mdaObj gets populated automaticaly
   // !!!!!!!!!!!!!!! GRAB PARAMETERS FROM FORM /// !!!!!!!!!!!!!!!
   // !!!!!!!!!!!!!!! IS THIS THE CORRECT FUNCTION TO CALL??? /// !!!!!!!!!!!!!!!
   var params = simControler.params
@@ -944,7 +945,7 @@ export var simControler = {
 
     //    if (FORM_FILLED_IN) {
     // !!!!!!!!!!!!!!! IF FORM IS FILLED IN, RUN THIS /// !!!!!!!!!!!!!!!
-    var mdaJSON = generateMDAFromForm()
+    var mdaJSON = simControler.mdaObj //generateMDAFromForm()
     //  } else {
     // !!!!!!!!!!!!!!! IF FORM IS NOT FILLED IN, GET MDA JSON FROM INPUT FILE /// !!!!!!!!!!!!!!!
     //mdaJSON = MDA_STRAIGHT_FROM_INPUT_FILE
@@ -1091,6 +1092,10 @@ export var simControler = {
     microfilaricide: 65, // $("#Microfilaricide").val(),
     runs: 5, // $("#runs").val()
   },
-  mdaObj: {}, // added explicitely
+  mdaObj: {
+    time: [], //60, 96, 120, 144, 180
+    coverage: [], // 0.9, 0.9, 0.9, 0.9, 0.9
+    adherence: [], // 1, 1, 1, 1, 1
+  },
   newScenario: true,
 }
