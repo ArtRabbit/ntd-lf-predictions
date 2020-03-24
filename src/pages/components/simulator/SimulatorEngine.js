@@ -403,8 +403,8 @@ export var Model = function(n) {
     var z_values = [];
     for (i = 0; i<this.n; i++){
         this.people[i].u = s.normal(params.u0,Math.sqrt(params.sigma))
-        x = (this.people[i].u - params.u0)/Math.sqrt(params.sigma)
-        z_values.push(x)
+        // x = (this.people[i].u - params.u0)/Math.sqrt(params.sigma)
+        z_values.push((this.people[i].u - params.u0)/Math.sqrt(params.sigma))
     }
     this.bedNetInt = 0
 
