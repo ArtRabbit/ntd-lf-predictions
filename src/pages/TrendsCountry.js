@@ -89,7 +89,7 @@ const TrendsCountry = props => {
       </SectionTitle>
 
       <Box className={classes.chartContainer}>
-        {stateData && <Timeline data={Object.values(stateData.data)} />}
+        {stateData && <Timeline dataAndStats={stateData} />}
       </Box>
 
       <Grid container justify="center">
