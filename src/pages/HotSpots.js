@@ -62,7 +62,7 @@ const HotSpots = props => {
 
       <Box className={classes.chartContainer}>
         <SectionTitle
-          headline="Top affected countries"
+          headline="Top improving countries"
           text={`And their projected development over time`}
         />
         {countryData &&
@@ -71,8 +71,11 @@ const HotSpots = props => {
               const { id, name, performance } = country
               return (
                 <Box key={id} p={1} mb={1}>
-                  <Typography variant="h3" component="h3">
-                    {name} / performance: {performance}
+                  <Typography variant="h5" component="h5">
+                    {name}
+                  </Typography>
+                  <Typography variant="h5" component="h5" color="primary">
+                    {performance}
                   </Typography>
                   <LineChart
                     data={[country]}

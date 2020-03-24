@@ -105,7 +105,7 @@ const Inputs = props => {
         />
       </FormControl>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-simple-select-helper-label">{regime}</InputLabel>
+        <InputLabel id="demo-simple-select-helper-label">Treatment scenario</InputLabel>
         <Select
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
@@ -120,7 +120,7 @@ const Inputs = props => {
         </Select>
         <div className={classes.largeTooltip}>
           <Typography color="inherit" component="p">
-            See how other treatement regimes can save lives
+              Show how other treatment scenarios could impact populations at risk.
           </Typography>
         </div>
       </FormControl>
