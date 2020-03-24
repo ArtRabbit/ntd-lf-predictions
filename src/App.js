@@ -5,7 +5,6 @@ import useSyncRouteState from './hooks/useSyncRouteState'
 import ScrollToTop from './pages/components/ScrollToTop'
 import Home from './pages/Home'
 import Page from './pages/Page'
-import Intro from './pages/Intro'
 import HotSpots from './pages/HotSpots'
 import Simulator from './pages/Simulator'
 import Trends from './pages/Trends'
@@ -128,7 +127,6 @@ function App() {
         <ScrollToTop location={location}>
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/intro" component={Intro} />
             <Route exact path="/trends" component={Trends} />
             <Route exact path="/trends/:country" component={TrendsCountry} />
             <Route exact path="/hotspots" component={HotSpots} />
