@@ -1,6 +1,6 @@
 import React, { useEffect, forwardRef, useImperativeHandle } from 'react'
 import ReactMapGL, { Source, Layer, Popup } from 'react-map-gl'
-import { useHistory, useRouteMatch, NavLink } from 'react-router-dom'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { Tooltip, Typography, Slider, Box, Link } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -26,7 +26,7 @@ function Map({
   forwardRef,
 }) {
   const [
-    { year, viewport, feature, featureHover, popup, tooltip, playing },
+    { year, viewport, feature, featureHover, popup, tooltip, playing, ready },
     dispatch,
   ] = useMapReducer()
 
@@ -40,7 +40,6 @@ function Map({
 
   const history = useHistory()
   const match = useRouteMatch('/:section')
-  const matchesDetails = useRouteMatch('/:section/:country')
 
   const interactiveLayers = [
     ...(!!countryFeatures ? ['fill-countries'] : []),
@@ -49,7 +48,7 @@ function Map({
   ]
 
   useEffect(() => {
-    if (country) {
+    if (country && ready) {
       const focus = countryFeatures.features.find(
         f => f.properties.id === country
       )
@@ -57,7 +56,7 @@ function Map({
         dispatch({ type: 'FOCUS', payload: focus })
       }
     }
-  }, [countryFeatures, country, dispatch])
+  }, [countryFeatures, country, dispatch, ready])
 
   useEffect(() => {
     let timeout
