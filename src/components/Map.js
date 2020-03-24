@@ -350,22 +350,41 @@ function Map({
             ></span>
           </Tooltip>
         )}
-        <HTMLOverlay
-          redraw={() => (
-            <div
-              style={{
-                width: 200,
-                right: 32,
-                bottom: 32,
-                position: 'absolute',
-              }}
-            >
-              <Paper>
-                <Box p={1}>Legend</Box>
-              </Paper>
-            </div>
-          )}
-        />
+        {colorScale && colorScale.ticks && (
+          <HTMLOverlay
+            redraw={() => (
+              <div
+                style={{
+                  width: 250,
+                  right: 32,
+                  bottom: 32,
+                  position: 'absolute',
+                }}
+              >
+                <Paper>
+                  <Box p={1}>
+                    <p>Performance = 2030-2000 (prev)</p>
+                    <svg width={230} height={30} viewBox="-115 0 230 30">
+                      {colorScale.ticks().map(t => (
+                        <g key={t} transform={`translate(${t * 3},0)`}>
+                          <rect
+                            x={-4}
+                            width={8}
+                            height={8}
+                            fill={colorScale(t)}
+                          ></rect>
+                          <text y={24} fontSize={10} textAnchor="middle">
+                            {t}
+                          </text>
+                        </g>
+                      ))}
+                    </svg>
+                  </Box>
+                </Paper>
+              </div>
+            )}
+          />
+        )}
       </ReactMapGL>
 
       {!trendMode && (
