@@ -83,20 +83,22 @@ const Inputs = props => {
   const matchSection = useRouteMatch('/:section')
 
   const handleCountryChange = (event, value) => {
-
+    let section = 'trends'
     if (matchSection) {
-      let { section } = matchSection.params
-      // country has been selected // are we already on a page that can show country data
-      if (section !== 'trends' && section !== 'hotspots') {
-        section = 'trends'
-      }
-      if (value) {
-        history.push({ pathname: `/${section}/${value.id}` })
-        // country has been deselected
-      } else {
-        history.push({ pathname: `/${section}` })
-      }
+       section = matchSection.params.section
     }
+      // country has been selected // are we already on a page that can show country data
+    if (section !== 'trends' && section !== 'hotspots') {
+      section = 'trends'
+    }
+    if (value) {
+      history.push({ pathname: `/${section}/${value.id}` })
+      // country has been deselected
+    } else {
+      history.push({ pathname: `/${section}` })
+    }
+    
+  
   }
 
   const hideTooltip = (event) => {
