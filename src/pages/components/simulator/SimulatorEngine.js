@@ -394,7 +394,18 @@ export var Model = function(n) {
     // console.log(simControler.mdaObj)
     var numMDA = simControler.mdaObj.time.length
     var nextMDA = 1200 + simControler.mdaObj.time[mdaRound]
-
+    params.covMDA = simControler.mdaObj.coverage[mdaRound];
+    params.rho = simControler.mdaObj.adherence[mdaRound];
+    params.sigma = params.rho / (1 - params.rho);
+    params.u0 = -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma);
+    // add z values for our normally distributed value of u, therefore when the parameters of the normal change,
+    // we can easily map these values to corresponding z values for the new normal distribution
+    var z_values = [];
+    for (i = 0; i<this.n; i++){
+        this.people[i].u = s.normal(params.u0,Math.sqrt(params.sigma))
+        // x = (this.people[i].u - params.u0)/Math.sqrt(params.sigma)
+        z_values.push((this.people[i].u - params.u0)/Math.sqrt(params.sigma))
+    }
     this.bedNetInt = 0
 
     for (var i = 0; i < this.n; i++) {
@@ -459,12 +470,6 @@ export var Model = function(n) {
       }
 
       if (t >= nextMDA) {
-        // get variables for this mda
-        params.covMDA = simControler.mdaObj.coverage[mdaRound]
-        params.rho = simControler.mdaObj.adherence[mdaRound]
-        params.sigma = params.rho / (1 - params.rho)
-        params.u0 =
-          -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma)
 
         this.MDAEvent()
 
@@ -475,7 +480,15 @@ export var Model = function(n) {
           // if we haven't done all the mda's yet,
           // update the mda round and the time for the next one
           mdaRound += 1
-          nextMDA = 1200 + mdaJSON.time[mdaRound]
+          nextMDA = 1200 + simControler.mdaObj.time[mdaRound]
+          params.covMDA = simControler.mdaObj.coverage[mdaRound];
+          params.rho = simControler.mdaObj.adherence[mdaRound];
+          params.sigma = params.rho / (1 - params.rho);
+          params.u0 = -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma);
+
+          for (i = 0; i<this.n; i++){
+              this.people[i].u = z_values[i]*Math.sqrt(params.sigma) + params.u0
+          }
         }
         // if we have performed all the mda's already, then set the next mda time to infinity,
         // so we will never check for mda's again
