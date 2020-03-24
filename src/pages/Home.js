@@ -16,7 +16,7 @@ import { useDataAPI, useUIState } from '../hooks/stateHooks'
 const useStyles = makeStyles(theme => ({
   map: {
     width: 'calc(100% - 420px)',
-    height: '100%',
+    height: 'calc(100% - 124px)',
     //position: 'absolute', 
     top: 0,
     right: 0,
@@ -25,7 +25,8 @@ const useStyles = makeStyles(theme => ({
   },
   links: {
     zIndex: 9,
-    margin: theme.spacing(6, 0, 0, 0),
+    float: 'left',
+    paddingTop: theme.spacing(8),
     /*
     position: 'absolute',
     backgroundColor: '#fff',
@@ -137,8 +138,7 @@ const Home = (props) => {
   };
 
   return (
-    <Layout class onKeyDown={(event) => handleKeyDown(event)}>
-
+    <Layout classAdd="full-height" onKeyDown={(event) => handleKeyDown(event)}>
       {welcomeScren && <WelcomeScreen />}
       {!welcomeScren && <HomeScreen />}
 
@@ -147,7 +147,6 @@ const Home = (props) => {
           ref={mapRef}
           countryFeatures={countryFeatures}
           populationFeatures={countryCentroids}
-          height={720}
           disableZoom={true}
         />
 

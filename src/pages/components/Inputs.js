@@ -94,6 +94,15 @@ const Inputs = props => {
     }
   }
 
+  const hideTooltip = (event) => {
+    setInfoTooltip(false);
+    event.preventDefault();
+  }
+
+  const handleRegimeChange = (event, value) => {
+    setRegime(event);
+    setInfoTooltip(false);
+  }
   const selected = countrySuggestions.find(x => x.id === country)
 
   return (
@@ -116,7 +125,7 @@ const Inputs = props => {
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
           value={regime}
-          onChange={setRegime}
+          onChange={handleRegimeChange}
         >
           {regimes.map(r => (
             <MenuItem key={r} value={r}>
@@ -124,11 +133,12 @@ const Inputs = props => {
             </MenuItem>
           ))}
         </Select>
-        {infoTooltip && <div className={classes.largeTooltip}>
-          <Typography color="inherit" component="p">
-            See how other treatement regimes can save lives
+        {infoTooltip &&
+          <div className={classes.largeTooltip} onClick={(event) => hideTooltip(event)}>
+            <Typography color="inherit" component="p">
+              See how other treatement regimes can save lives
           </Typography>
-        </div>
+          </div>
         }
       </FormControl>
     </Box>

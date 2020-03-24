@@ -12,9 +12,6 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     minHeight: '100vh',
     background: 'white',
-    '&.violet': {
-      backgroundImage: 'linear-gradient(to bottom, #ebe1ff, #d4cdef)',
-    }
   },
   main: {
     //paddingTop: theme.spacing(4),
@@ -22,6 +19,11 @@ const useStyles = makeStyles(theme => ({
     flex: 2,
     position: 'relative',
 
+    '&.full-height': {
+      height: '100vh',
+      display: 'block',
+      flex: 'none'
+    }
   },
 }));
 
@@ -33,9 +35,7 @@ const Layout = (props) => {
   return (
     <div className={`${classes.root} ${classAdd}`}>
 
-      <Header />
-
-      <Container component="main" className={classes.main} maxWidth="xl">
+      <Container component="main" className={`${classes.main} ${classAdd}`} maxWidth="xl">
         {props.children}
       </Container>
 
