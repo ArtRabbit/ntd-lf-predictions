@@ -44,7 +44,7 @@ const theme = createMuiTheme({
     },
     secondary: {
       light: '#eeeeee',
-      main: '#000000',
+      main: '#f50057', // 
     },
     error: {
       main: '#aa2323',

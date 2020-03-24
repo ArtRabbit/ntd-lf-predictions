@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
-import AppBar from '@material-ui/core/AppBar'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 
@@ -25,6 +25,8 @@ import Slider from '@material-ui/core/Slider'
 
 import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
+import SectionTitle from './components/SectionTitle'
+import ChartSettings from './components/ChartSettings'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 SimulatorEngine.simControler.documentReady()
@@ -43,14 +45,34 @@ const useStyles = makeStyles(theme => ({
     '& > label': {},
   },
   contentLeftColumn: {},
-  contentRightColumn: {},
+  settings: {
+    padding: theme.spacing(2, 2, 1, 2),
+    backgroundColor: theme.palette.secondary.light,
+  },
   buttons: {
     display: 'flex',
     flexDirection: 'column',
     '& > *': {
-      margin: theme.spacing(1),
+      margin: theme.spacing(1, 0),
     },
   },
+  simulator: {
+    width: `calc(100% + ${theme.spacing(6)}px)`,
+    marginLeft: -theme.spacing(6)
+  },
+  tabs: {
+    padding: theme.spacing(0, 6)
+  },
+  chartContainer: {
+    position: 'relative',
+    width: '100%',
+  },
+  progress: {
+    width: '100%',
+    '& > *': {
+      margin: theme.spacing(2, 0),
+    },
+  }
 }))
 
 function a11yProps(index) {
@@ -99,7 +121,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-          (simParams.mdaSixMonths / 12) * 12 * i
+        (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -131,7 +153,7 @@ const Simulator = props => {
 
   /* Simuilation, tabs etc */
   const [simInProgress, setSimInProgress] = useState(false)
-  const [tabLength, setTabLength] = useState(0)
+  const [tabLength, setTabLength] = useState(3)
   const [tabIndex, setTabIndex] = useState(0)
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue)
@@ -241,8 +263,8 @@ const Simulator = props => {
   })
   const [doseSettingsOpen, setDoseSettingsOpen] = useState(false)
   const [doseSettingsLeft, setDoseSettingsLeft] = useState(0)
-  const removeDose = params => {}
-  const updateDose = params => {}
+  const removeDose = params => { }
+  const updateDose = params => { }
 
   return (
     <Layout>
@@ -254,26 +276,36 @@ const Simulator = props => {
       {/*       {props.location.search}
       {window.location.search} */}
 
-      <Grid container spacing={4}>
-        <Grid item md={6} xs={12} className={classes.contentLeftColumn}>
-          <Typography className={classes.title} variant="h5" component="h2">
-            Prevalence over time
-          </Typography>
+      <SectionTitle
+        top={true}
+        headline="Available scenarios"
+        text={`Create your own scenarios and compare them to our baseline`}
+        fullwidth={true}
+      />
+      <Grid container spacing={0} className={classes.simulator}>
+
+        <Grid item xs={12} className={classes.tabs}>
+          <Tabs
+            value={tabIndex}
+            onChange={handleTabChange}
+            aria-label="Available scenarios"
+            indicatorColor="secondary"
+            textColor="secondary"
+            variant="scrollable"
+            scrollButtons="auto"
+          >
+            <Tab label="Scenario 1" {...a11yProps(0)} />
+            {tabLength > 1 && <Tab label="Scenario 2" {...a11yProps(1)} />}
+            {tabLength > 2 && <Tab label="Scenario 3" {...a11yProps(2)} />}
+            {tabLength > 3 && <Tab label="Scenario 4" {...a11yProps(3)} />}
+            {tabLength > 4 && <Tab label="Scenario 5" {...a11yProps(4)} />}
+          </Tabs>
+        </Grid>
+
+        <Grid item md={9} xs={12} className={classes.chartContainer}>
 
           <div className={classes.tavs}>
-            <AppBar position="static">
-              <Tabs
-                value={tabIndex}
-                onChange={handleTabChange}
-                aria-label="simple tabs example"
-              >
-                <Tab label="Scenario 1" {...a11yProps(0)} />
-                {tabLength > 1 && <Tab label="Scenario 2" {...a11yProps(1)} />}
-                {tabLength > 2 && <Tab label="Scenario 3" {...a11yProps(2)} />}
-                {tabLength > 3 && <Tab label="Scenario 4" {...a11yProps(3)} />}
-                {tabLength > 4 && <Tab label="Scenario 5" {...a11yProps(4)} />}
-              </Tabs>
-            </AppBar>
+
             <TabPanel value={tabIndex} index={0}>
               Scenario 1
               <div style={{ overflow: 'hidden', height: '400px' }}>
@@ -305,108 +337,107 @@ const Simulator = props => {
               </div>
             </TabPanel>
           </div>
-        </Grid>
-        <Grid item md={3} xs={12} className={classes.contentRightColumn}>
-          <Typography className={classes.title} variant="h5" component="h2">
-            Settings
-          </Typography>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>Base prevalence</Typography>
-            <InputLabel htmlFor="endemicity"></InputLabel>
-            <Slider
-              value={simParams.endemicity}
-              id="endemicity"
-              min={1}
-              step={1}
-              max={100}
-              onChange={(event, newValue) => {
-                handleSliderChanges(newValue, 'endemicity')
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-            {/*             <p style={{ marginBottom: 0 }}>
+
+
+          <ChartSettings title="Settings" buttonText="Update Scenario" action={runCurrentScenario} >
+            <FormControl className={classes.formControl}>
+              <Typography gutterBottom>Base prevalence</Typography>
+              <InputLabel htmlFor="endemicity"></InputLabel>
+              <Slider
+                value={simParams.endemicity}
+                id="endemicity"
+                min={1}
+                step={1}
+                max={100}
+                onChange={(event, newValue) => {
+                  handleSliderChanges(newValue, 'endemicity')
+                }}
+                valueLabelDisplay="auto"
+                aria-labelledby="slider"
+              />
+              {/*             <p style={{ marginBottom: 0 }}>
               The mf prevalence in the population before intervention occurs.
               Due to the stochastic nature of the model this is a prevalence
               averaged over many independent runs and so should be treated as an
               approximation only.{' '}
             </p> */}
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>Number of runs</Typography>
-            <InputLabel htmlFor="runs"></InputLabel>
-            <Slider
-              value={simParams.runs}
-              min={1}
-              step={1}
-              max={100}
-              onChange={(event, newValue) => {
-                handleSliderChanges(newValue, 'runs')
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-helper-label">
-              Species
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <Typography gutterBottom>Number of runs</Typography>
+              <InputLabel htmlFor="runs"></InputLabel>
+              <Slider
+                value={simParams.runs}
+                min={1}
+                step={1}
+                max={100}
+                onChange={(event, newValue) => {
+                  handleSliderChanges(newValue, 'runs')
+                }}
+                valueLabelDisplay="auto"
+                aria-labelledby="slider"
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-helper-label">
+                Species
             </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              value={simParams.species}
-              onChange={event => {
-                setSimParams({ ...simParams, species: event.target.value })
-              }}
-            >
-              <MenuItem value={0}>Anopheles</MenuItem>
-              <MenuItem value={1}>Culex</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>Vector: Bed Net Coverage (%)</Typography>
-            <InputLabel htmlFor="covN"></InputLabel>
-            <Slider
-              value={simParams.covN}
-              id="covN"
-              min={1}
-              step={1}
-              max={100}
-              onChange={(event, newValue) => {
-                handleSliderChanges(newValue, 'covN')
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-            {/*             <p style={{ marginBottom: 0 }}>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={simParams.species}
+                onChange={event => {
+                  setSimParams({ ...simParams, species: event.target.value })
+                }}
+              >
+                <MenuItem value={0}>Anopheles</MenuItem>
+                <MenuItem value={1}>Culex</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <Typography gutterBottom>Vector: Bed Net Coverage (%)</Typography>
+              <InputLabel htmlFor="covN"></InputLabel>
+              <Slider
+                value={simParams.covN}
+                id="covN"
+                min={1}
+                step={1}
+                max={100}
+                onChange={(event, newValue) => {
+                  handleSliderChanges(newValue, 'covN')
+                }}
+                valueLabelDisplay="auto"
+                aria-labelledby="slider"
+              />
+              {/*             <p style={{ marginBottom: 0 }}>
               Bed nets are assumed to have been distributed at the start of
               intervention and are assumed to be effective for the entire
               lifetime of the intervention campaign.
             </p> */}
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>
-              Vector: Insecticide Coverage (%)
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <Typography gutterBottom>
+                Vector: Insecticide Coverage (%)
             </Typography>
-            <InputLabel htmlFor="v_to_hR"></InputLabel>
-            <Slider
-              value={simParams.v_to_hR}
-              id="v_to_hR"
-              min={1}
-              step={1}
-              max={100}
-              onChange={(event, newValue) => {
-                handleSliderChanges(newValue, 'v_to_hR')
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-            {/*             <p style={{ marginBottom: 0 }}>
+              <InputLabel htmlFor="v_to_hR"></InputLabel>
+              <Slider
+                value={simParams.v_to_hR}
+                id="v_to_hR"
+                min={1}
+                step={1}
+                max={100}
+                onChange={(event, newValue) => {
+                  handleSliderChanges(newValue, 'v_to_hR')
+                }}
+                valueLabelDisplay="auto"
+                aria-labelledby="slider"
+              />
+              {/*             <p style={{ marginBottom: 0 }}>
               Insecticide is assumed to reduce the vector to host ratio only.
             </p> */}
-          </FormControl>
+            </FormControl>
+          </ChartSettings>
         </Grid>
-        <Grid item md={3} xs={12} className={classes.contentRightColumn}>
+        <Grid item md={3} xs={12} className={classes.settings}>
           <Typography className={classes.title} variant="h5" component="h2">
             Intervention
           </Typography>
@@ -477,11 +508,14 @@ const Simulator = props => {
             </Button>
           </div>
           {simulationProgress !== 0 && simulationProgress !== 100 && (
-            <p style={{ textAlign: 'center' }}>{simulationProgress}%</p>
+            <div className={classes.progress}>
+              <LinearProgress variant="determinate" value={simulationProgress} color="secondary" />
+            </div>
+
           )}
         </Grid>
       </Grid>
-      <Grid item md={12} xs={12} className={classes.contentRightColumn}>
+      <Grid item md={12} xs={12} >
         <div
           style={{
             display: 'flex',
@@ -541,7 +575,6 @@ const Simulator = props => {
           item
           md={3}
           xs={12}
-          className={classes.contentRightColumn}
           style={{ marginLeft: doseSettingsLeft }}
         >
           <Typography className={classes.title} variant="h5" component="h2">

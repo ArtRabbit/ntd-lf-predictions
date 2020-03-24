@@ -21,22 +21,31 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const SectionTitle = ({ children, headline, text, top }) => {
+const SectionTitle = ({ children, headline, text, top, fullwidth }) => {
   const classes = useStyles();
+  const width = fullwidth ? 12 : 6;
+  const displayAll = text.length <= 80;
 
   return (
     <Grid container spacing={0} className={top ? `${classes.containerTop}` : `${classes.container}`}>
-      <Grid item md={6} xs={12}>
+      <Grid item md={width} xs={12}>
         <Typography variant="h2" component="h2">
           {headline}
         </Typography>
-        <ReadMore>
+        {!displayAll &&
+          <ReadMore>
+            <Typography variant="body1" component="div">
+              {text}
+            </Typography>
+          </ReadMore>
+        }
+        {displayAll &&
           <Typography variant="body1" component="div">
             {text}
           </Typography>
-        </ReadMore>
+        }
       </Grid>
-      <Grid item md={6} xs={12} className={classes.rightCol}>
+      <Grid item md={width} xs={12} className={classes.rightCol}>
         {children}
       </Grid>
     </Grid>

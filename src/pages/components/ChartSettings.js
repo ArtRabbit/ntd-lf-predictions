@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 // <button mat-button aria-label="settings" className={classes.icon} onClick={(event) => handleClickOpen(event)}></button>
-const ChartsSettings = ({ title, buttonText, action, children }) => {
+const ChartSettings = ({ title, buttonText, action, children }) => {
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -104,4 +104,4 @@ const ChartsSettings = ({ title, buttonText, action, children }) => {
     </div>
   )
 }
-export default ChartsSettings;
+export default ChartSettings;
