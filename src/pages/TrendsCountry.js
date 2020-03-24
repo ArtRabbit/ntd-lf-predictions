@@ -58,11 +58,9 @@ const TrendsCountry = props => {
 
   return (
     <Layout>
-
       <HeadWithInputs
         transparent={true}
-        title={`Lymphatic filariasis Trends: ${selectedCountry?.name ||
-          '...'}`}
+        title={`Lymphatic filariasis Trends: ${selectedCountry?.name || '...'}`}
       />
 
       <SectionTitle
@@ -77,25 +75,23 @@ const TrendsCountry = props => {
       />
 
       <SectionTitle
-        headline="Timeline"
+        headline="Timeline (States)"
         text={`Showing prevalence and probable eradication over time`}
       >
         <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
           <Box variant="body1">
             <Typography component="p">
               Population xxx
-                <br />
-                50k people affected in 2030
-                <br />3 districts with high prevalence
-              </Typography>
+              <br />
+              50k people affected in 2030
+              <br />3 districts with high prevalence
+            </Typography>
           </Box>
         </ExpandableInfo>
       </SectionTitle>
 
       <Box className={classes.chartContainer}>
-        {stateData && (
-          <Timeline data={Object.values(stateData.data)} width={500} />
-        )}
+        {stateData && <Timeline data={Object.values(stateData.data)} />}
       </Box>
 
       <Grid container justify="center">
@@ -151,12 +147,10 @@ const TrendsCountry = props => {
             </ChartSettings>
             <SectionTitle
               top={true}
-              headline="Development state or district"
+              headline="Development state (or district)"
               text={`Prevalence development, get an overview of how each state or district developed over time`}
             />
-            {countryData && (
-              <BumpChart data={Object.values(countryData.data)} width={800} />
-            )}
+            {stateData && <BumpChart data={Object.values(stateData.data)} />}
           </Box>
         </Grid>
       </Grid>
@@ -171,7 +165,6 @@ const TrendsCountry = props => {
           countryFeatures={countryFeatures}
           stateFeatures={stateFeatures}
           height={720}
-          initialLevel={0}
           disableZoom={true}
           country={country}
         />

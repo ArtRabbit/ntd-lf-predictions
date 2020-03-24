@@ -17,7 +17,7 @@ import {
   pickBy as pickByFP,
   sortBy as sortByFP,
 } from 'lodash/fp'
-import { sortBy, merge, min, max, zip, mapValues } from 'lodash'
+import { sortBy, merge, min, max, zip, mapValues, first, last } from 'lodash'
 import { interpolateReds, scaleSequential, color } from 'd3'
 import {
   REGIME_COVERAGE,
@@ -69,8 +69,13 @@ function addRankingAndStats(data) {
     mapValuesFP(ranks => map(omit('id'))(ranks))
   )(dataMap)
 
-  // add rankings to entries
-  const processed = mapValuesFP(x => ({ ...x, ranks: rankings[x.id] }))(dataMap)
+  // add rankings and performance (delta start to end) to entries
+  const processed = mapValuesFP(x => {
+    const ranks = rankings[x.id]
+    const values = ranks.map(x => x.prevalence)
+    const performance = last(values) - first(values)
+    return { ...x, ranks, performance }
+  })(dataMap)
 
   // create stats
   const extremes = flow(
@@ -268,14 +273,19 @@ class DataAPI {
   get stateData() {
     const states = this.filteredStatesWithMeta
     const { relations } = this.dataStore
+    const { country } = this.uiState
 
     if (states && relations) {
-      return addRankingAndStats(states)
+      const stateSelection = country
+        ? filter(['relatedCountries.0', country])(states)
+        : states
+      return addRankingAndStats(stateSelection)
     }
 
     return null
   }
 
+  // returns all states grouped by country
   get stateByCountryData() {
     const states = this.filteredStatesWithMeta
     const { relations } = this.dataStore
