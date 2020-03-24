@@ -10,19 +10,31 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    minHeight: '100vh',
     background: 'white',
+    minHeight: '100vh',
+
+    [theme.breakpoints.up('lg')]: {
+    }
   },
   main: {
     //paddingTop: theme.spacing(4),
     padding: theme.spacing(4, 6),
     flex: 2,
     position: 'relative',
+    '&:after': {
+      content: `''`,
+      display: 'table',
+      clear: 'both'
+    },
 
-    '&.full-height': {
-      height: '100vh',
-      display: 'block',
-      flex: 'none'
+
+
+    [theme.breakpoints.up('md')]: {
+      '&.full-height': {
+        height: '100vh',
+        display: 'block',
+        flex: 'none'
+      }
     }
   },
 }));

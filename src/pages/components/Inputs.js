@@ -28,9 +28,10 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'left',
     '& > label': {},
     [theme.breakpoints.up('sm')]: {
-      margin: theme.spacing(1, 0, 0, 0),
+      margin: theme.spacing(0, 0, 2, 0),
     },
     [theme.breakpoints.up('md')]: {
+      margin: theme.spacing(0, 0, 0, 0),
       width: 'calc(50% - 16px)',
       '&.regimes': {
         marginLeft: theme.spacing(2),
@@ -50,7 +51,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     position: 'absolute',
     top: '5rem',
-    left: '50%',
+    left: '40%',
     transform: 'translate(-50%, 0%)',
     cursor: 'pointer',
     '&::after': {
@@ -64,6 +65,11 @@ const useStyles = makeStyles(theme => ({
       border: '1rem solid transparent',
       borderBottomColor: theme.palette.primary.main,
     },
+
+    [theme.breakpoints.up('lg')]: {
+      left: '50%',
+
+    }
   },
 }))
 

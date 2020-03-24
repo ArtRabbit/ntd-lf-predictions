@@ -23,6 +23,14 @@ const useStyles = makeStyles(theme => ({
     boxShadow: 'none',
     margin: theme.spacing(0),
     padding: theme.spacing(0),
+    '&.no-clear': {
+      [theme.breakpoints.only('md')]: {
+        backgroundColor: '#fff',
+        boxShadow: '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
+        padding: theme.spacing(2, 4, 4, 4),
+        margin: theme.spacing(-2, 0, -2, -4),
+      }
+    }
   },
   logo: {
     display: 'block',
@@ -48,12 +56,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Head = ({ title, text, subTitle, transparent, actionLabel, action }) => {
+const Head = ({ title, text, subTitle, transparent, actionLabel, action, classAdd }) => {
 
   const classes = useStyles();
+  classAdd = classAdd ? classAdd : '';
 
   return (
-    <Box className={`${classes.card} ${transparent ? classes.transparent : ''}`}>
+    <Box className={`${classes.card} ${transparent ? classes.transparent : ''} ${classAdd}`}>
 
 
       <NavLink to='/' className={classes.logo}>

@@ -20,10 +20,16 @@ const useStyles = makeStyles(theme => ({
   },
   head: {
     textAlign: 'left',
+    '&:after': {
+      content: `''`,
+      display: 'table',
+      clear: 'both'
+    },
+
     [theme.breakpoints.up('sm')]: {
-      float: 'left',
     },
     [theme.breakpoints.up('md')]: {
+      float: 'left',
       width: 420,
     },
   },
@@ -35,9 +41,9 @@ const useStyles = makeStyles(theme => ({
       padding: theme.spacing(0, 0, 6, 0),
     },
     [theme.breakpoints.up('sm')]: {
-      float: 'right',
     },
     [theme.breakpoints.up('md')]: {
+      float: 'right',
       padding: theme.spacing(0),
       width: 'calc(100% - 420px)',
     },
@@ -61,6 +67,7 @@ const HeadWithInputs = ({ title, text, subTitle, transparent, actionLabel, actio
           subTitle={subTitle}
           actionLabel={actionLabel}
           action={action}
+          classAdd={classAdd}
         />
       </Grid>
     </div>

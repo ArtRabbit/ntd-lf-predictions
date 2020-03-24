@@ -15,13 +15,30 @@ import { useDataAPI, useUIState } from '../hooks/stateHooks'
 
 const useStyles = makeStyles(theme => ({
   map: {
-    width: 'calc(100% - 420px)',
-    height: 'calc(100% - 124px)',
-    //position: 'absolute', 
-    top: 0,
-    right: 0,
+    width: '100%',
+    height: 700,
+    position: 'relative',
     zIndex: 1,
-    float: 'right',
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
+    [theme.breakpoints.up('sm')]: {
+    },
+    [theme.breakpoints.up('md')]: {
+      marginTop: 0,
+      marginBottom: 0,
+      width: 'calc(100% - 200px)',
+      height: 'calc(100% - 124px)',
+      marginLeft: -300,
+      top: 0,
+      right: 0,
+      zIndex: 1,
+      float: 'right',
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: 'calc(100% - 420px)',
+      height: 'calc(100% - 124px)',
+
+    },
   },
   links: {
     zIndex: 9,
