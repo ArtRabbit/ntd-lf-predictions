@@ -165,6 +165,7 @@ const TrendsCountry = props => {
           height={720}
           disableZoom={true}
           country={country}
+          trendMode
         />
       </div>
 

@@ -46,7 +46,7 @@ function BarChart({ data: d, width }) {
 
   const labelOffset = 0
   //   TODO: derive domain from data
-  const domain = [0, 30]
+  const domain = [0, 40]
 
   const xScaleAfter = scaleLinear()
     .domain(domain)

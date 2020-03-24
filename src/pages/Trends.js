@@ -38,7 +38,12 @@ const PanelContainer = ({ children }) => (
 const Trends = props => {
   const classes = useStyles()
 
-  const { countryData, countryFeatures, stateFeatures } = useDataAPI()
+  const {
+    countryData,
+    countryFeatures,
+    stateFeatures,
+    stateScales,
+  } = useDataAPI()
 
   const settingsClickDemo = event => {
     alert('update graphs')
@@ -80,8 +85,10 @@ const Trends = props => {
         <Map
           countryFeatures={countryFeatures}
           stateFeatures={stateFeatures}
+          colorScale={stateScales.perf}
           height={720}
           disableZoom={true}
+          trendMode
         />
       </div>
 

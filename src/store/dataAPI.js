@@ -18,7 +18,13 @@ import {
   sortBy as sortByFP,
 } from 'lodash/fp'
 import { sortBy, merge, min, max, zip, mapValues, first, last } from 'lodash'
-import { interpolateReds, scaleSequential, color } from 'd3'
+import {
+  interpolateReds,
+  scaleSequential,
+  color,
+  extent,
+  scaleLinear,
+} from 'd3'
 import {
   REGIME_COVERAGE,
   REGIME_WHO,
@@ -36,6 +42,25 @@ const groupProps = (obj, pattern) =>
   )(obj)
 
 const roundPrevalence = p => round(p * 100, 2)
+
+const buildScales = stats => {
+  const prev = scaleSequential(interpolateReds)
+    .domain([0, stats.prevalence.max])
+    .nice(5)
+
+  const [min, max] = stats.performance
+  const perf = scaleLinear()
+    // .domain([min < 0 ? min : 0, 0, max > 0 ? max : 0])
+    .domain([-30, 0, 30])
+    .range(['#03D386', '#EDEDED', '#FE4C73'])
+
+  return { prev, perf }
+}
+
+const defaultScales = {
+  prev: () => '#000000',
+  perf: () => '#000000',
+}
 
 function addRankingAndStats(data) {
   const dataMap = keyBy('id')(data)
@@ -77,8 +102,8 @@ function addRankingAndStats(data) {
     return { ...x, ranks, performance }
   })(dataMap)
 
-  // create stats
-  const extremes = flow(
+  // create prevalence stats
+  const prevExtent = flow(
     values,
     map(({ prevalence }) => {
       const pValues = values(prevalence)
@@ -86,10 +111,15 @@ function addRankingAndStats(data) {
     })
   )(processed)
 
-  const [minN, maxN] = zip(...extremes)
+  const [minN, maxN] = zip(...prevExtent)
+
+  // create performance stats
+  const performances = flow(values, map('performance'))(processed)
 
   const stats = {
+    //   TODO: use array for prevalence extent (more consistent)
     prevalence: { min: min(minN) ?? 0, max: max(maxN) ?? 0 },
+    performance: extent(performances),
   }
 
   return { data: processed, stats }
@@ -138,14 +168,8 @@ function addIDRelations({ data, relations, key }) {
   )(data)
 }
 
-function mergeFeatures(dataAndStats, featureCollection, key) {
-  const { data, stats } = dataAndStats
-
-  // TODO: add bins
-  const colorScale = scaleSequential(interpolateReds)
-    .domain([0, stats.prevalence.max])
-    .nice(5)
-
+function mergeFeatures({ data, featureCollection, key, scales }) {
+  const { prev, perf } = scales
   const features = featureCollection.features
     // only take features, which are in the data
     .filter(feature => {
@@ -155,20 +179,22 @@ function mergeFeatures(dataAndStats, featureCollection, key) {
     .map(feature => {
       const id = feature.properties[key]
       const featureData = data[id]
+      const { performance } = featureData
       const prevalenceOverTime = featureData?.prevalence ?? {}
       const population = featureData?.population ?? '–'
       const endemicity = featureData?.endemicity ?? '–'
 
       // get color from scale if prevalence value available
       const colorsByYear = mapValues(prevalenceOverTime, p_prevalence =>
-        isFinite(p_prevalence) ? color(colorScale(p_prevalence)).hex() : null
+        isFinite(p_prevalence) ? color(prev(p_prevalence)).hex() : null
       )
 
       return merge({}, feature, {
         properties: {
           ...mapKeys(year => `color-${year}`)(colorsByYear),
           ...mapKeys(year => `prev-${year}`)(prevalenceOverTime),
-          population,
+          performance,
+          'color-perf': perf(performance),
           endemicity,
         },
       })
@@ -313,10 +339,17 @@ class DataAPI {
 
   get countryFeatures() {
     const featureCollection = this.dataStore.featuresLevel0
-    const data = this.countryData
+    const countries = this.countryData
+    const scales = this.countryScales
 
-    if (featureCollection && data) {
-      return mergeFeatures(data, featureCollection, 'ADMIN0ISO3')
+    if (featureCollection && countries) {
+      const { data } = countries
+      return mergeFeatures({
+        data,
+        featureCollection,
+        key: 'ADMIN0ISO3',
+        scales,
+      })
     }
 
     return emptyFeatureCollection
@@ -344,20 +377,19 @@ class DataAPI {
     const featureCollection = this.dataStore.featuresLevel1
     const states = this.stateData
     const { country } = this.uiState
+    const scales = this.stateScales
 
     if (featureCollection && states) {
-      let d = states
+      const { data } = states
 
-      if (country) {
-        d = {
-          ...states,
-          data: pickByFP(x => x.relatedCountries.includes(country))(
-            states.data
-          ),
-        }
-      }
-
-      return mergeFeatures(d, featureCollection, 'ADMIN1ID')
+      return mergeFeatures({
+        data: country
+          ? pickByFP(x => x.relatedCountries.includes(country))(data)
+          : data,
+        featureCollection,
+        key: 'ADMIN1ID',
+        scales,
+      })
     }
 
     return emptyFeatureCollection
@@ -365,13 +397,33 @@ class DataAPI {
 
   get iuFeatures() {
     const featureCollection = this.dataStore.featuresLevel2
-    const data = this.iuData
+    const IUs = this.iuData
+    const scales = this.iuScales
 
-    if (featureCollection && data) {
-      return mergeFeatures(data, featureCollection, 'IU_ID')
+    if (featureCollection && IUs) {
+      const { data } = IUs
+      return mergeFeatures({ data, featureCollection, key: 'IU_ID', scales })
     }
 
     return emptyFeatureCollection
+  }
+
+  get countryScales() {
+    const countries = this.countryData
+    if (countries) return buildScales(countries.stats)
+    return defaultScales
+  }
+
+  get stateScales() {
+    const states = this.stateData
+    if (states) return buildScales(states.stats)
+    return defaultScales
+  }
+
+  get iuScales() {
+    const IUs = this.iuData
+    if (IUs) return buildScales(IUs.stats)
+    return defaultScales
   }
 
   get countrySuggestions() {
@@ -424,6 +476,9 @@ decorate(DataAPI, {
   regimes: computed,
   selectedCountry: computed,
   countryCentroids: computed,
+  countryScales: computed,
+  stateScales: computed,
+  iuScales: computed,
 })
 
 export default DataAPI

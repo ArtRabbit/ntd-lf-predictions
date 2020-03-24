@@ -1,8 +1,15 @@
 import React, { useEffect, forwardRef, useImperativeHandle } from 'react'
-import ReactMapGL, { Source, Layer, Popup } from 'react-map-gl'
+import ReactMapGL, { Source, Layer, Popup, HTMLOverlay } from 'react-map-gl'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 //import AutoSizer from 'react-virtualized-auto-sizer'
-import { Tooltip, Typography, Slider, Box, Link } from '@material-ui/core'
+import {
+  Tooltip,
+  Typography,
+  Slider,
+  Box,
+  Link,
+  Paper,
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { format } from 'd3'
 import useMapReducer from '../hooks/useMapReducer'
@@ -18,7 +25,7 @@ const useStyles = makeStyles({
   mapWrap: {
     width: '100%',
     height: '100%',
-    minHeight: 500
+    minHeight: 500,
   },
 })
 
@@ -31,6 +38,8 @@ function Map({
   height,
   disableZoom,
   filter,
+  trendMode,
+  colorScale,
   forwardRef,
 }) {
   const [
@@ -54,6 +63,8 @@ function Map({
     // the states layer is only active if a country is selected
     ...(!!stateFeatures && country ? ['fill-states'] : []),
   ]
+
+  const colorProp = trendMode ? 'color-perf' : `color-${year}`
 
   useEffect(() => {
     if (country && ready) {
@@ -141,7 +152,7 @@ function Map({
     }
   }
 
-  const getYearLabel = (value) => {
+  const getYearLabel = value => {
     return '‘' + value.toString().substr(-2)
   }
 
@@ -163,15 +174,11 @@ function Map({
         onHover={handleHover}
       >
         {countryFeatures && (
-          <Source
-            id="africa-countries"
-            type="geojson"
-            data={countryFeatures}
-          >
+          <Source id="africa-countries" type="geojson" data={countryFeatures}>
             <Layer
               id="fill-countries"
               beforeId="admin-0-boundary"
-              filter={['has', `color-${year}`]}
+              filter={['has', colorProp]}
               type="fill"
               paint={{
                 'fill-color': [
@@ -179,7 +186,7 @@ function Map({
                   !stateFeatures,
                   [
                     'coalesce',
-                    ['get', `color-${year}`],
+                    ['get', colorProp],
                     // hide shape if no data available
                     'rgba(0,0,0,0)',
                   ],
@@ -197,16 +204,12 @@ function Map({
             <Layer
               id="hover-countries"
               type="line"
-              filter={['has', `color-${year}`]}
+              filter={['has', colorProp]}
               layout={{ 'line-join': 'bevel' }}
               paint={{
                 'line-color': [
                   'case',
-                  [
-                    '==',
-                    ['get', 'id'],
-                    featureHover?.properties.id || null,
-                  ],
+                  ['==', ['get', 'id'], featureHover?.properties.id || null],
                   '#6236FF',
                   'rgba(0,0,0,0)',
                 ],
@@ -221,12 +224,12 @@ function Map({
             <Layer
               id="fill-states"
               beforeId="admin-0-boundary"
-              filter={['has', `color-${year}`]}
+              filter={['has', colorProp]}
               type="fill"
               paint={{
                 'fill-color': [
                   'coalesce',
-                  ['get', `color-${year}`],
+                  ['get', colorProp],
                   // hide shape if no data available
                   'rgba(0,0,0,0)',
                 ],
@@ -242,16 +245,12 @@ function Map({
               id="hover-states"
               source="africa-states"
               type="line"
-              filter={['has', `color-${year}`]}
+              filter={['has', colorProp]}
               layout={{ 'line-join': 'bevel' }}
               paint={{
                 'line-color': [
                   'case',
-                  [
-                    '==',
-                    ['get', 'id'],
-                    featureHover?.properties.id || null,
-                  ],
+                  ['==', ['get', 'id'], featureHover?.properties.id || null],
                   '#6236FF',
                   'rgba(0,0,0,0)',
                 ],
@@ -307,6 +306,7 @@ function Map({
                 Population: {format(',')(feature.properties.population)}
               </div>
               <div>Endemicity: {feature.properties.endemicity}</div>
+              <div>Trend: {feature.properties.performance}</div>
               <ul className="links">
                 <li>
                   <Link
@@ -337,7 +337,7 @@ function Map({
           <Tooltip
             title={`${featureHover.properties.name} ${
               featureHover.properties[`prev-${year}`]
-              } %`}
+            } % / ${featureHover.properties.performance}`}
             open
             placement="top"
           >
@@ -345,28 +345,45 @@ function Map({
               style={{
                 position: 'absoulte',
                 display: 'inline-block',
-                transform: `translate(${tooltip[0]}px,${tooltip[1] -
-                  16}px)`,
+                transform: `translate(${tooltip[0]}px,${tooltip[1] - 16}px)`,
               }}
             ></span>
           </Tooltip>
         )}
+        <HTMLOverlay
+          redraw={() => (
+            <div
+              style={{
+                width: 200,
+                right: 32,
+                bottom: 32,
+                position: 'absolute',
+              }}
+            >
+              <Paper>
+                <Box p={1}>Legend</Box>
+              </Paper>
+            </div>
+          )}
+        />
       </ReactMapGL>
 
-      <Slider
-        className={classes.slider}
-        value={year}
-        step={1}
-        min={2000}
-        max={2030}
-        marks={[
-          { value: 2000, label: '2000' },
-          { value: 2030, label: '2030' },
-        ]}
-        valueLabelDisplay="on"
-        valueLabelFormat={getYearLabel}
-        onChange={handleYearChange}
-      />
+      {!trendMode && (
+        <Slider
+          className={classes.slider}
+          value={year}
+          step={1}
+          min={2000}
+          max={2030}
+          marks={[
+            { value: 2000, label: '2000' },
+            { value: 2030, label: '2030' },
+          ]}
+          valueLabelDisplay="on"
+          valueLabelFormat={getYearLabel}
+          onChange={handleYearChange}
+        />
+      )}
     </div>
   )
 }
