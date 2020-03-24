@@ -8,22 +8,22 @@ import Grid from '@material-ui/core/Grid'
 
 import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
-import SiteSections from './components/SiteSections'
 
 import Map from '../components/Map'
 import { useDataAPI } from '../hooks/stateHooks'
 
 const useStyles = makeStyles(theme => ({
   map: {
-    width: '100%',
-    position: 'relative',
+    width: 'calc(100% - 420px)',
+    height: '100%',
+    position: 'absolute',
     zIndex: 1,
-    top: theme.spacing(-20),
-    clear: 'both',
-    margin: theme.spacing(0, 0, -20, 0),
+    top: 0,
+    right: 0,
   },
   links: {
     zIndex: 9,
+    /*
     position: 'absolute',
     backgroundColor: '#fff',
     boxShadow:
@@ -31,6 +31,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 4, 4, 4),
     bottom: theme.spacing(16),
     left: theme.spacing(-4),
+    */
   },
 }))
 
@@ -48,7 +49,7 @@ const Intro = props => {
   return (
     <Layout>
       <HeadWithInputs
-        transparent={false}
+        transparent={true}
         title="Lymphatic filariasis Projections"
         text={`Welcome to the NTD Modelling Projections. 
           The projections on this website provide guidance 
@@ -59,7 +60,7 @@ const Intro = props => {
         action={playScenario}
       />
 
-      <Box m={1} className={classes.map}>
+      <Box m={0} className={classes.map}>
         <Map
           ref={mapRef}
           countryFeatures={countryFeatures}
@@ -68,16 +69,17 @@ const Intro = props => {
           disableZoom={true}
         />
 
-        <Box className={classes.links}>
-          <DiveDeeper
-            title="Dive deeper"
-            links={[
-              { to: '/about-lf', name: 'MORE ABOUT LF' },
-              { to: '/trends', name: 'TRENDS' },
-              { to: '/hotspots', name: 'HOTSPOTS' },
-            ]}
-          />
-        </Box>
+      </Box>
+
+      <Box className={classes.links}>
+        <DiveDeeper
+          title="Dive deeper"
+          links={[
+            { to: '/about-lf', name: 'MORE ABOUT LF' },
+            { to: '/trends', name: 'TRENDS' },
+            { to: '/hotspots', name: 'HOTSPOTS' },
+          ]}
+        />
       </Box>
     </Layout>
   )

@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
     //paddingTop: theme.spacing(4),
     padding: theme.spacing(4, 6),
     flex: 2,
+    position: 'relative',
 
   },
 }));

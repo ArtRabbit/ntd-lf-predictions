@@ -9,7 +9,6 @@ import SectionTitle from './components/SectionTitle'
 
 import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
-import SiteSections from './components/SiteSections'
 import SlopeChart from '../components/SlopeChart'
 import Timeline from '../components/Timeline'
 import LineChart from '../components/LineChart'
