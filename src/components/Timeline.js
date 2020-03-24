@@ -16,12 +16,13 @@ function Timeline({ dataAndStats, width }) {
 
   const [selected, setSelected] = useState()
 
-  const height = data.length * 20
+  const height = data.length * 24
   const lPad = 200
   const rPad = 32
   const yPad = 32
   const svgHeight = height + yPad * 2
   const svgWidth = width
+
 
   const xScale = scaleLinear()
     .domain([start, end])
@@ -29,7 +30,7 @@ function Timeline({ dataAndStats, width }) {
 
   const radiusScale = scaleSqrt()
     .domain([pMin, pMax])
-    .range([0, (width - (rPad + lPad)) / (end - start) / 2])
+    .range([1, (width - (rPad + lPad)) / (end - start) / 2])
 
   const yScale = scaleLinear()
     .domain([0, data.length - 1])
@@ -42,6 +43,13 @@ function Timeline({ dataAndStats, width }) {
     setSelected(null)
   }
 
+  const startX = xScale(start)
+  const endX = xScale(end)
+  const yearWidth = xScale(start + 1) - xScale(start)
+  const halfYearWidth = Math.round(yearWidth / 2)
+  
+
+
   return (
     <svg
       width={svgWidth}
@@ -49,18 +57,85 @@ function Timeline({ dataAndStats, width }) {
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
       <g transform={`translate(${lPad},${yPad})`}>
+
+        {/* lable start and end years */}
+        {xScale.ticks().map(year => {
+           if (year === start) {
+              return (
+                <g key={start}>
+                <text
+                  x={startX - halfYearWidth}
+                  y={height + 32}
+                  textAnchor="left"
+                  fontSize="12"
+                >
+                  {start}
+                </text>
+                </g>)
+           } else if ( year === end ) {
+             return (
+              <g key={end}>
+              <text
+                x={endX - halfYearWidth}
+                y={height + 32}
+                textAnchor="right"
+                fontSize="12"
+              >
+                {end}
+              </text>
+              </g>)
+           } else {
+              const yearOutput = '‘'+year.toString().substr(-2)
+              return (<g key={year}>
+              <text
+                x={xScale(year)}
+                y={height + 32}
+                textAnchor="middle"
+                fontSize="12"
+              >
+                {yearOutput}
+              </text>
+              </g>)
+
+           }
+        })}
+
+
         {/* mark all years */}
         {xScale.ticks().map(year => {
+          if (year === start) {
+            return (
+              <line
+                key={year}
+                x1={xScale(year)}
+                x2={xScale(year)}
+                y1={-5}
+                y2={height + 15}
+                stroke="#D8D8D8"
+              ></line>
+            )
+          } else if (year === end) {
+            return (
+              <line
+                key={year}
+                x1={xScale(year)}
+                x2={xScale(year)}
+                y1={-5}
+                y2={height + 15}
+                stroke="#D8D8D8"
+              ></line>
+            )
+          }
           return (
-            <text
+            <line
               key={year}
-              x={xScale(year)}
-              y={height + 32}
-              textAnchor="middle"
-              fontSize="12"
-            >
-              {year}
-            </text>
+              x1={xScale(year)}
+              x2={xScale(year)}
+              y1={-5}
+              y2={height + 15}
+              stroke="#D8D8D8"
+              strokeDasharray="4 3"
+            ></line>
           )
         })}
 
@@ -71,6 +146,7 @@ function Timeline({ dataAndStats, width }) {
               <text
                 fontSize="12"
                 fontWeight="500"
+                
                 x={-lPad}
                 y={0}
                 textAnchor="start"
