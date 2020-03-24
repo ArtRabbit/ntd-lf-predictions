@@ -28,10 +28,13 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'left',
     '& > label': {},
     [theme.breakpoints.up('sm')]: {
-      margin: theme.spacing(1, 1),
+      margin: theme.spacing(1, 0, 0, 0),
     },
     [theme.breakpoints.up('md')]: {
-      width: 'calc(50% - 16px)'
+      width: 'calc(50% - 16px)',
+      '&.regimes': {
+        marginLeft: theme.spacing(2),
+      },
 
     },
     [theme.breakpoints.up('lg')]: {
@@ -49,6 +52,7 @@ const useStyles = makeStyles(theme => ({
     top: '5rem',
     left: '50%',
     transform: 'translate(-50%, 0%)',
+    cursor: 'pointer',
     '&::after': {
       content: `''`,
       position: 'absolute',
@@ -67,7 +71,9 @@ const Inputs = props => {
   const classes = useStyles()
 
   const { countrySuggestions, regimes } = useDataAPI()
-  const { regime, setRegime, country } = useUIState()
+  const { regime, setRegime, country, infoTooltip, setInfoTooltip } = useUIState()
+
+  const { welcomeScren, setWelcomeScreen } = useUIState()
   const history = useHistory()
   const matchSection = useRouteMatch('/:section')
 
@@ -92,7 +98,7 @@ const Inputs = props => {
 
   return (
     <Box className={classes.root}>
-      <FormControl className={classes.formControl}>
+      <FormControl className={`${classes.formControl} countries`}>
         <Autocomplete
           id="combo-box-demo"
           options={countrySuggestions}
@@ -104,7 +110,7 @@ const Inputs = props => {
           onChange={handleCountryChange}
         />
       </FormControl>
-      <FormControl className={classes.formControl}>
+      <FormControl className={`${classes.formControl} regimes`}>
         <InputLabel id="demo-simple-select-helper-label">{regime}</InputLabel>
         <Select
           labelId="demo-simple-select-helper-label"
@@ -118,11 +124,12 @@ const Inputs = props => {
             </MenuItem>
           ))}
         </Select>
-        <div className={classes.largeTooltip}>
+        {infoTooltip && <div className={classes.largeTooltip}>
           <Typography color="inherit" component="p">
             See how other treatement regimes can save lives
           </Typography>
         </div>
+        }
       </FormControl>
     </Box>
   )

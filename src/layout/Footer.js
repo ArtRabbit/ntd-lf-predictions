@@ -61,7 +61,7 @@ const Footer = (props) => {
 
 
               <ul className={classes.menu}>
-                <Typography component="li" variant="body2"><Link component={RouterLink} to="/intro" color="inherit">Introduction</Link></Typography>
+                <Typography component="li" variant="body2"><Link component={RouterLink} to="/" color="inherit">Introduction</Link></Typography>
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/trends" color="inherit">Trends</Link></Typography>
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/hotspots" color="inherit">Hotspots</Link></Typography>
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/simulator" color="inherit">Simulator</Link></Typography>

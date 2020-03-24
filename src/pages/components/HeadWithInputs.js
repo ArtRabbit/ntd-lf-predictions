@@ -11,6 +11,11 @@ const useStyles = makeStyles(theme => ({
       content: `''`,
       display: 'table',
       clear: 'both'
+    },
+    '&.no-clear': {
+      '&:after': {
+        display: 'none'
+      }
     }
   },
   head: {
@@ -19,7 +24,7 @@ const useStyles = makeStyles(theme => ({
       float: 'left',
     },
     [theme.breakpoints.up('md')]: {
-      width: '50%',
+      width: 420,
     },
   },
   inputs: {
@@ -34,16 +39,17 @@ const useStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.up('md')]: {
       padding: theme.spacing(0),
-      width: '50%',
+      width: 'calc(100% - 420px)',
     },
   },
 }))
 
-const HeadWithInputs = ({ title, text, subTitle, transparent, actionLabel, action, disableInputs }) => {
+const HeadWithInputs = ({ title, text, subTitle, transparent, actionLabel, action, disableInputs, classAdd }) => {
   const classes = useStyles()
+  classAdd = classAdd ? classAdd : '';
 
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} ${classAdd}`}>
       <Grid item md={6} xs={12} className={classes.inputs}>
         {disableInputs !== true && <Inputs />}
       </Grid>
