@@ -1,7 +1,7 @@
 import React, { useEffect, forwardRef, useImperativeHandle } from 'react'
 import ReactMapGL, { Source, Layer, Popup } from 'react-map-gl'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import AutoSizer from 'react-virtualized-auto-sizer'
+//import AutoSizer from 'react-virtualized-auto-sizer'
 import { Tooltip, Typography, Slider, Box, Link } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { format } from 'd3'
@@ -10,7 +10,10 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 const useStyles = makeStyles({
   slider: {
-    width: 200,
+    width: '60%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    display: 'block',
   },
   mapWrap: {
     width: '100%',
@@ -136,6 +139,10 @@ function Map({
     } else {
       dispatch({ type: 'DESELECT' })
     }
+  }
+
+  const getYearLabel = (value) => {
+    return value.toString().substr(-2)
   }
 
   // old map style mapbox://styles/kpcarter100/ck7w5zz9l026d1imn43721owm
@@ -345,15 +352,21 @@ function Map({
           </Tooltip>
         )}
       </ReactMapGL>
-      <div>year: {year}</div>
+
       <Slider
         className={classes.slider}
+        value={year}
+        step={1}
         min={2000}
         max={2030}
-        step={1}
-        value={year}
+        marks={[
+          { value: 2000, label: '2000' },
+          { value: 2030, label: '2030' },
+        ]}
+        valueLabelDisplay="on"
+        valueLabelFormat={getYearLabel}
         onChange={handleYearChange}
-      ></Slider>
+      />
     </div>
   )
 }
