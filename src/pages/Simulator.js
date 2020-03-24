@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   simulator: {
-    width: `calc(100% + ${theme.spacing(6)}px)`,
+    width: `calc(100% + ${theme.spacing(12)}px)`,
     marginLeft: -theme.spacing(6)
   },
   tabs: {
@@ -282,375 +282,377 @@ const Simulator = props => {
         text={`Create your own scenarios and compare them to our baseline`}
         fullwidth={true}
       />
-      <Grid container spacing={0} className={classes.simulator}>
+      <section className={classes.simulator}>
+        <Grid container spacing={0} >
 
-        <Grid item xs={12} className={classes.tabs}>
-          <Tabs
-            value={tabIndex}
-            onChange={handleTabChange}
-            aria-label="Available scenarios"
-            indicatorColor="secondary"
-            textColor="secondary"
-            variant="scrollable"
-            scrollButtons="auto"
-          >
-            <Tab label="Scenario 1" {...a11yProps(0)} />
-            {tabLength > 1 && <Tab label="Scenario 2" {...a11yProps(1)} />}
-            {tabLength > 2 && <Tab label="Scenario 3" {...a11yProps(2)} />}
-            {tabLength > 3 && <Tab label="Scenario 4" {...a11yProps(3)} />}
-            {tabLength > 4 && <Tab label="Scenario 5" {...a11yProps(4)} />}
-          </Tabs>
-        </Grid>
+          <Grid item xs={12} className={classes.tabs}>
+            <Tabs
+              value={tabIndex}
+              onChange={handleTabChange}
+              aria-label="Available scenarios"
+              indicatorColor="secondary"
+              textColor="secondary"
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              <Tab label="Scenario 1" {...a11yProps(0)} />
+              {tabLength > 1 && <Tab label="Scenario 2" {...a11yProps(1)} />}
+              {tabLength > 2 && <Tab label="Scenario 3" {...a11yProps(2)} />}
+              {tabLength > 3 && <Tab label="Scenario 4" {...a11yProps(3)} />}
+              {tabLength > 4 && <Tab label="Scenario 5" {...a11yProps(4)} />}
+            </Tabs>
+          </Grid>
 
-        <Grid item md={9} xs={12} className={classes.chartContainer}>
+          <Grid item md={9} xs={12} className={classes.chartContainer}>
 
-          <div className={classes.tavs}>
+            <div className={classes.tavs}>
 
-            <TabPanel value={tabIndex} index={0}>
-              Scenario 1
+              <TabPanel value={tabIndex} index={0}>
+                Scenario 1
               <div style={{ overflow: 'hidden', height: '400px' }}>
-                {JSON.stringify(scenarioResults[0])}
-              </div>
-            </TabPanel>
-            <TabPanel value={tabIndex} index={1}>
-              Scenario 2
+                  {JSON.stringify(scenarioResults[0])}
+                </div>
+              </TabPanel>
+              <TabPanel value={tabIndex} index={1}>
+                Scenario 2
               <div style={{ overflow: 'hidden', height: '400px' }}>
-                {JSON.stringify(scenarioResults[1])}
-              </div>
-            </TabPanel>
-            <TabPanel value={tabIndex} index={2}>
-              Scenario 3
+                  {JSON.stringify(scenarioResults[1])}
+                </div>
+              </TabPanel>
+              <TabPanel value={tabIndex} index={2}>
+                Scenario 3
               <div style={{ overflow: 'hidden', height: '400px' }}>
-                {JSON.stringify(scenarioResults[2])}
-              </div>
-            </TabPanel>
-            <TabPanel value={tabIndex} index={3}>
-              Scenario 4
+                  {JSON.stringify(scenarioResults[2])}
+                </div>
+              </TabPanel>
+              <TabPanel value={tabIndex} index={3}>
+                Scenario 4
               <div style={{ overflow: 'hidden', height: '400px' }}>
-                {JSON.stringify(scenarioResults[3])}
-              </div>
-            </TabPanel>
-            <TabPanel value={tabIndex} index={4}>
-              Scenario 5
+                  {JSON.stringify(scenarioResults[3])}
+                </div>
+              </TabPanel>
+              <TabPanel value={tabIndex} index={4}>
+                Scenario 5
               <div style={{ overflow: 'hidden', height: '400px' }}>
-                {JSON.stringify(scenarioResults[4])}
-              </div>
-            </TabPanel>
-          </div>
+                  {JSON.stringify(scenarioResults[4])}
+                </div>
+              </TabPanel>
+            </div>
 
 
-          <ChartSettings title="Settings" buttonText="Update Scenario" action={runCurrentScenario} >
-            <FormControl className={classes.formControl}>
-              <Typography gutterBottom>Base prevalence</Typography>
-              <InputLabel htmlFor="endemicity"></InputLabel>
-              <Slider
-                value={simParams.endemicity}
-                id="endemicity"
-                min={1}
-                step={1}
-                max={100}
-                onChange={(event, newValue) => {
-                  handleSliderChanges(newValue, 'endemicity')
-                }}
-                valueLabelDisplay="auto"
-                aria-labelledby="slider"
-              />
-              {/*             <p style={{ marginBottom: 0 }}>
+            <ChartSettings title="Settings" buttonText="Update Scenario" action={runCurrentScenario} >
+              <FormControl className={classes.formControl}>
+                <Typography gutterBottom>Base prevalence</Typography>
+                <InputLabel htmlFor="endemicity"></InputLabel>
+                <Slider
+                  value={simParams.endemicity}
+                  id="endemicity"
+                  min={1}
+                  step={1}
+                  max={100}
+                  onChange={(event, newValue) => {
+                    handleSliderChanges(newValue, 'endemicity')
+                  }}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+                {/*             <p style={{ marginBottom: 0 }}>
               The mf prevalence in the population before intervention occurs.
               Due to the stochastic nature of the model this is a prevalence
               averaged over many independent runs and so should be treated as an
               approximation only.{' '}
             </p> */}
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <Typography gutterBottom>Number of runs</Typography>
-              <InputLabel htmlFor="runs"></InputLabel>
-              <Slider
-                value={simParams.runs}
-                min={1}
-                step={1}
-                max={100}
-                onChange={(event, newValue) => {
-                  handleSliderChanges(newValue, 'runs')
-                }}
-                valueLabelDisplay="auto"
-                aria-labelledby="slider"
-              />
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="demo-simple-select-helper-label">
-                Species
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Typography gutterBottom>Number of runs</Typography>
+                <InputLabel htmlFor="runs"></InputLabel>
+                <Slider
+                  value={simParams.runs}
+                  min={1}
+                  step={1}
+                  max={100}
+                  onChange={(event, newValue) => {
+                    handleSliderChanges(newValue, 'runs')
+                  }}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Species
             </InputLabel>
-              <Select
-                labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={simParams.species}
-                onChange={event => {
-                  setSimParams({ ...simParams, species: event.target.value })
-                }}
-              >
-                <MenuItem value={0}>Anopheles</MenuItem>
-                <MenuItem value={1}>Culex</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <Typography gutterBottom>Vector: Bed Net Coverage (%)</Typography>
-              <InputLabel htmlFor="covN"></InputLabel>
-              <Slider
-                value={simParams.covN}
-                id="covN"
-                min={1}
-                step={1}
-                max={100}
-                onChange={(event, newValue) => {
-                  handleSliderChanges(newValue, 'covN')
-                }}
-                valueLabelDisplay="auto"
-                aria-labelledby="slider"
-              />
-              {/*             <p style={{ marginBottom: 0 }}>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  value={simParams.species}
+                  onChange={event => {
+                    setSimParams({ ...simParams, species: event.target.value })
+                  }}
+                >
+                  <MenuItem value={0}>Anopheles</MenuItem>
+                  <MenuItem value={1}>Culex</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Typography gutterBottom>Vector: Bed Net Coverage (%)</Typography>
+                <InputLabel htmlFor="covN"></InputLabel>
+                <Slider
+                  value={simParams.covN}
+                  id="covN"
+                  min={1}
+                  step={1}
+                  max={100}
+                  onChange={(event, newValue) => {
+                    handleSliderChanges(newValue, 'covN')
+                  }}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+                {/*             <p style={{ marginBottom: 0 }}>
               Bed nets are assumed to have been distributed at the start of
               intervention and are assumed to be effective for the entire
               lifetime of the intervention campaign.
             </p> */}
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Typography gutterBottom>
+                  Vector: Insecticide Coverage (%)
+            </Typography>
+                <InputLabel htmlFor="v_to_hR"></InputLabel>
+                <Slider
+                  value={simParams.v_to_hR}
+                  id="v_to_hR"
+                  min={1}
+                  step={1}
+                  max={100}
+                  onChange={(event, newValue) => {
+                    handleSliderChanges(newValue, 'v_to_hR')
+                  }}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="slider"
+                />
+                {/*             <p style={{ marginBottom: 0 }}>
+              Insecticide is assumed to reduce the vector to host ratio only.
+            </p> */}
+              </FormControl>
+            </ChartSettings>
+          </Grid>
+          <Grid item md={3} xs={12} className={classes.settings}>
+            <Typography className={classes.title} variant="h5" component="h2">
+              Intervention
+          </Typography>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-helper-label">
+                Fruequency
+            </InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={simParams.mdaSixMonths}
+                onChange={handleFrequencyChange}
+              >
+                <MenuItem value={12}>Annual</MenuItem>
+                <MenuItem value={6}>Every 6 months</MenuItem>
+              </Select>
             </FormControl>
             <FormControl className={classes.formControl}>
-              <Typography gutterBottom>
-                Vector: Insecticide Coverage (%)
-            </Typography>
-              <InputLabel htmlFor="v_to_hR"></InputLabel>
+              <Typography gutterBottom>Target coverage</Typography>
+              <InputLabel htmlFor="coverage"></InputLabel>
               <Slider
-                value={simParams.v_to_hR}
-                id="v_to_hR"
+                value={simParams.coverage}
+                min={0}
+                step={1}
+                max={100}
+                onChange={handleCoverageChange}
+                valueLabelDisplay="auto"
+                aria-labelledby="slider"
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="demo-simple-select-helper-label">
+                Drug regimen
+            </InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={simParams.mdaRegimen}
+                onChange={event => {
+                  setSimParams({ ...simParams, mdaRegimen: event.target.value })
+                }}
+              >
+                <MenuItem value={1}>albendazole + ivermectin</MenuItem>
+                <MenuItem value={2}>albendazole + diethylcarbamazine</MenuItem>
+                <MenuItem value={3}>ivermectin</MenuItem>
+                <MenuItem value={4}>
+                  ivermectin + albendazole + diethylcarbamazine
+              </MenuItem>
+                <MenuItem value={5}>custom</MenuItem>
+              </Select>
+            </FormControl>
+            <div className={classes.buttons}>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={simInProgress || scenarioInputs.length === 0}
+                onClick={runCurrentScenario}
+              >
+                UPDATE SCENARIO
+            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={simInProgress}
+                onClick={runNewScenario}
+              >
+                NEW SCENARIO
+            </Button>
+            </div>
+            {simulationProgress !== 0 && simulationProgress !== 100 && (
+              <div className={classes.progress}>
+                <LinearProgress variant="determinate" value={simulationProgress} color="secondary" />
+              </div>
+
+            )}
+          </Grid>
+        </Grid>
+        <Grid item md={12} xs={12} >
+          <div
+            style={{
+              display: 'flex',
+              height: 100,
+              justifyContent: 'space-around',
+              marginBottom: 20,
+              cursor: 'hand',
+            }}
+          >
+            {/* {(12 / simParams.mdaSixMonths) * 20} */}
+            {simMDAtime.map((e, i) => (
+              <div
+                key={i}
+                style={{
+                  background: 'grey',
+                  height: 100,
+                  minWidth: 10,
+                  borderWidth: 1,
+                  borderColor: 'white',
+                  borderStyle: 'solid',
+                }}
+                onMouseOver={a => {
+                  // a.target.style.borderColor = '#aa2323'
+                }}
+                onMouseOut={a => {
+                  // a.target.style.borderColor = 'white'
+                }}
+                onClick={a => {
+                  // a.target.style.backgroundColor = '#aa2323'
+                  setCurMDARound(i)
+                  setDoseSettingsOpen(true)
+                  setDoseSettingsLeft(a.pageX - 100)
+                }}
+                title={
+                  simMDAtime[i] +
+                  ', ' +
+                  simMDAcoverage[i] +
+                  ', ' +
+                  simMDAadherence[i]
+                }
+              >
+                <span
+                  style={{
+                    display: 'block',
+                    background:
+                      i === curMDARound ? '#aa2323' : 'rgb(98, 54, 255)',
+                    height: simMDAcoverage[i],
+                    minWidth: 10,
+                  }}
+                ></span>
+              </div>
+            ))}
+          </div>
+        </Grid>
+        {doseSettingsOpen && (
+          <Grid
+            item
+            md={3}
+            xs={12}
+            style={{ marginLeft: doseSettingsLeft }}
+          >
+            <Typography className={classes.title} variant="h5" component="h2">
+              MDA round #{curMDARound + 1}
+            </Typography>
+            <FormControl className={classes.formControl}>
+              <Typography gutterBottom>Coverage</Typography>
+              <InputLabel htmlFor="rho"></InputLabel>
+              <Slider
+                value={simMDAcoverage[curMDARound]}
                 min={1}
                 step={1}
                 max={100}
                 onChange={(event, newValue) => {
-                  handleSliderChanges(newValue, 'v_to_hR')
+                  let newArray = [...simMDAcoverage]
+                  newArray[curMDARound] = newValue
+                  setSimMDAcoverage([...newArray])
                 }}
                 valueLabelDisplay="auto"
                 aria-labelledby="slider"
               />
               {/*             <p style={{ marginBottom: 0 }}>
-              Insecticide is assumed to reduce the vector to host ratio only.
+              Controls how randomly coverage is applied. For 0, coverage is
+              completely random. For 1, the same individuals are always treated.
             </p> */}
             </FormControl>
-          </ChartSettings>
-        </Grid>
-        <Grid item md={3} xs={12} className={classes.settings}>
-          <Typography className={classes.title} variant="h5" component="h2">
-            Intervention
-          </Typography>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-helper-label">
-              Fruequency
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              value={simParams.mdaSixMonths}
-              onChange={handleFrequencyChange}
-            >
-              <MenuItem value={12}>Annual</MenuItem>
-              <MenuItem value={6}>Every 6 months</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>Target coverage</Typography>
-            <InputLabel htmlFor="coverage"></InputLabel>
-            <Slider
-              value={simParams.coverage}
-              min={0}
-              step={1}
-              max={100}
-              onChange={handleCoverageChange}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="demo-simple-select-helper-label">
-              Drug regimen
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              value={simParams.mdaRegimen}
-              onChange={event => {
-                setSimParams({ ...simParams, mdaRegimen: event.target.value })
-              }}
-            >
-              <MenuItem value={1}>albendazole + ivermectin</MenuItem>
-              <MenuItem value={2}>albendazole + diethylcarbamazine</MenuItem>
-              <MenuItem value={3}>ivermectin</MenuItem>
-              <MenuItem value={4}>
-                ivermectin + albendazole + diethylcarbamazine
-              </MenuItem>
-              <MenuItem value={5}>custom</MenuItem>
-            </Select>
-          </FormControl>
-          <div className={classes.buttons}>
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={simInProgress || scenarioInputs.length === 0}
-              onClick={runCurrentScenario}
-            >
-              UPDATE SCENARIO
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={simInProgress}
-              onClick={runNewScenario}
-            >
-              NEW SCENARIO
-            </Button>
-          </div>
-          {simulationProgress !== 0 && simulationProgress !== 100 && (
-            <div className={classes.progress}>
-              <LinearProgress variant="determinate" value={simulationProgress} color="secondary" />
-            </div>
-
-          )}
-        </Grid>
-      </Grid>
-      <Grid item md={12} xs={12} >
-        <div
-          style={{
-            display: 'flex',
-            height: 100,
-            justifyContent: 'space-around',
-            marginBottom: 20,
-            cursor: 'hand',
-          }}
-        >
-          {/* {(12 / simParams.mdaSixMonths) * 20} */}
-          {simMDAtime.map((e, i) => (
-            <div
-              key={i}
-              style={{
-                background: 'grey',
-                height: 100,
-                minWidth: 10,
-                borderWidth: 1,
-                borderColor: 'white',
-                borderStyle: 'solid',
-              }}
-              onMouseOver={a => {
-                // a.target.style.borderColor = '#aa2323'
-              }}
-              onMouseOut={a => {
-                // a.target.style.borderColor = 'white'
-              }}
-              onClick={a => {
-                // a.target.style.backgroundColor = '#aa2323'
-                setCurMDARound(i)
-                setDoseSettingsOpen(true)
-                setDoseSettingsLeft(a.pageX - 100)
-              }}
-              title={
-                simMDAtime[i] +
-                ', ' +
-                simMDAcoverage[i] +
-                ', ' +
-                simMDAadherence[i]
-              }
-            >
-              <span
-                style={{
-                  display: 'block',
-                  background:
-                    i === curMDARound ? '#aa2323' : 'rgb(98, 54, 255)',
-                  height: simMDAcoverage[i],
-                  minWidth: 10,
+            <FormControl className={classes.formControl}>
+              <Typography gutterBottom>Systemic adherence</Typography>
+              <InputLabel htmlFor="rho"></InputLabel>
+              <Slider
+                value={simMDAadherence[curMDARound]}
+                min={0}
+                step={0.1}
+                max={1}
+                onChange={(event, newValue) => {
+                  let newArray = [...simMDAadherence]
+                  newArray[curMDARound] = newValue
+                  setSimMDAadherence([...newArray])
                 }}
-              ></span>
+                valueLabelDisplay="auto"
+                aria-labelledby="slider"
+              />
+              {/*             <p style={{ marginBottom: 0 }}>
+              Controls how randomly coverage is applied. For 0, coverage is
+              completely random. For 1, the same individuals are always treated.
+            </p> */}
+            </FormControl>
+            <div className={classes.buttons}>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={simInProgress}
+                onClick={() => {
+                  let newArray = [...simMDAcoverage]
+                  newArray[curMDARound] = 0
+                  setSimMDAcoverage([...newArray])
+                  setCurMDARound(-1)
+                  setDoseSettingsOpen(false)
+                }}
+              >
+                REMOVE
+            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={simInProgress}
+                onClick={() => {
+                  setCurMDARound(-1)
+                  setDoseSettingsOpen(false)
+                }}
+              >
+                UPDATE
+            </Button>
             </div>
-          ))}
-        </div>
-      </Grid>
-      {doseSettingsOpen && (
-        <Grid
-          item
-          md={3}
-          xs={12}
-          style={{ marginLeft: doseSettingsLeft }}
-        >
-          <Typography className={classes.title} variant="h5" component="h2">
-            MDA round #{curMDARound + 1}
-          </Typography>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>Coverage</Typography>
-            <InputLabel htmlFor="rho"></InputLabel>
-            <Slider
-              value={simMDAcoverage[curMDARound]}
-              min={1}
-              step={1}
-              max={100}
-              onChange={(event, newValue) => {
-                let newArray = [...simMDAcoverage]
-                newArray[curMDARound] = newValue
-                setSimMDAcoverage([...newArray])
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-            {/*             <p style={{ marginBottom: 0 }}>
-              Controls how randomly coverage is applied. For 0, coverage is
-              completely random. For 1, the same individuals are always treated.
-            </p> */}
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>Systemic adherence</Typography>
-            <InputLabel htmlFor="rho"></InputLabel>
-            <Slider
-              value={simMDAadherence[curMDARound]}
-              min={0}
-              step={0.1}
-              max={1}
-              onChange={(event, newValue) => {
-                let newArray = [...simMDAadherence]
-                newArray[curMDARound] = newValue
-                setSimMDAadherence([...newArray])
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-            {/*             <p style={{ marginBottom: 0 }}>
-              Controls how randomly coverage is applied. For 0, coverage is
-              completely random. For 1, the same individuals are always treated.
-            </p> */}
-          </FormControl>
-          <div className={classes.buttons}>
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={simInProgress}
-              onClick={() => {
-                let newArray = [...simMDAcoverage]
-                newArray[curMDARound] = 0
-                setSimMDAcoverage([...newArray])
-                setCurMDARound(-1)
-                setDoseSettingsOpen(false)
-              }}
-            >
-              REMOVE
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={simInProgress}
-              onClick={() => {
-                setCurMDARound(-1)
-                setDoseSettingsOpen(false)
-              }}
-            >
-              UPDATE
-            </Button>
-          </div>
-        </Grid>
-      )}
+          </Grid>
+        )}
+      </section>
 
       <DiveDeeper
         title="Get an overview"
