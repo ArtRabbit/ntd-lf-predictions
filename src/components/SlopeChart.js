@@ -122,7 +122,7 @@ export default function SlopeChart({
                   x={xScale(a.year) - labelOffset}
                   y={y(a)}
                   textAnchor="end"
-                  dominantBaseline="middle"
+                  dominantBaseline="central"
                   onMouseEnter={() => handleEnter(id)}
                   onMouseLeave={handleLeave}
                   fill={id === selected ? 'blue' : 'black'}
@@ -134,7 +134,7 @@ export default function SlopeChart({
                   fontWeight="800"
                   x={xScale(b.year) + labelOffset}
                   y={y(b)}
-                  dominantBaseline="middle"
+                  dominantBaseline="central"
                   onMouseEnter={() => handleEnter(id)}
                   onMouseLeave={handleLeave}
                   fill={id === selected ? 'blue' : 'black'}

@@ -165,7 +165,6 @@ const TrendsCountry = props => {
           countryFeatures={countryFeatures}
           stateFeatures={stateFeatures}
           height={720}
-          initialLevel={0}
           disableZoom={true}
           country={country}
         />

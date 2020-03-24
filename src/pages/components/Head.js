@@ -9,7 +9,7 @@ import Logo from '../../images/ntd-logo.svg';
 
 const useStyles = makeStyles(theme => ({
   card: {
-    maxWidth: 475,
+    maxWidth: 410,
     zIndex: 9,
     position: "relative",
     float: 'left',

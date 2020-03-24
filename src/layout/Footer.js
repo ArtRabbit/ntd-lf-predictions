@@ -51,12 +51,25 @@ const Footer = (props) => {
 
   return (
     <div className={classes.root}>
-      <SiteSections />
       <footer className={classes.footer}>
         <Container className={classes.container} maxWidth="xl" >
 
           <Grid container spacing={0}>
-            <Grid item md={3} xs={12} className={classes.column}>
+            <Grid item md={3} sm={6} xs={12} className={classes.column}>
+
+              <Typography variant="h6" component="h6" className={classes.headline} >Site sections</Typography>
+
+
+              <ul className={classes.menu}>
+                <Typography component="li" variant="body2"><Link component={RouterLink} to="/intro" color="inherit">Introduction</Link></Typography>
+                <Typography component="li" variant="body2"><Link component={RouterLink} to="/trends" color="inherit">Trends</Link></Typography>
+                <Typography component="li" variant="body2"><Link component={RouterLink} to="/hotspots" color="inherit">Hotspots</Link></Typography>
+                <Typography component="li" variant="body2"><Link component={RouterLink} to="/simulator" color="inherit">Simulator</Link></Typography>
+              </ul>
+
+            </Grid>
+
+            <Grid item md={3} sm={6} xs={12} className={classes.column}>
 
               <Typography variant="h6" component="h6" className={classes.headline} >Further information</Typography>
 
@@ -69,7 +82,7 @@ const Footer = (props) => {
               </ul>
 
             </Grid>
-            <Grid item md={3} xs={12} className={classes.column}>
+            <Grid item md={3} sm={6} xs={12} className={classes.column}>
               <Typography variant="h6" component="h6" className={classes.headline} >Contact</Typography>
 
               <Typography display="block" variant="body2">Email: <Link href="mailto:contact@email.com" rel="noopener" color="inherit">contact@email.com</Link></Typography>
@@ -77,7 +90,7 @@ const Footer = (props) => {
 
 
             </Grid>
-            <Grid item md={6} xs={12} className={classes.column} >
+            <Grid item md={3} sm={6} xs={12} className={classes.column} >
               <Typography variant="h6" component="h6" className={classes.headline} >In collaboration with</Typography>
               <img className={classes.logo} src={OxfordLogo} alt="University of Oxford" />
               <img className={classes.logo} src={BigDataLogo} alt="Big Data Institute" />

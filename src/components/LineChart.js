@@ -2,17 +2,20 @@ import React, { Fragment, useState } from 'react'
 import { scaleLinear, line } from 'd3'
 import { first, last, flatten, max } from 'lodash'
 
+// TODO: derive start/end from data
+const start = 2000
+const end = 2030
+
 export default function SlopeChart({
   data,
   width,
   height,
-  start,
-  end,
-  clipDomain
+  clipDomain,
+  yDomain,
 }) {
   const [selected, setSelected] = useState()
 
-  const xPad = 250
+  const xPad = 64
   const yPad = 32
   const svgHeight = height + yPad * 2
   const svgWidth = width + xPad * 2
@@ -23,13 +26,14 @@ export default function SlopeChart({
     .domain([start, end])
     .range([0, width])
 
-  const domain = max(flatten(data.map(d => d.ranks.map(r => r.p_prevalence))))
+  const domain =
+    yDomain || max(flatten(data.map(d => d.ranks.map(r => r.prevalence))))
 
   const yScale = scaleLinear()
     .domain(clipDomain ? [0, domain] : [0, 100])
     .range([height, 0])
 
-  const yTicks = yScale.ticks(5)
+  const yTicks = yScale.ticks(4)
   const xTicks = xScale.ticks(5)
 
   const handleEnter = id => {
@@ -39,7 +43,7 @@ export default function SlopeChart({
     setSelected(null)
   }
 
-  const y = d => yScale(d.p_prevalence)
+  const y = d => yScale(d.prevalence)
   const nowX = xScale(new Date().getFullYear())
 
   return (
@@ -49,7 +53,7 @@ export default function SlopeChart({
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
       <g transform={`translate(${xPad},${yPad})`}>
-        <rect width={width} height={height} fill='#f0f0f0'></rect>
+        {/* <rect width={width} height={height} fill="#f0f0f0"></rect> */}
 
         {/* x-axis labels */}
         {xTicks.map(year => (
@@ -57,8 +61,8 @@ export default function SlopeChart({
             <text
               x={xScale(year)}
               y={height + 32}
-              textAnchor='middle'
-              fontSize='10'
+              textAnchor="middle"
+              fontSize="10"
             >
               {year}
             </text>
@@ -70,19 +74,25 @@ export default function SlopeChart({
           const y = yScale(t)
           return (
             <g key={t}>
-              <text x={-16} y={y} textAnchor='end' fontSize='10'>
+              <text
+                x={-16}
+                y={y}
+                textAnchor="end"
+                dominantBaseline="central"
+                fontSize="10"
+              >
                 {t}%
               </text>
-              <line x1='0' x2={width} y1={y} y2={y} stroke='#cfcfcf'></line>
+              <line x1="0" x2={width} y1={y} y2={y} stroke="#cfcfcf"></line>
             </g>
           )
         })}
 
         {/* mark present */}
-        <line x1={nowX} x2={nowX} y1={0} y2={height} stroke='#cfcfcf'></line>
+        <line x1={nowX} x2={nowX} y1={0} y2={height} stroke="#cfcfcf"></line>
 
         {/* lines */}
-        {data.map(({ state, iu_name, ranks }) => {
+        {data.map(({ state, id, ranks }) => {
           const coords = ranks.map(d => {
             const { year } = d
             return [xScale(year), y(d)]
@@ -90,12 +100,12 @@ export default function SlopeChart({
           const l = line()(coords)
           return (
             <path
-              key={`ranks-${state}-${iu_name}`}
+              key={`ranks-${state}-${id}`}
               d={l}
-              stroke={iu_name === selected ? 'blue' : '#333'}
-              strokeWidth={iu_name === selected ? 2 : 1}
-              fill='none'
-              onMouseEnter={() => handleEnter(iu_name)}
+              stroke={id === selected ? 'blue' : '#333'}
+              strokeWidth={id === selected ? 2 : 1}
+              fill="none"
+              onMouseEnter={() => handleEnter(id)}
               onMouseLeave={handleLeave}
             />
           )
@@ -104,18 +114,18 @@ export default function SlopeChart({
         {/* grid */}
         {data.map(({ ranks }) => {
           return ranks.map(d => {
-            const { year, rank, p_prevalence } = d
+            const { year, rank, prevalence } = d
             return (
               <g
                 key={`circle-${year}-${rank}`}
                 transform={`translate(${xScale(year)}, ${y(d)})`}
               >
                 <circle
-                  r='2'
+                  r="2"
                   fill={
-                    p_prevalence <= 1
+                    prevalence <= 1
                       ? '#12df93'
-                      : p_prevalence > 20
+                      : prevalence > 20
                       ? '#ff5e0d'
                       : 'none'
                   }
@@ -126,38 +136,38 @@ export default function SlopeChart({
         })}
 
         {/* labels */}
-        {data.map(({ state, ranks, iu_name }) => {
+        {data.map(({ state, ranks, name, id }) => {
           const a = first(ranks)
           const b = last(ranks)
 
-          if (iu_name !== selected) return null
+          if (id !== selected) return null
 
           return (
-            <Fragment key={`label-${state}-${iu_name}`}>
+            <Fragment key={`label-${id}`}>
               <text
-                fontSize='12'
-                fontWeight='800'
+                fontSize="12"
+                fontWeight="800"
                 x={xScale(a.year) - labelOffset}
                 y={y(a)}
-                textAnchor='end'
-                dominantBaseline='middle'
-                onMouseEnter={() => handleEnter(iu_name)}
+                textAnchor="end"
+                dominantBaseline="central"
+                onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
-                fill={iu_name === selected ? 'blue' : 'black'}
+                fill={id === selected ? 'blue' : 'black'}
               >
-                {iu_name} ({a.p_prevalence}%)
+                {name} ({a.prevalence}%)
               </text>
               <text
-                fontSize='12'
-                fontWeight='800'
+                fontSize="12"
+                fontWeight="800"
                 x={xScale(b.year) + labelOffset}
                 y={y(b)}
-                dominantBaseline='middle'
-                onMouseEnter={() => handleEnter(iu_name)}
+                dominantBaseline="central"
+                onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
-                fill={iu_name === selected ? 'blue' : 'black'}
+                fill={id === selected ? 'blue' : 'black'}
               >
-                ({b.p_prevalence}%) {iu_name}
+                ({b.prevalence}%) {name}
               </text>
             </Fragment>
           )

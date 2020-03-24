@@ -1,5 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react'
+import { values, sortBy, take } from 'lodash'
 
 import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
@@ -8,15 +9,14 @@ import SectionTitle from './components/SectionTitle'
 
 import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
-import SiteSections from './components/SiteSections'
 import SlopeChart from '../components/SlopeChart'
+import Timeline from '../components/Timeline'
+import LineChart from '../components/LineChart'
 
 import Map from '../components/Map'
 import { useDataAPI } from '../hooks/stateHooks'
 
-const useStyles = makeStyles(theme => ({
-
-}))
+const useStyles = makeStyles(theme => ({}))
 
 const PanelContainer = ({ children }) => (
   <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>
@@ -26,11 +26,15 @@ const PanelContainer = ({ children }) => (
 
 const HotSpots = props => {
   const classes = useStyles()
-  const { stateFeatures, stateByCountryData } = useDataAPI()
+  const {
+    countryData,
+    countryFeatures,
+    stateFeatures,
+    stateByCountryData,
+  } = useDataAPI()
 
   return (
     <Layout>
-
       <HeadWithInputs
         transparent={true}
         title="Lymphatic filariasis Hotspots"
@@ -49,9 +53,9 @@ const HotSpots = props => {
         }}
       >
         <Map
+          countryFeatures={countryFeatures}
           stateFeatures={stateFeatures}
           height={720}
-          initialLevel={0}
           disableZoom={true}
         />
       </div>
@@ -61,10 +65,27 @@ const HotSpots = props => {
           headline="Top affected countries"
           text={`And their projected development over time`}
         />
-        <img
-          src={'http://ntd.artrabbit.studio/static/curve-rank.png'}
-          alt="rank graph"
-        />
+        {countryData &&
+          take(
+            sortBy(values(countryData.data), 'performance').map(country => {
+              const { id, name, performance } = country
+              return (
+                <Box key={id} p={1} mb={1}>
+                  <Typography variant="h3" component="h3">
+                    {name} / performance: {performance}
+                  </Typography>
+                  <LineChart
+                    data={[country]}
+                    width={800}
+                    height={100}
+                    yDomain={30}
+                    clipDomain
+                  />
+                </Box>
+              )
+            }),
+            4
+          )}
       </Box>
 
       <SectionTitle

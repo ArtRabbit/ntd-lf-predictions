@@ -62,9 +62,7 @@ const Trends = props => {
       />
 
       <Box className={classes.chartContainer}>
-        {countryData && (
-          <Timeline data={Object.values(countryData.data)} width={500} />
-        )}
+        {countryData && <Timeline data={Object.values(countryData.data)} />}
       </Box>
 
       <SectionTitle
@@ -83,7 +81,6 @@ const Trends = props => {
           countryFeatures={countryFeatures}
           stateFeatures={stateFeatures}
           height={720}
-          initialLevel={0}
           disableZoom={true}
         />
       </div>
