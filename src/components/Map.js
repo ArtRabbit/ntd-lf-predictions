@@ -236,8 +236,8 @@ function Map({
                 'fill-outline-color': [
                   'case',
                   ['==', ['get', 'id'], feature?.properties.id || null],
-                  'rgba(255, 145, 170, 1)',
-                  'rgba(255, 145, 170, 0.3)',
+                  'rgba(145, 145, 145, 1)',
+                  'rgba(145, 145, 145, 0.3)',
                 ],
               }}
             />

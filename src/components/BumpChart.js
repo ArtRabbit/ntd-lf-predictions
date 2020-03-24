@@ -176,6 +176,7 @@ function BumpChart({ data, width }) {
               >
                 <circle
                   r={prevalence > 5 ? 4: 4}
+                  fillOpacity={0.8}
                   fill={
                     prevalence < 1
                       ? '#03D386'

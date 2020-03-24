@@ -163,7 +163,7 @@ function Timeline({ dataAndStats, width }) {
                   <circle
                     key={year}
                     fill={prevalence <= 1 ? '#03D386' : '#6236FD'}
-                    fillOpacity={0.5}
+                    fillOpacity={prevalence <= 1 ? .8 : 0.6}
                     r={radiusScale(prevalence)}
                     cx={xScale(year)}
                   ></circle>
