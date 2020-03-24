@@ -79,7 +79,6 @@ const Inputs = props => {
   const { countrySuggestions, regimes } = useDataAPI()
   const { regime, setRegime, country, infoTooltip, setInfoTooltip } = useUIState()
 
-  const { welcomeScren, setWelcomeScreen } = useUIState()
   const history = useHistory()
   const matchSection = useRouteMatch('/:section')
 
