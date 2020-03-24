@@ -111,19 +111,28 @@ function Map({
   }
 
   const selectCountryClickHotspots = countryId => {
-    if (match.params.section != 'trends') {
-      match.params.section = 'hotspots'
-    }
 
-    history.push(`/${match.params.section}/${countryId}`)
+    if ( match ) {
+      if (match.params.section != 'trends') {
+        match.params.section = 'hotspots'
+      }
+
+      history.push(`/${match.params.section}/${countryId}`)
+    } else {
+      history.push(`/hotspots/${countryId}`)
+    }
   }
 
   const selectCountryClickTrends = countryId => {
-    if (match.params.section != 'trends') {
-      match.params.section = 'trends'
-    }
+    if ( match ) {
+      if (match.params.section != 'trends') {
+        match.params.section = 'trends'
+      }
 
-    history.push(`/${match.params.section}/${countryId}`)
+      history.push(`/${match.params.section}/${countryId}`)
+    } else {
+      history.push(`/trends/${countryId}`)
+    }
   }
 
   const handleHover = event => {
