@@ -142,7 +142,7 @@ function Map({
   }
 
   const getYearLabel = (value) => {
-    return value.toString().substr(-2)
+    return '‘'+value.toString().substr(-2)
   }
 
   // old map style mapbox://styles/kpcarter100/ck7w5zz9l026d1imn43721owm
