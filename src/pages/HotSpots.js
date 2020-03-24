@@ -38,12 +38,13 @@ const HotSpots = props => {
       <HeadWithInputs
         transparent={true}
         title="Lymphatic filariasis Hotspots"
+        text="The LF hotspots showcase areas of activity, improvements or decline. "
       />
 
       <SectionTitle
         top={true}
         headline="District hotspots"
-        text={`Showing district hotspost in all countries`}
+        text={`Get an overview of district hotspots and areas of activity in all modelled countries. To see alternative outcomes, change your treatment scenario in the top menu.`}
       />
 
       <div
@@ -63,7 +64,7 @@ const HotSpots = props => {
       <Box className={classes.chartContainer}>
         <SectionTitle
           headline="Top improving countries"
-          text={`And their projected development over time`}
+          text={`See top improving countries and their projected development over time. To see alternative outcomes, change your treatment scenario in the top menu.`}
         />
         {countryData &&
           take(
@@ -92,7 +93,7 @@ const HotSpots = props => {
       </Box>
 
       <SectionTitle
-        headline="Activity"
+        headline="District Activity"
         text={`Districts in country that are improving, getting worse or are below the 1% threashold`}
       />
 

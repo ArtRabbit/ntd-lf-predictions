@@ -51,19 +51,20 @@ const Trends = props => {
 
   return (
     <Layout>
-      <HeadWithInputs transparent={true} title="Lymphatic filariasis Trends" />
+      <HeadWithInputs transparent={true} title="Lymphatic filariasis Trends" text={`The LF projection trends take output of the model and highlight different possible outcomes developed over time.`} />
 
       <SectionTitle
-        top={true}
-        headline="People still needing intervention"
-        text={`Countries in 2020 and 2030`}
+        top={false}
+        headline="Intervention needs"
+        text={`Compare the population in need of intervention in 2020 with the projections for 2030. To see alternative outcomes, change your treatment scenario in the top menu. `}
       />
 
       {countryData && <BarChart data={Object.values(countryData.data)} />}
 
       <SectionTitle
-        headline="Timeline"
-        text={`Showing prevalence and probable eradication over time`}
+        top={false}
+        headline="Trend graph"
+        text={`Review historic prevalence and probable eradication over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
       />
 
       <Box className={classes.chartContainer}>
@@ -71,9 +72,9 @@ const Trends = props => {
       </Box>
 
       <SectionTitle
-        top={true}
+        top={false}
         headline="Trend map"
-        text={`Showing good and bad performace comparing prevalence 2000 to 2030`}
+        text={`View good and bad performance by district and compare prevalence over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
       />
 
       <div

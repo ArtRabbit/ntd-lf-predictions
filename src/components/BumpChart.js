@@ -11,7 +11,8 @@ function BumpChart({ data, width }) {
   const [selected, setSelected] = useState()
 
   const height = data.length * 30
-  const xPad = 200
+  const lPad = 170
+  const rPad = 32
   const yPad = 32
   const svgHeight = height + yPad * 2
   const svgWidth = width
@@ -20,7 +21,7 @@ function BumpChart({ data, width }) {
 
   const xScale = scaleLinear()
     .domain([start, end])
-    .range([0, width - xPad * 2])
+    .range([0, width - lPad * 2])
 
   const yScale = scaleLinear()
     .domain([data.length, 0])
@@ -34,6 +35,11 @@ function BumpChart({ data, width }) {
   }
 
   const nowX = xScale(new Date().getFullYear())
+  const startX = xScale(start)
+  const endX = xScale(end)
+  const yearWidth = xScale(start + 1) - xScale(start)
+  const halfYearWidth = Math.round(yearWidth / 2)
+
 
   return (
     <svg
@@ -41,19 +47,86 @@ function BumpChart({ data, width }) {
       height={svgHeight}
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
-      <g transform={`translate(${xPad},${0})`}>
-        {xScale.ticks().map(year => (
-          <g key={year}>
-            <text
-              x={xScale(year)}
-              y={height + 32}
-              textAnchor="middle"
-              fontSize="10"
-            >
-              {year}
-            </text>
-          </g>
-        ))}
+      <g transform={`translate(${lPad},${0})`}>
+        
+        {/* lable start and end years */}
+        {xScale.ticks().map(year => {
+           if (year === start) {
+              return (
+                <g key={start}>
+                <text
+                  x={startX - halfYearWidth}
+                  y={height + 32}
+                  textAnchor="left"
+                  fontSize="12"
+                >
+                  {start}
+                </text>
+                </g>)
+           } else if ( year === end ) {
+             return (
+              <g key={end}>
+              <text
+                x={endX - halfYearWidth}
+                y={height + 32}
+                textAnchor="right"
+                fontSize="12"
+              >
+                {end}
+              </text>
+              </g>)
+           } else {
+              const yearOutput = '‘'+year.toString().substr(-2)
+              return (<g key={year}>
+              <text
+                x={xScale(year)}
+                y={height + 32}
+                textAnchor="middle"
+                fontSize="12"
+              >
+                {yearOutput}
+              </text>
+              </g>)
+
+           }
+        })}
+
+        {xScale.ticks().map(year => {
+          if (year === start) {
+            return (
+              <line
+                key={year}
+                x1={xScale(year)}
+                x2={xScale(year)}
+                y1={0}
+                y2={height + 15}
+                stroke="#D8D8D8"
+              ></line>
+            )
+          } else if (year === end) {
+            return (
+              <line
+                key={year}
+                x1={xScale(year)}
+                x2={xScale(year)}
+                y1={0}
+                y2={height + 15}
+                stroke="#D8D8D8"
+              ></line>
+            )
+          }
+          return (
+            <line
+              key={year}
+              x1={xScale(year)}
+              x2={xScale(year)}
+              y1={0}
+              y2={height + 15}
+              stroke="#D8D8D8"
+              strokeDasharray="4 3"
+            ></line>
+          )
+        })}
 
         {/* lines */}
         {data.map(({ state, id, ranks }) => {
@@ -64,15 +137,23 @@ function BumpChart({ data, width }) {
           const isSelected = id === selected
           const l = line()(coords)
           return (
+            <g key={`ranks-${state}-${id}`}>
             <path
-              key={`ranks-${state}-${id}`}
               d={l}
-              stroke={isSelected ? 'blue' : '#999'}
-              strokeWidth={isSelected ? 2 : 1}
+              stroke={isSelected ? '#6236FF' : '#aaa'}
+              strokeWidth={isSelected ? 3 : 1}
+              fill="none"
+            />
+            <path
+              
+              d={l}
+              stroke="transparent"
+              strokeWidth={25}
               fill="none"
               onMouseEnter={() => handleEnter(id)}
               onMouseLeave={handleLeave}
             />
+            </g>
           )
         })}
 
@@ -94,12 +175,12 @@ function BumpChart({ data, width }) {
                 transform={`translate(${xScale(year)}, ${yScale(rank)})`}
               >
                 <circle
-                  r="3"
+                  r={prevalence > 5 ? 4: 4}
                   fill={
-                    prevalence <= 1
-                      ? '#12df93'
-                      : prevalence > 20
-                      ? '#ff5e0d'
+                    prevalence < 1
+                      ? '#03D386'
+                      : prevalence > 5
+                      ? '#FF4C73'
                       : 'none'
                   }
                 ></circle>
@@ -112,37 +193,38 @@ function BumpChart({ data, width }) {
         {data.map(({ state, ranks, id, prevalence, name }) => {
           const a = first(ranks)
           const b = last(ranks)
+          const rankOutput = a.rank.toString().padStart(2, "0")
+          const rankOutputB = b.rank.toString().padStart(2, "0")
 
           return (
             <Fragment key={`label-${state}-${id}`}>
               <text
                 fontSize="12"
-                fontWeight={
-                  id === selected ? 800 : a.prevalence <= 1 ? 500 : 300
-                }
-                x={xScale(a.year) - labelOffset}
+                x={-lPad}
                 y={yScale(a.rank)}
-                textAnchor="end"
+                textAnchor="start"
+                fontWeight="500"
                 dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
-                fill={id === selected ? 'blue' : 'black'}
+                fill={id === selected ? '#6236FF' : 'black'}
               >
-                {name} ({a.prevalence}%) {a.rank}.
+                <tspan fill={id === selected ? '#6236FF' : '#616161'}>{rankOutput}</tspan>
+                <tspan dx={5}>{name} ({a.prevalence}%)</tspan>
               </text>
               <text
                 fontSize="12"
-                fontWeight={
-                  id === selected ? 800 : b.prevalence <= 1 ? 500 : 300
-                }
+                dx={5}
                 x={xScale(b.year) + labelOffset}
                 y={yScale(b.rank)}
+                fontWeight="500"
                 dominantBaseline="central"
                 onMouseEnter={() => handleEnter(id)}
                 onMouseLeave={handleLeave}
-                fill={id === selected ? 'blue' : 'black'}
+                fill={id === selected ? '#6236FF' : 'black'}
               >
-                {b.rank}. ({b.prevalence}%) {name}
+                <tspan fill={id === selected ? '#6236FF' : '#616161'}>{rankOutputB}</tspan>
+                <tspan dx={5}>{name} ({a.prevalence}%)</tspan>
               </text>
             </Fragment>
           )

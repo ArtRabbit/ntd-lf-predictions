@@ -62,32 +62,47 @@ const TrendsCountry = props => {
       <HeadWithInputs
         transparent={true}
         title={`Lymphatic filariasis Trends: ${selectedCountry?.name || '...'}`}
+        text={`The LF projection trends take output of the model and highlight different possible outcomes developed over time. `}
       />
+
+      <SectionTitle
+        top={false}
+        headline=" "
+        text=" "
+      >
+
+      <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
+        <Box variant="body1">
+          <Typography component="p">
+            Population xxx
+            <br />
+            50k people affected in 2030
+            <br />3 districts with high prevalence
+          </Typography>
+        </Box>
+      </ExpandableInfo>
+
+      </SectionTitle>
+
 
       <SectionTitle
         top={true}
-        headline="People still needing intervention"
-        text={`Districts in 2020 and 2030`}
-      />
-
-      {stateData && <BarChart data={Object.values(stateData.data)} />}
-
-      <SectionTitle
-        headline="Timeline (States)"
-        text={`Showing prevalence and probable eradication over time`}
+        headline="Intervention needs"
+        text={`Compare the population in need of intervention in 2020 with the projections for 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
       >
-        <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
-          <Box variant="body1">
-            <Typography component="p">
-              Population xxx
-              <br />
-              50k people affected in 2030
-              <br />3 districts with high prevalence
-            </Typography>
-          </Box>
-        </ExpandableInfo>
-      </SectionTitle>
 
+      </SectionTitle>
+      <Box className={classes.chartContainer}>
+      {stateData && <BarChart data={Object.values(stateData.data)} />}
+      </Box>
+      
+      <SectionTitle
+        top={false}
+        headline="Trend graph"
+        text={`Review historic prevalence and probable eradication over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
+      >
+
+      </SectionTitle>
       <Box className={classes.chartContainer}>
         {stateData && <Timeline dataAndStats={stateData} />}
       </Box>
@@ -144,14 +159,22 @@ const TrendsCountry = props => {
               </FormControl>
             </ChartSettings>
             <SectionTitle
-              top={true}
-              headline="Development state (or district)"
-              text={`Prevalence development, get an overview of how each state or district developed over time`}
+              top={false}
+              headline="Development of prevalence"
+              text={`Get an overview of how the prevalence of LF in each country/district developed over time. To see alternative outcomes, change your treatment scenario in the top menu.`}
             />
             {stateData && <BumpChart data={Object.values(stateData.data)} />}
           </Box>
         </Grid>
       </Grid>
+
+      <SectionTitle
+        top={false}
+        headline="Trend Map"
+        text={`View good and bad performance by district and compare prevalence over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
+      >
+
+      </SectionTitle>
 
       <div
         style={{
@@ -175,6 +198,14 @@ const TrendsCountry = props => {
           {
             to: `/hotspots/${country}`,
             name: `HOTSPOTS ${selectedCountry?.name || '...'}`,
+          },
+          {
+            to: `/hotspots`,
+            name: `HOTSPOTS ALL COUNTRIES`,
+          },
+          {
+            to: `/trends`,
+            name: `TRENDS ALL COUNTRIES`,
           },
         ]}
       />

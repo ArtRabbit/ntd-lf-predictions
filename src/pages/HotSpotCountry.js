@@ -39,6 +39,7 @@ const HotSpotCountry = props => {
         transparent={true}
         title={`Lymphatic filariasis Hotspots: ${selectedCountry?.name ||
           '...'}`}
+        text="The LF hotspots showcase areas of activity, improvements or decline."
       />
 
       <ExpandableInfoStandalone
@@ -70,7 +71,7 @@ const HotSpotCountry = props => {
       <Box className={classes.chartContainer}>
         <SectionTitle
           headline="Top affected districts"
-          text={`And their projected development over time`}
+          text={`Get a detailed view of top affected districts and their projected development over time. To see alternative outcomes, change your treatment scenario in the top menu.`}
         />
         <img
           src={'http://ntd.artrabbit.studio/static/curve-rank.png'}
@@ -79,8 +80,8 @@ const HotSpotCountry = props => {
       </Box>
 
       <SectionTitle
-        headline="Activity"
-        text={`IU in each district that are improving, getting worse or are below the 1% threashold`}
+        headline="Implementation Unit Activity"
+        text={`Get a detailed view of the IU performance. See where prevalence is improving, increasing, and what areas are reaching the WHO 1% threshold. To see alternative outcomes, change your treatment scenario in the top menu.`}
       />
 
       <Box className={classes.chartContainer}>

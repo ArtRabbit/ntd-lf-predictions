@@ -126,11 +126,9 @@ const Home = (props) => {
       <HeadWithInputs
         title="Lymphatic filariasis Projections"
         text={
-          `Welcome to the NTD Modelling Projections.
-                    The predictions in this website provide guidance on
-                    the impact of more frequent, longer, or higher
-                    coverage treatment would have on timelines to
-                    reach the WHO target.`
+          `Welcome to the NTD Modelling Projections. 
+          The projections on this website provide guidance on the impact of more frequent, 
+          longer or higher coverage treatment would have on achieving elimination as a public health problem.`
         }
         actionLabel={"Enter"}
         action={showIntro}
@@ -145,11 +143,9 @@ const Home = (props) => {
       <HeadWithInputs
         transparent={true}
         title="Lymphatic filariasis Projections"
-        text={`Welcome to the NTD Modelling Projections. 
-                  The projections on this website provide guidance 
-                  on the impact of more frequent, longer or higher 
-                  coverate treatment would have on achieving elimination 
-                  as a public health problem.`}
+        text={`According to our projections, this map shows no elimination of Lymphatic filariasis as a public health problem (EPHP) by 2030. 
+        Play through our scenarios to see how LF will develop over time, see how different treatment scenarios could improve or impact populations 
+        at risk, and dive deeper to explore trends in countries, regions and implementation units.`}
         actionLabel={'PLAY SCENARIO'}
         action={playScenario}
         classAdd="no-clear"

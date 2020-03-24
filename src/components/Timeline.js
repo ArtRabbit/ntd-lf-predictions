@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react'
-import { scaleLinear, line, scaleSqrt } from 'd3'
+import { scaleLinear, line, scaleSqrt,scalePow } from 'd3'
 import { first, last, sortBy } from 'lodash'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { textColor, barColor, rankColor } from '../utils'
@@ -30,7 +30,7 @@ function Timeline({ dataAndStats, width }) {
 
   const radiusScale = scaleSqrt()
     .domain([pMin, pMax])
-    .range([1, (width - (rPad + lPad)) / (end - start) / 2])
+    .range([2, (width - (rPad + lPad)) / (end - start) / 2])
 
   const yScale = scaleLinear()
     .domain([0, data.length - 1])
@@ -157,11 +157,13 @@ function Timeline({ dataAndStats, width }) {
                 {name}
               </text>
               {ranks.map(({ year, prevalence }) => {
+                //
+                //
                 return (
                   <circle
                     key={year}
                     fill={prevalence <= 1 ? '#03D386' : '#6236FD'}
-                    fillOpacity={0.7}
+                    fillOpacity={0.5}
                     r={radiusScale(prevalence)}
                     cx={xScale(year)}
                   ></circle>

@@ -85,8 +85,8 @@ const Footer = (props) => {
             <Grid item md={3} sm={6} xs={12} className={classes.column}>
               <Typography variant="h6" component="h6" className={classes.headline} >Contact</Typography>
 
-              <Typography display="block" variant="body2">Email: <Link href="mailto:contact@email.com" rel="noopener" color="inherit">contact@email.com</Link></Typography>
-              <Typography display="block" variant="body2">Twitter: <Link href="https://www.artrabbit.studio/" rel="noopener" target="_blank" color="inherit" variant="body2">@ntdmodelling</Link></Typography>
+              <Typography display="block" variant="body2">Email: <Link href="mailto:ntdmodelling@gmail.com" rel="noopener" color="inherit">ntdmodelling@gmail.com</Link></Typography>
+              <Typography display="block" variant="body2">Twitter: <Link href="https://twitter.com/NtdModelling" rel="noopener" target="_blank" color="inherit" variant="body2">@ntdmodelling</Link></Typography>
 
 
             </Grid>

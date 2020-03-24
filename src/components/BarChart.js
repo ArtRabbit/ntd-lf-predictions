@@ -9,7 +9,7 @@ const start = 2000
 const end = 2030
 
 function createVerticalAxis(scale, height) {
-  return scale.ticks(4).map((prev, i) => {
+  return scale.ticks(10).map((prev, i) => {
     const x = scale(prev)
     return (
       <g key={prev}>
@@ -18,11 +18,12 @@ function createVerticalAxis(scale, height) {
           x2={x}
           y1={5}
           y2={height + 15}
-          stroke={i === 0 ? '#333' : '#D8D8D8'}
+          stroke={i === 0 ? '#e0e0e0' : '#e0e0e0'}
           strokeDasharray={`4 ${i === 0 ? 0 : 3}`}
         ></line>
+      
         <text x={x + 4} y={height + 32} textAnchor="middle" fontSize="12">
-          {prev} %
+          { ( !(prev % 10) || prev === 0) ? `${prev}%` : '' }
         </text>
       </g>
     )
@@ -46,7 +47,7 @@ function BarChart({ data: d, width }) {
 
   const labelOffset = 0
   //   TODO: derive domain from data
-  const domain = [0, 40]
+  const domain = [0, 30]
 
   const xScaleAfter = scaleLinear()
     .domain(domain)
@@ -80,10 +81,10 @@ function BarChart({ data: d, width }) {
     >
       <g transform={`translate(${lPad},${yPad})`}>
         <text
-          fontSize="18"
-          fontWeight={800}
-          x={xScaleBefore(0) - 32}
-          y={-16}
+          fontSize="16"
+          fontWeight={600}
+          x={xScaleBefore(0) - 16}
+          y={-10}
           textAnchor="end"
           dominantBaseline="central"
           fill="#B09AFD"
@@ -91,10 +92,10 @@ function BarChart({ data: d, width }) {
           2020
         </text>
         <text
-          fontSize="18"
-          fontWeight={800}
-          x={xScaleAfter(0) + 32}
-          y={-16}
+          fontSize="16"
+          fontWeight={600}
+          x={xScaleAfter(0) + 16}
+          y={-10}
           textAnchor="start"
           dominantBaseline="central"
           fill="#6236FD"
