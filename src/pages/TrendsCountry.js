@@ -19,6 +19,7 @@ import Slider from '@material-ui/core/Slider'
 import ChartSettings from './components/ChartSettings'
 import SectionTitle from './components/SectionTitle'
 import Timeline from '../components/Timeline'
+import BarChart from '../components/BarChart'
 
 const useStyles = makeStyles(theme => ({
   headLeftColumn: {
@@ -69,10 +70,7 @@ const TrendsCountry = props => {
         text={`Districts in 2020 and 2030`}
       />
 
-      <img
-        src={'http://ntd.artrabbit.studio/static/circle-graph.png'}
-        alt="circle graph"
-      />
+      {stateData && <BarChart data={Object.values(stateData.data)} />}
 
       <SectionTitle
         headline="Timeline (States)"

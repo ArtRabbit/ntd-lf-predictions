@@ -8,6 +8,7 @@ const initialState = {
   // TODO: should be controlled by app state
   year: 2020,
   playing: false,
+  ready: false,
   viewport: {
     latitude: -4,
     longitude: 20,
@@ -46,7 +47,7 @@ const reduce = (state, { type, payload }) => {
     case 'STOP_PLAY':
       return { ...state, playing: false }
     case 'VIEWPORT':
-      return { ...state, viewport: payload }
+      return { ...state, viewport: payload, ready: true }
     case 'HOVER':
       return {
         ...state,

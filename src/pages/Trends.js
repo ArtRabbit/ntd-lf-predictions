@@ -20,6 +20,7 @@ import ReadMore from './components/ReadMore'
 import ChartSettings from './components/ChartSettings'
 import Map from '../components/Map'
 import Timeline from '../components/Timeline'
+import BarChart from '../components/BarChart'
 
 const useStyles = makeStyles(theme => ({
   chartContainer: {
@@ -52,10 +53,8 @@ const Trends = props => {
         headline="People still needing intervention"
         text={`Countries in 2020 and 2030`}
       />
-      <img
-        src={'http://ntd.artrabbit.studio/static/circle-graph.png'}
-        alt="circle graph"
-      />
+
+      {countryData && <BarChart data={Object.values(countryData.data)} />}
 
       <SectionTitle
         headline="Timeline"
