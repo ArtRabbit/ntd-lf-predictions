@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     height: '100%',
     zIndex: 1,
-    backgroundImage: 'linear-gradient(to bottom, #9b66ff, #2600ae)',
+    backgroundImage: 'linear-gradient(to bottom, #dedede, #000000)',
     pointerEvents: 'none',
     opacity: 0,
     transition: 'opaciy 0.2s ease-in-out',
@@ -124,9 +124,9 @@ const Home = (props) => {
   const WelcomeScreen = () => {
     return (
       <HeadWithInputs
-        title="Lymphatic filariasis Prediction Maps"
+        title="Lymphatic filariasis Projections"
         text={
-          `Welcome to the NTD Modelling Prediction Maps.
+          `Welcome to the NTD Modelling Projections.
                     The predictions in this website provide guidance on
                     the impact of more frequent, longer, or higher
                     coverage treatment would have on timelines to
@@ -176,7 +176,6 @@ const Home = (props) => {
           <DiveDeeper
             title="Dive deeper"
             links={[
-              { to: '/about-lf', name: 'MORE ABOUT LF' },
               { to: '/trends', name: 'TRENDS' },
               { to: '/hotspots', name: 'HOTSPOTS' },
             ]}

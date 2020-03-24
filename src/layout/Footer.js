@@ -74,7 +74,7 @@ const Footer = (props) => {
               <Typography variant="h6" component="h6" className={classes.headline} >Further information</Typography>
 
               <ul className={classes.menu}>
-                <Typography component="li" variant="body2"><Link component={RouterLink} to="/about" color="inherit">About</Link></Typography>
+                <Typography component="li" variant="body2"><Link component={RouterLink} to="/about-lf" color="inherit">About</Link></Typography>
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/data" color="inherit">Data</Link></Typography>
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/methodology" color="inherit">Methodology</Link></Typography>
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/ntds" color="inherit">NTDs</Link></Typography>
