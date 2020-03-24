@@ -190,7 +190,16 @@ const Simulator = props => {
       }
     }
   }
-
+  const queryString = window.location.search
+  const urlParams = new URLSearchParams(queryString)
+  const basePrevalance = urlParams.get('base_prev') // endemicity from URL
+  useEffect(() => {
+    if (basePrevalance)
+      setSimParams({
+        ...simParams,
+        endemicity: parseInt(basePrevalance),
+      })
+  })
   return (
     <Layout>
       <HeadWithInputs
@@ -198,9 +207,11 @@ const Simulator = props => {
         disableInputs={true}
         title="Lympahtic filariasis Prevalence Simulator"
       />
+      {/*       {props.location.search}
+      {window.location.search} */}
 
       <Grid container spacing={4}>
-        <Grid item md={8} xs={12} className={classes.contentLeftColumn}>
+        <Grid item md={6} xs={12} className={classes.contentLeftColumn}>
           <Typography className={classes.title} variant="h5" component="h2">
             Prevalence over time
           </Typography>
@@ -221,54 +232,40 @@ const Simulator = props => {
             </AppBar>
             <TabPanel value={tabIndex} index={0}>
               Scenario 1
-              <div style={{ overflow: 'hidden', height: '800px' }}>
+              <div style={{ overflow: 'hidden', height: '400px' }}>
                 {JSON.stringify(scenarioResults[0])}
               </div>
             </TabPanel>
             <TabPanel value={tabIndex} index={1}>
               Scenario 2
-              <div style={{ overflow: 'hidden', height: '800px' }}>
+              <div style={{ overflow: 'hidden', height: '400px' }}>
                 {JSON.stringify(scenarioResults[1])}
               </div>
             </TabPanel>
             <TabPanel value={tabIndex} index={2}>
               Scenario 3
-              <div style={{ overflow: 'hidden', height: '800px' }}>
+              <div style={{ overflow: 'hidden', height: '400px' }}>
                 {JSON.stringify(scenarioResults[2])}
               </div>
             </TabPanel>
             <TabPanel value={tabIndex} index={3}>
               Scenario 4
-              <div style={{ overflow: 'hidden', height: '800px' }}>
+              <div style={{ overflow: 'hidden', height: '400px' }}>
                 {JSON.stringify(scenarioResults[3])}
               </div>
             </TabPanel>
             <TabPanel value={tabIndex} index={4}>
               Scenario 5
-              <div style={{ overflow: 'hidden', height: '800px' }}>
+              <div style={{ overflow: 'hidden', height: '400px' }}>
                 {JSON.stringify(scenarioResults[4])}
               </div>
             </TabPanel>
           </div>
         </Grid>
-        <Grid item md={4} xs={12} className={classes.contentRightColumn}>
+        <Grid item md={3} xs={12} className={classes.contentRightColumn}>
           <Typography className={classes.title} variant="h5" component="h2">
             Settings
           </Typography>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-helper-label">
-              Species
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              value={simParams.species}
-              onChange={handleInputChange}
-            >
-              <MenuItem value={0}>Anopheles</MenuItem>
-              <MenuItem value={1}>Culex</MenuItem>
-            </Select>
-          </FormControl>
           <FormControl className={classes.formControl}>
             <Typography gutterBottom>Base prevalence</Typography>
             <InputLabel htmlFor="endemicity"></InputLabel>
@@ -284,12 +281,12 @@ const Simulator = props => {
               valueLabelDisplay="auto"
               aria-labelledby="slider"
             />
-            <p style={{ marginBottom: 0 }}>
+            {/*             <p style={{ marginBottom: 0 }}>
               The mf prevalence in the population before intervention occurs.
               Due to the stochastic nature of the model this is a prevalence
               averaged over many independent runs and so should be treated as an
               approximation only.{' '}
-            </p>
+            </p> */}
           </FormControl>
           <FormControl className={classes.formControl}>
             <Typography gutterBottom>Number of runs</Typography>
@@ -306,7 +303,64 @@ const Simulator = props => {
               aria-labelledby="slider"
             />
           </FormControl>
-
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-helper-label">
+              Species
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              value={simParams.species}
+              onChange={handleInputChange}
+            >
+              <MenuItem value={0}>Anopheles</MenuItem>
+              <MenuItem value={1}>Culex</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <Typography gutterBottom>Vector: Bed Net Coverage (%)</Typography>
+            <InputLabel htmlFor="covN"></InputLabel>
+            <Slider
+              value={simParams.covN}
+              id="covN"
+              min={1}
+              step={1}
+              max={100}
+              onChange={(event, newValue) => {
+                handleSliderChanges(newValue, 'covN')
+              }}
+              valueLabelDisplay="auto"
+              aria-labelledby="slider"
+            />
+            {/*             <p style={{ marginBottom: 0 }}>
+              Bed nets are assumed to have been distributed at the start of
+              intervention and are assumed to be effective for the entire
+              lifetime of the intervention campaign.
+            </p> */}
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <Typography gutterBottom>
+              Vector: Insecticide Coverage (%)
+            </Typography>
+            <InputLabel htmlFor="v_to_hR"></InputLabel>
+            <Slider
+              value={simParams.v_to_hR}
+              id="v_to_hR"
+              min={1}
+              step={1}
+              max={100}
+              onChange={(event, newValue) => {
+                handleSliderChanges(newValue, 'v_to_hR')
+              }}
+              valueLabelDisplay="auto"
+              aria-labelledby="slider"
+            />
+            {/*             <p style={{ marginBottom: 0 }}>
+              Insecticide is assumed to reduce the vector to host ratio only.
+            </p> */}
+          </FormControl>
+        </Grid>
+        <Grid item md={3} xs={12} className={classes.contentRightColumn}>
           <Typography className={classes.title} variant="h5" component="h2">
             Intervention
           </Typography>
@@ -358,69 +412,6 @@ const Simulator = props => {
               <MenuItem value={5}>custom</MenuItem>
             </Select>
           </FormControl>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>Systemic adherence</Typography>
-            <InputLabel htmlFor="rho"></InputLabel>
-            <Slider
-              value={simParams.rho}
-              min={1}
-              step={1}
-              max={100}
-              onChange={(event, newValue) => {
-                handleSliderChanges(newValue, 'rho')
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-            <p style={{ marginBottom: 0 }}>
-              Controls how randomly coverage is applied. For 0, coverage is
-              completely random. For 1, the same individuals are always treated.
-            </p>
-          </FormControl>
-
-          <Typography className={classes.title} variant="h5" component="h2">
-            Vector Control
-          </Typography>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>Bed Net Coverage (%)</Typography>
-            <InputLabel htmlFor="covN"></InputLabel>
-            <Slider
-              value={simParams.covN}
-              id="covN"
-              min={1}
-              step={1}
-              max={100}
-              onChange={(event, newValue) => {
-                handleSliderChanges(newValue, 'covN')
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-            <p style={{ marginBottom: 0 }}>
-              Bed nets are assumed to have been distributed at the start of
-              intervention and are assumed to be effective for the entire
-              lifetime of the intervention campaign.
-            </p>
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Typography gutterBottom>Insecticide Coverage (%)</Typography>
-            <InputLabel htmlFor="v_to_hR"></InputLabel>
-            <Slider
-              value={simParams.v_to_hR}
-              id="v_to_hR"
-              min={1}
-              step={1}
-              max={100}
-              onChange={(event, newValue) => {
-                handleSliderChanges(newValue, 'v_to_hR')
-              }}
-              valueLabelDisplay="auto"
-              aria-labelledby="slider"
-            />
-            <p style={{ marginBottom: 0 }}>
-              Insecticide is assumed to reduce the vector to host ratio only.
-            </p>
-          </FormControl>
           <div className={classes.buttons}>
             <Button
               variant="contained"
@@ -443,6 +434,27 @@ const Simulator = props => {
             <p style={{ textAlign: 'center' }}>{simulationProgress}%</p>
           )}
         </Grid>
+      </Grid>
+      <Grid item md={6} xs={12} className={classes.contentRightColumn}>
+        <FormControl className={classes.formControl}>
+          <Typography gutterBottom>Systemic adherence</Typography>
+          <InputLabel htmlFor="rho"></InputLabel>
+          <Slider
+            value={simParams.rho}
+            min={1}
+            step={1}
+            max={100}
+            onChange={(event, newValue) => {
+              handleSliderChanges(newValue, 'rho')
+            }}
+            valueLabelDisplay="auto"
+            aria-labelledby="slider"
+          />
+          {/*             <p style={{ marginBottom: 0 }}>
+              Controls how randomly coverage is applied. For 0, coverage is
+              completely random. For 1, the same individuals are always treated.
+            </p> */}
+        </FormControl>
       </Grid>
 
       <DiveDeeper
