@@ -39,9 +39,11 @@ import {
   REGIME_NO_MDA,
 } from '../constants'
 
-const steps3 = ['#6236fd', '#ededed', '#fe4c73']
-const steps5 = ['#6236fd', '#b793f7', '#ededed', '#fea4ae', '#fe4c73']
-const steps7 = [
+const seq5 = ['#fe4c73', '#ff8597', '#ffb1ba', '#ffd9dc', '#ffffff']
+
+const div3 = ['#6236fd', '#ededed', '#fe4c73']
+const div5 = ['#6236fd', '#b793f7', '#ededed', '#fea4ae', '#fe4c73']
+const div7 = [
   '#6236fd',
   '#a075fa',
   '#cbb1f5',
@@ -62,10 +64,15 @@ const groupProps = (obj, pattern) =>
 
 const roundPrevalence = p => round(p * 100, 2)
 
-const buildScales = stats => {
-  const prev = scaleSequential(interpolateReds)
+const buildScales = ({ data, stats }) => {
+  //   const prev = scaleSequential(interpolateReds)
+  //     .domain([0, stats.prevalence.max])
+  //     .nice(5)
+
+  const prev = scaleLinear()
     .domain([0, stats.prevalence.max])
-    .nice(5)
+    .range(['#fff', '#FE4C73'])
+    .nice()
 
   const mp = max(stats.performance.map(x => Math.abs(x)))
 
@@ -446,19 +453,19 @@ class DataAPI {
 
   get countryScales() {
     const countries = this.countryData
-    if (countries) return buildScales(countries.stats)
+    if (countries) return buildScales(countries)
     return defaultScales
   }
 
   get stateScales() {
     const states = this.stateData
-    if (states) return buildScales(states.stats)
+    if (states) return buildScales(states)
     return defaultScales
   }
 
   get iuScales() {
     const IUs = this.iuData
-    if (IUs) return buildScales(IUs.stats)
+    if (IUs) return buildScales(IUs)
     return defaultScales
   }
 

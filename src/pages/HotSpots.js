@@ -31,6 +31,7 @@ const HotSpots = props => {
     countryFeatures,
     stateFeatures,
     stateByCountryData,
+    stateScales,
   } = useDataAPI()
 
   return (
@@ -58,6 +59,7 @@ const HotSpots = props => {
           stateFeatures={stateFeatures}
           height={720}
           disableZoom={true}
+          colorScale={stateScales.prev}
         />
       </div>
 
