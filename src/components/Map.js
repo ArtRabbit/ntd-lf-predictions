@@ -28,6 +28,9 @@ const useStyles = makeStyles({
     height: '100%',
     minHeight: 500,
   },
+  popup: {
+    zIndex: 10000,
+  },
 })
 
 function Map({
@@ -380,6 +383,7 @@ function Map({
             closeOnClick={false}
             onClose={handleClose}
             anchor="top"
+            className={classes.popup}
           >
             {renderPopup(feature)}
           </Popup>
