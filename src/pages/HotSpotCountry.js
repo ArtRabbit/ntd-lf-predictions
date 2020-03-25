@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState } from 'react'
 import { observer } from 'mobx-react'
 
 import { Layout } from '../layout'
@@ -31,8 +31,10 @@ const HotSpotCountry = props => {
     stateByCountryData,
     stateScales,
   } = useDataAPI()
+  const [selectedSlope, setSelectedSlope] = useState()
 
   const { country } = useUIState()
+
 
   return (
     <Layout>
@@ -87,21 +89,46 @@ const HotSpotCountry = props => {
       />
 
       <Box className={classes.chartContainer}>
+          {selectedSlope && stateByCountryData && Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
+              if ( key === selectedSlope) {
+                return (
+                  <Box key={key} p={1}>
+                    <Typography variant="caption">{key}</Typography>
+                    <SlopeChart
+                      data={Object.values(data)}
+                      width={250}
+                      height={300}
+                      start={2015}
+                      end={2030}
+                      name={key}
+                      showAxis={true}
+                      showInfo={true}
+                      clipDomain={true}
+                      svgPadding={[20, 16, 20, 16]}
+                    />
+                  </Box>
+                  )
+                } 
+                return null
+            })}
         <PanelContainer>
           {stateByCountryData &&
             Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
+              //TODO: get actual name from somewhere
               return (
-                <Box key={key} p={1}>
+                <Box key={key}>
                   <SlopeChart
                     data={Object.values(data)}
                     width={40}
                     height={300}
                     start={2015}
-                    end={2031}
+                    end={2030}
+                    name={key}
+                    setSelectedSlope={setSelectedSlope}
+                    countryKey={key}
                     clipDomain={false}
                     svgPadding={[0, 0, 0, 0]}
                   />
-                  <Typography variant="caption">{key}</Typography>
                 </Box>
               )
             })}
