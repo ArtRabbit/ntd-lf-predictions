@@ -30,7 +30,7 @@ const HotSpotCountry = props => {
     iuFeatures,
     selectedCountry,
     stateByCountryData,
-    stateScales,
+    iuScales,
   } = useDataAPI()
 
   const [selectedSlope, setSelectedSlope] = useState()
@@ -69,7 +69,7 @@ const HotSpotCountry = props => {
           height={720}
           disableZoom={true}
           country={country}
-          colorScale={stateScales.prev}
+          colorScale={iuScales.prev}
         />
       </div>
 
