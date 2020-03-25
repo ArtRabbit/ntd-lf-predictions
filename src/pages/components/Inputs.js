@@ -77,7 +77,7 @@ const Inputs = props => {
   const classes = useStyles()
 
   const { countrySuggestions, regimes } = useDataAPI()
-  const { regime, setRegime, country, infoTooltip, setInfoTooltip } = useUIState()
+  const { regime, setRegime, country, welcomeScren, infoTooltip, setInfoTooltip } = useUIState()
 
   const history = useHistory()
   const matchSection = useRouteMatch('/:section')
@@ -85,9 +85,9 @@ const Inputs = props => {
   const handleCountryChange = (event, value) => {
     let section = 'trends'
     if (matchSection) {
-       section = matchSection.params.section
+      section = matchSection.params.section
     }
-      // country has been selected // are we already on a page that can show country data
+    // country has been selected // are we already on a page that can show country data
     if (section !== 'trends' && section !== 'hotspots') {
       section = 'trends'
     }
@@ -97,8 +97,8 @@ const Inputs = props => {
     } else {
       history.push({ pathname: `/${section}` })
     }
-    
-  
+
+
   }
 
   const hideTooltip = (event) => {
@@ -140,7 +140,7 @@ const Inputs = props => {
             </MenuItem>
           ))}
         </Select>
-        {infoTooltip &&
+        {infoTooltip && !welcomeScren &&
           <div className={classes.largeTooltip} onClick={(event) => hideTooltip(event)}>
             <Typography color="inherit" component="p">
               Show how other treatment scenarios could impact populations at risk.

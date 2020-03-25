@@ -58,16 +58,16 @@ const useStyles = makeStyles(theme => ({
     */
   },
   overlay: {
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     width: '100%',
     height: '100%',
-    zIndex: 1,
+    zIndex: 11,
     backgroundImage: 'linear-gradient(to bottom, #dedede, #000000)',
     pointerEvents: 'none',
     opacity: 0,
-    transition: 'opaciy 0.2s ease-in-out',
+    transition: 'opaciy 0.5s ease-in-out',
     '&.welcome': {
       opacity: 0.2,
       pointerEvents: 'all',
@@ -132,7 +132,7 @@ const Home = (props) => {
         actionLabel={"Enter"}
         action={showIntro}
         transparent={true}
-        classAdd="no-clear"
+        disableClear={true}
       />
     )
   };
@@ -147,7 +147,7 @@ const Home = (props) => {
         at risk, and dive deeper to explore trends in countries, regions and implementation units.`}
         actionLabel={'PLAY SCENARIO'}
         action={playScenario}
-        classAdd="no-clear"
+        disableClear={true}
       />
     )
   };

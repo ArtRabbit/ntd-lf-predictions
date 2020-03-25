@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 
@@ -7,16 +7,9 @@ import Inputs from './Inputs'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    '&:after': {
-      content: `''`,
-      display: 'table',
-      clear: 'both'
-    },
-    '&.no-clear': {
-      '&:after': {
-        display: 'none'
-      }
-    }
+  },
+  clear: {
+    clear: 'both',
   },
   head: {
     textAlign: 'left',
@@ -50,12 +43,11 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const HeadWithInputs = ({ title, text, subTitle, transparent, actionLabel, action, disableInputs, classAdd }) => {
+const HeadWithInputs = ({ title, text, subTitle, transparent, actionLabel, action, disableInputs, classAdd, disableClear }) => {
   const classes = useStyles()
-  classAdd = classAdd ? classAdd : '';
 
   return (
-    <div className={`${classes.root} ${classAdd}`}>
+    <Fragment >
       <Grid item md={6} xs={12} className={classes.inputs}>
         {disableInputs !== true && <Inputs />}
       </Grid>
@@ -70,7 +62,8 @@ const HeadWithInputs = ({ title, text, subTitle, transparent, actionLabel, actio
           classAdd={classAdd}
         />
       </Grid>
-    </div>
+      {disableClear !== true && <div className={classes.clear}></div>}
+    </Fragment>
   )
 }
 export default HeadWithInputs
