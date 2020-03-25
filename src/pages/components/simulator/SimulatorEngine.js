@@ -395,8 +395,8 @@ export var Model = function(n) {
     // console.log(simControler.mdaObj)
     var numMDA = simControler.mdaObj.time.length
     var nextMDA = 1200 + simControler.mdaObj.time[mdaRound]
-    params.covMDA = simControler.mdaObj.coverage[mdaRound]
-    params.rho = simControler.mdaObj.adherence[mdaRound]
+    params.covMDA = simControler.mdaObj.coverage[mdaRound] / 100
+    params.rho = simControler.mdaObj.adherence[mdaRound] / 100
     params.sigma = params.rho / (1 - params.rho)
     params.u0 =
       -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma)
@@ -482,8 +482,8 @@ export var Model = function(n) {
           // update the mda round and the time for the next one
           mdaRound += 1
           nextMDA = 1200 + simControler.mdaObj.time[mdaRound]
-          params.covMDA = simControler.mdaObj.coverage[mdaRound]
-          params.rho = simControler.mdaObj.adherence[mdaRound]
+          params.covMDA = simControler.mdaObj.coverage[mdaRound] / 100
+          params.rho = simControler.mdaObj.adherence[mdaRound] / 100
           params.sigma = params.rho / (1 - params.rho)
           params.u0 =
             -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma)

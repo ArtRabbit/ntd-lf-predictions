@@ -33,7 +33,7 @@ const fit = (feature, vp) => {
     viewport: {
       longitude,
       latitude,
-      zoom,
+      zoom: feature.source !== 'africa-iu' ? zoom : vp.zoom,
     },
   }
 }
