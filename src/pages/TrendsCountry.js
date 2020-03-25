@@ -49,6 +49,7 @@ const TrendsCountry = props => {
     countryFeatures,
     stateFeatures,
     stateData,
+    stateScales,
   } = useDataAPI()
 
   const settingsClickDemo = event => {
@@ -65,44 +66,33 @@ const TrendsCountry = props => {
         text={`The LF projection trends take output of the model and highlight different possible outcomes developed over time. `}
       />
 
-      <SectionTitle
-        top={false}
-        headline=" "
-        text=" "
-      >
-
-      <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
-        <Box variant="body1">
-          <Typography component="p">
-            Population xxx
-            <br />
-            50k people affected in 2030
-            <br />3 districts with high prevalence
-          </Typography>
-        </Box>
-      </ExpandableInfo>
-
+      <SectionTitle top={false} headline=" " text=" ">
+        <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
+          <Box variant="body1">
+            <Typography component="p">
+              Population xxx
+              <br />
+              50k people affected in 2030
+              <br />3 districts with high prevalence
+            </Typography>
+          </Box>
+        </ExpandableInfo>
       </SectionTitle>
-
 
       <SectionTitle
         top={true}
         headline="Intervention needs"
         text={`Compare the population in need of intervention in 2020 with the projections for 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
-      >
-
-      </SectionTitle>
+      ></SectionTitle>
       <Box className={classes.chartContainer}>
-      {stateData && <BarChart data={Object.values(stateData.data)} />}
+        {stateData && <BarChart data={Object.values(stateData.data)} />}
       </Box>
-      
+
       <SectionTitle
         top={false}
         headline="Trend graph"
         text={`Review historic prevalence and probable eradication over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
-      >
-
-      </SectionTitle>
+      ></SectionTitle>
       <Box className={classes.chartContainer}>
         {stateData && <Timeline dataAndStats={stateData} />}
       </Box>
@@ -172,9 +162,7 @@ const TrendsCountry = props => {
         top={false}
         headline="Trend Map"
         text={`View good and bad performance by district and compare prevalence over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
-      >
-
-      </SectionTitle>
+      ></SectionTitle>
 
       <div
         style={{
@@ -185,6 +173,7 @@ const TrendsCountry = props => {
         <Map
           countryFeatures={countryFeatures}
           stateFeatures={stateFeatures}
+          colorScale={stateScales.perf}
           height={720}
           disableZoom={true}
           country={country}
