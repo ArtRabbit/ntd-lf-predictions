@@ -1,29 +1,29 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Box, Typography, Grid } from '@material-ui/core'
+import { values, sortBy, take } from 'lodash'
+
+import { useDataAPI, useUIState } from '../hooks/stateHooks'
 
 import { Layout } from '../layout'
-import { makeStyles } from '@material-ui/core/styles'
-import { useDataAPI, useUIState } from '../hooks/stateHooks'
 import ExpandableInfoStandalone from './components/ExpandableInfoStandalone'
-
-import { Box, Typography, Grid } from '@material-ui/core'
-import Map from '../components/Map'
-import SlopeChart from '../components/SlopeChart'
 import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
 import SectionTitle from './components/SectionTitle'
 
+import SlopeChart from '../components/SlopeChart'
+import Map from '../components/Map'
+import LineChart from '../components/LineChart'
 
 const useStyles = makeStyles(theme => ({
-
   chartContainer: {
     position: 'relative',
-    padding: 0
+    padding: 0,
   },
   slopeContainer: {
-    marginTop: 38
-
-  }
+    marginTop: 38,
+  },
 }))
 
 const PanelContainer = ({ children }) => (
@@ -41,11 +41,12 @@ const HotSpotCountry = props => {
     iuFeatures,
     selectedCountry,
     stateByCountryData,
+    stateData,
     iuScales,
   } = useDataAPI()
 
   const [selectedSlope, setSelectedSlope] = useState()
-  const showDetail = selectedSlope && stateByCountryData;
+  const showDetail = selectedSlope && stateByCountryData
 
   const { country } = useUIState()
 
@@ -90,10 +91,30 @@ const HotSpotCountry = props => {
           headline="Top affected districts"
           text={`Get a detailed view of top affected districts and their projected development over time. To see alternative outcomes, change your treatment scenario in the top menu.`}
         />
-        <img
-          src={'http://ntd.artrabbit.studio/static/curve-rank.png'}
-          alt="rank graph"
-        />
+        {stateData &&
+          take(
+            sortBy(values(stateData.data), 'performance').map(state => {
+              const { id, name, performance } = state
+              return (
+                <Box key={id} p={1} mb={1} className={classes.chartContainer}>
+                  <Typography variant="body2" component="p">
+                    <strong>{name}</strong>
+                  </Typography>
+                  <Typography variant="body2" component="p" color="primary">
+                    <strong>{`${-performance}% drop in the prevalence of LF`}</strong>
+                  </Typography>
+                  <LineChart
+                    data={[state]}
+                    width={800}
+                    height={100}
+                    yDomain={30}
+                    clipDomain
+                  />
+                </Box>
+              )
+            }),
+            4
+          )}
       </Box>
 
       <SectionTitle
@@ -102,55 +123,65 @@ const HotSpotCountry = props => {
       />
 
       <Grid container spacing={0}>
-        {showDetail &&
+        {showDetail && (
           <Grid item md={3} xs={12}>
-            {Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
-            if (key === selectedSlope) {
-              return (
-                <Box key={key}>
-                  <Typography variant="body2"><strong>{key}</strong></Typography>
-                  <SlopeChart
-                    data={Object.values(data)}
-                    width={250}
-                    height={300}
-                    start={2015}
-                    end={2030}
-                    name={key}
-                    showAxis={true}
-                    showInfo={true}
-                    clipDomain={true}
-                    svgPadding={[20, 16, 20, 16]}
-                  />
-                </Box>
-              )
-            }
-            return null
-          })}
+            {Object.entries(stateByCountryData).map(
+              ([key, { data, stats }]) => {
+                if (key === selectedSlope) {
+                  return (
+                    <Box key={key}>
+                      <Typography variant="body2">
+                        <strong>{key}</strong>
+                      </Typography>
+                      <SlopeChart
+                        data={Object.values(data)}
+                        width={250}
+                        height={300}
+                        start={2015}
+                        end={2030}
+                        name={key}
+                        showAxis={true}
+                        showInfo={true}
+                        clipDomain={true}
+                        svgPadding={[20, 16, 20, 16]}
+                      />
+                    </Box>
+                  )
+                }
+                return null
+              }
+            )}
           </Grid>
-        }
-        <Grid item md={showDetail ? 9 : 12} xs={12} className={classes.chartContainer}>
-
+        )}
+        <Grid
+          item
+          md={showDetail ? 9 : 12}
+          xs={12}
+          className={classes.chartContainer}
+        >
           <PanelContainer>
             {stateByCountryData &&
-              Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
-                //TODO: get actual name from somewhere
-                return (
-                  <Box key={key} className={classes.slopeContainer}>
-                    <SlopeChart
-                      data={Object.values(data)}
-                      width={40}
-                      height={300}
-                      start={2015}
-                      end={2030}
-                      name={key}
-                      setSelectedSlope={setSelectedSlope}
-                      countryKey={key}
-                      clipDomain={false}
-                      svgPadding={[20, 0, 20, 0]}
-                    />
-                  </Box>
-                )
-              })}
+              Object.entries(stateByCountryData).map(
+                ([key, { data, stats }]) => {
+                  //TODO: get actual name from somewhere
+                  return (
+                    <Box key={key} className={classes.slopeContainer}>
+                      <SlopeChart
+                        data={Object.values(data)}
+                        width={40}
+                        height={300}
+                        start={2015}
+                        end={2030}
+                        name={key}
+                        setSelectedSlope={setSelectedSlope}
+                        countryKey={key}
+                        clipDomain={false}
+                        svgPadding={[20, 0, 20, 0]}
+                      />
+                    </Box>
+                  )
+                }
+              )}
           </PanelContainer>
         </Grid>
       </Grid>
