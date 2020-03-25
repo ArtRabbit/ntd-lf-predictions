@@ -150,7 +150,6 @@ const useStyles = makeStyles(theme => ({
       backgroundSize: '112px 74px',
       backgroundRepeat: 'no-repeat',
       marginRight: 0,
-
     },
     '& .MuiFormControlLabel-label': {
       fontSize: '1rem',
@@ -247,6 +246,9 @@ const Simulator = props => {
     if (typeof scenarioInputs[tabIndex] != 'undefined') {
       // set input arams if you have them
       setSimParams(scenarioInputs[tabIndex])
+      setSimMDAtime(scenarioMDAs[tabIndex].time)
+      setSimMDAcoverage(scenarioMDAs[tabIndex].coverage)
+      setSimMDAadherence(scenarioMDAs[tabIndex].adherence)
     }
   }, [tabIndex])
 
@@ -272,6 +274,7 @@ const Simulator = props => {
   const [simulationProgress, setSimulationProgress] = useState(0)
   const [scenarioInputs, setScenarioInputs] = useState([])
   const [scenarioResults, setScenarioResults] = useState([])
+  const [scenarioMDAs, setScenarioMDAs] = useState([])
   const simulatorCallback = (resultObject, newScenario) => {
     if (typeof resultObject == 'number') {
       setSimulationProgress(resultObject)
@@ -284,6 +287,14 @@ const Simulator = props => {
         setScenarioInputs([
           ...scenarioInputs,
           JSON.parse(resultObject).params.inputs,
+        ])
+        setScenarioMDAs([
+          ...scenarioMDAs,
+          {
+            time: [...simMDAtime],
+            coverage: [...simMDAcoverage],
+            adherence: [...simMDAadherence],
+          },
         ])
       } else {
         //        console.log('tabIndex', tabIndex)
@@ -303,6 +314,17 @@ const Simulator = props => {
         inputsItem = JSON.parse(resultObject).params.inputs
         scenarioInputsNew[correctTabIndex] = inputsItem
         setScenarioInputs(scenarioInputsNew)
+
+        let scenarioMDAsNew = [...scenarioMDAs]
+        let MDAsItem = scenarioMDAsNew[correctTabIndex]
+        MDAsItem = {
+          time: [...simMDAtime],
+          coverage: [...simMDAcoverage],
+          adherence: [...simMDAadherence],
+        }
+        scenarioMDAsNew[correctTabIndex] = MDAsItem
+
+        setScenarioMDAs(scenarioMDAsNew)
       }
       setSimInProgress(false)
     }
@@ -417,10 +439,19 @@ const Simulator = props => {
               </TabPanel>
             </div>
 
-
-            <ChartSettings title="Settings" buttonText="Update Scenario" action={runCurrentScenario} >
-              <FormControl fullWidth >
-                <FormLabel component="legend" htmlFor="endemicity" className={classes.withSlider}>Base prevalence</FormLabel>
+            <ChartSettings
+              title="Settings"
+              buttonText="Update Scenario"
+              action={runCurrentScenario}
+            >
+              <FormControl fullWidth>
+                <FormLabel
+                  component="legend"
+                  htmlFor="endemicity"
+                  className={classes.withSlider}
+                >
+                  Base prevalence
+                </FormLabel>
                 <Slider
                   value={simParams.endemicity}
                   id="endemicity"
@@ -444,8 +475,14 @@ const Simulator = props => {
               approximation only.{' '}
             </p> */}
               </FormControl>
-              <FormControl fullWidth >
-                <FormLabel component="legend" htmlFor="runs" className={classes.withSlider}>Number of runs</FormLabel>
+              <FormControl fullWidth>
+                <FormLabel
+                  component="legend"
+                  htmlFor="runs"
+                  className={classes.withSlider}
+                >
+                  Number of runs
+                </FormLabel>
                 <Slider
                   value={simParams.runs}
                   min={1}
@@ -462,8 +499,7 @@ const Simulator = props => {
                   valueLabelDisplay="on"
                 />
               </FormControl>
-              <FormControl fullWidth className={classes.formControlSelect} >
-
+              <FormControl fullWidth className={classes.formControlSelect}>
                 <FormLabel component="legend">Type of mosquito</FormLabel>
                 <RadioGroup
                   className={classes.imageOptions}
@@ -492,8 +528,14 @@ const Simulator = props => {
                   />
                 </RadioGroup>
               </FormControl>
-              <FormControl fullWidth >
-                <FormLabel component="legend" htmlFor="covN" className={classes.withSlider}>Vector: Bed Net Coverage (%)</FormLabel>
+              <FormControl fullWidth>
+                <FormLabel
+                  component="legend"
+                  htmlFor="covN"
+                  className={classes.withSlider}
+                >
+                  Vector: Bed Net Coverage (%)
+                </FormLabel>
                 <Slider
                   value={simParams.covN}
                   id="covN"
@@ -516,8 +558,14 @@ const Simulator = props => {
               lifetime of the intervention campaign.
             </p> */}
               </FormControl>
-              <FormControl fullWidth >
-                <FormLabel component="legend" htmlFor="v_to_hR" className={classes.withSlider}>Vector: Insecticide Coverage (%)</FormLabel>
+              <FormControl fullWidth>
+                <FormLabel
+                  component="legend"
+                  htmlFor="v_to_hR"
+                  className={classes.withSlider}
+                >
+                  Vector: Insecticide Coverage (%)
+                </FormLabel>
                 <Slider
                   value={simParams.v_to_hR}
                   id="v_to_hR"
@@ -688,7 +736,13 @@ const Simulator = props => {
               MDA round #{curMDARound + 1}
             </Typography>
             <FormControl fullWidth className={classes.formControl}>
-              <FormLabel component="legend" htmlFor="rho" className={classes.withSlider}>Coverage</FormLabel>
+              <FormLabel
+                component="legend"
+                htmlFor="rho"
+                className={classes.withSlider}
+              >
+                Coverage
+              </FormLabel>
               <Slider
                 value={simMDAcoverage[curMDARound]}
                 min={1}
@@ -712,7 +766,13 @@ const Simulator = props => {
             </p> */}
             </FormControl>
             <FormControl fullWidth className={classes.formControl}>
-              <FormLabel component="legend" htmlFor="rho" className={classes.withSlider}>Systemic adherence</FormLabel>
+              <FormLabel
+                component="legend"
+                htmlFor="rho"
+                className={classes.withSlider}
+              >
+                Systemic adherence
+              </FormLabel>
               <Slider
                 value={simMDAadherence[curMDARound]}
                 min={0}
