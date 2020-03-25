@@ -11,7 +11,7 @@ import HeadWithInputs from './components/HeadWithInputs'
 import Inputs from './components/Inputs'
 import DiveDeeper from './components/DiveDeeper'
 import ReadMore from './components/ReadMore'
-import ExpandableInfo from './components/ExpandableInfo'
+import ExpandableInfoStandalone from './components/ExpandableInfoStandalone'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
@@ -66,18 +66,16 @@ const TrendsCountry = props => {
         text={`The LF projection trends take output of the model and highlight different possible outcomes developed over time. `}
       />
 
-      <SectionTitle top={false} headline=" " text=" ">
-        <ExpandableInfo title={`${selectedCountry?.name || '...'} facts`}>
-          <Box variant="body1">
-            <Typography component="p">
-              Population xxx
-              <br />
-              50k people affected in 2030
-              <br />3 districts with high prevalence
-            </Typography>
-          </Box>
-        </ExpandableInfo>
-      </SectionTitle>
+      <ExpandableInfoStandalone
+        title={`${selectedCountry?.name || '...'} facts`}
+      >
+        <Typography component="p">
+          Population xxx
+          <br />
+          50k people affected in 2030
+          <br />3 districts with high prevalence
+        </Typography>
+      </ExpandableInfoStandalone>
 
       <SectionTitle
         top={true}
