@@ -34,6 +34,7 @@ function Map({
   country,
   countryFeatures,
   stateFeatures,
+  iuFeatures,
   populationFeatures,
   width,
   height,
@@ -63,6 +64,7 @@ function Map({
     ...(!!countryFeatures ? ['fill-countries'] : []),
     // the states layer is only active if a country is selected
     ...(!!stateFeatures && country ? ['fill-states'] : []),
+    ...(!!iuFeatures && country ? ['fill-iu'] : []),
   ]
 
   const colorProp = trendMode ? 'color-perf' : `color-${year}`
@@ -112,8 +114,7 @@ function Map({
   }
 
   const selectCountryClickHotspots = countryId => {
-
-    if ( match ) {
+    if (match) {
       if (match.params.section != 'trends') {
         match.params.section = 'hotspots'
       }
@@ -125,7 +126,7 @@ function Map({
   }
 
   const selectCountryClickTrends = countryId => {
-    if ( match ) {
+    if (match) {
       if (match.params.section != 'trends') {
         match.params.section = 'trends'
       }
@@ -183,6 +184,7 @@ function Map({
         onClick={handleClick}
         onHover={handleHover}
       >
+        {/* Country features */}
         {countryFeatures && (
           <Source id="africa-countries" type="geojson" data={countryFeatures}>
             <Layer
@@ -229,6 +231,7 @@ function Map({
           </Source>
         )}
 
+        {/* State features */}
         {stateFeatures && (
           <Source id="africa-states" type="geojson" data={stateFeatures}>
             <Layer
@@ -270,6 +273,49 @@ function Map({
           </Source>
         )}
 
+        {/* IU features */}
+        {iuFeatures && (
+          <Source id="africa-iu" type="geojson" data={iuFeatures}>
+            <Layer
+              id="fill-iu"
+              beforeId="admin-0-boundary"
+              filter={['has', colorProp]}
+              type="fill"
+              paint={{
+                'fill-color': [
+                  'coalesce',
+                  ['get', colorProp],
+                  // hide shape if no data available
+                  'rgba(0,0,0,0)',
+                ],
+                'fill-outline-color': [
+                  'case',
+                  ['==', ['get', 'id'], feature?.properties.id || null],
+                  'rgba(145, 145, 145, 1)',
+                  'rgba(145, 145, 145, 0.3)',
+                ],
+              }}
+            />
+            <Layer
+              id="hover-iu"
+              source="africa-iu"
+              type="line"
+              filter={['has', colorProp]}
+              layout={{ 'line-join': 'bevel' }}
+              paint={{
+                'line-color': [
+                  'case',
+                  ['==', ['get', 'id'], featureHover?.properties.id || null],
+                  '#6236FF',
+                  'rgba(0,0,0,0)',
+                ],
+                'line-width': 1,
+              }}
+            />
+          </Source>
+        )}
+
+        {/* Population circles */}
         {populationFeatures && (
           <Source
             id="africa-countries-population"
@@ -297,6 +343,7 @@ function Map({
           </Source>
         )}
 
+        {/* Popup */}
         {feature && (
           <Popup
             latitude={popup[1]}
@@ -343,6 +390,7 @@ function Map({
           </Popup>
         )}
 
+        {/* Tooltip */}
         {featureHover && (
           <Tooltip
             title={`${featureHover.properties.name} ${
@@ -360,6 +408,8 @@ function Map({
             ></span>
           </Tooltip>
         )}
+
+        {/* Legend */}
         {colorScale && (
           <HTMLOverlay
             redraw={() => (

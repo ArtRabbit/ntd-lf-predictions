@@ -1,4 +1,4 @@
-import React, {useState } from 'react'
+import React, { useState } from 'react'
 import { observer } from 'mobx-react'
 
 import { Layout } from '../layout'
@@ -23,18 +23,18 @@ const PanelContainer = ({ children }) => (
 
 const HotSpotCountry = props => {
   const classes = useStyles()
+
   const {
-    stateData,
     countryFeatures,
     stateFeatures,
+    iuFeatures,
     selectedCountry,
     stateByCountryData,
     stateScales,
   } = useDataAPI()
+
   const [selectedSlope, setSelectedSlope] = useState()
-
   const { country } = useUIState()
-
 
   return (
     <Layout>
@@ -65,6 +65,7 @@ const HotSpotCountry = props => {
         <Map
           countryFeatures={countryFeatures}
           stateFeatures={stateFeatures}
+          iuFeatures={iuFeatures}
           height={720}
           disableZoom={true}
           country={country}
@@ -89,28 +90,30 @@ const HotSpotCountry = props => {
       />
 
       <Box className={classes.chartContainer}>
-          {selectedSlope && stateByCountryData && Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
-              if ( key === selectedSlope) {
-                return (
-                  <Box key={key} p={1}>
-                    <Typography variant="caption">{key}</Typography>
-                    <SlopeChart
-                      data={Object.values(data)}
-                      width={250}
-                      height={300}
-                      start={2015}
-                      end={2030}
-                      name={key}
-                      showAxis={true}
-                      showInfo={true}
-                      clipDomain={true}
-                      svgPadding={[20, 16, 20, 16]}
-                    />
-                  </Box>
-                  )
-                } 
-                return null
-            })}
+        {selectedSlope &&
+          stateByCountryData &&
+          Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
+            if (key === selectedSlope) {
+              return (
+                <Box key={key} p={1}>
+                  <Typography variant="caption">{key}</Typography>
+                  <SlopeChart
+                    data={Object.values(data)}
+                    width={250}
+                    height={300}
+                    start={2015}
+                    end={2030}
+                    name={key}
+                    showAxis={true}
+                    showInfo={true}
+                    clipDomain={true}
+                    svgPadding={[20, 16, 20, 16]}
+                  />
+                </Box>
+              )
+            }
+            return null
+          })}
         <PanelContainer>
           {stateByCountryData &&
             Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
