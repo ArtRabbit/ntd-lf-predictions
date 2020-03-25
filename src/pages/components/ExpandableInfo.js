@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 3, 0, 3),
     position: 'absolute',
     top: theme.spacing(4),
-    left: theme.spacing(1),
+    right: theme.spacing(0),
     zIndex: 99,
     [theme.breakpoints.up('md')]: {
       width: 'calc(50% - 16px)'
