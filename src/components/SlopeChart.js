@@ -5,7 +5,7 @@ import { Tooltip } from '@material-ui/core'
 import { first, last, orderBy, flatten, max, find } from 'lodash'
 import { slopeColor } from '../utils'
 
-export default function SlopeChart({
+function SlopeChart({
   data,
   width,
   height,
@@ -101,7 +101,9 @@ export default function SlopeChart({
                 x={-lPad}
                 y={0}
                 textAnchor="left"
-                fontSize="16"
+                fontWeight="700"
+                fill="#6236FF"
+                fontSize="16px"
               >{selectedLabel}</text>
 
             </g>
@@ -255,6 +257,8 @@ export default function SlopeChart({
     </div>
   )
 }
+
+export default SlopeChart
 /*
 <text
 fontSize="12"

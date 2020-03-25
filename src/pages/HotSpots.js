@@ -21,6 +21,10 @@ const useStyles = makeStyles(theme => ({
   chartContainer: {
     position: 'relative',
     padding: 0
+  },
+  slopeContainer: {
+    marginTop: 38
+
   }
 }))
 
@@ -52,15 +56,14 @@ const HotSpots = props => {
       />
 
       <SectionTitle
-        top={true}
+        top={false}
         headline="District hotspots"
         text={`Get an overview of district hotspots and areas of activity in all modelled countries. To see alternative outcomes, change your treatment scenario in the top menu.`}
       />
 
       <div
         style={{
-          borderTop: '1px solid #BDBDBD',
-          borderBottom: '1px solid #BDBDBD',
+          borderTop: '1px solid #e0e0e0',
         }}
       >
         <Map
@@ -83,11 +86,11 @@ const HotSpots = props => {
               const { id, name, performance } = country
               return (
                 <Box key={id} p={1} mb={1} className={classes.chartContainer}>
-                  <Typography variant="h5" component="h5">
-                    {name}
+                  <Typography variant="body2" component="p">
+                    <strong>{name}</strong>
                   </Typography>
-                  <Typography variant="h5" component="h5" color="primary">
-                    {performance}
+                  <Typography variant="body2" component="p" color="primary">
+                    <strong>{`${-performance}% drop in the prevalence of LF`}</strong>
                   </Typography>
                   <LineChart
                     data={[country]}
@@ -115,8 +118,8 @@ const HotSpots = props => {
             {Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
               if (key === selectedSlope) {
                 return (
-                  <Box key={key} p={1}>
-                    <Typography variant="caption">{countryData.data[key].name}</Typography>
+                  <Box key={key}>
+                    <Typography variant="body2"><strong>{countryData.data[key].name}</strong></Typography>
                     <SlopeChart
                       data={Object.values(data)}
                       width={250}
@@ -138,11 +141,11 @@ const HotSpots = props => {
         }
         <Grid item md={showDetail ? 9 : 12} xs={12} className={classes.chartContainer}>
           <PanelContainer>
-
+          
             {stateByCountryData && countryData &&
               Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
                 return (
-                  <Box key={key}>
+                  <Box key={key} className={classes.slopeContainer}>
                     <SlopeChart
                       data={Object.values(data)}
                       width={40}
@@ -153,7 +156,7 @@ const HotSpots = props => {
                       setSelectedSlope={setSelectedSlope}
                       countryKey={key}
                       clipDomain={false}
-                      svgPadding={[20, 0, 0, 0]}
+                      svgPadding={[20, 0, 20, 0]}
                     />
                   </Box>
                 )

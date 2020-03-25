@@ -164,8 +164,8 @@ const TrendsCountry = props => {
 
       <div
         style={{
-          borderTop: '1px solid #BDBDBD',
-          borderBottom: '1px solid #BDBDBD',
+          borderTop: '1px solid #e0e0e0',
+          borderBottom: '1px solid #e0e0e0',
         }}
       >
         <Map

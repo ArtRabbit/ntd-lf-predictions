@@ -33,8 +33,8 @@ import ChartSettings from './components/ChartSettings'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 
-import imgRandom from '../images/Random.svg'
-import imgSame from '../images/Same.svg'
+import imgRandom from '../images/sa-random.svg'
+import imgSame from '../images/sa-same.svg'
 import imgAnopheles from '../images/Anopheles.jpg'
 import imgCulex from '../images/Culex.jpg'
 
@@ -123,7 +123,7 @@ const useStyles = makeStyles(theme => ({
     width: `calc(100% + ${theme.spacing(6)}px)`,
   },
   adherence: {
-    height: 72,
+    height: 110,
     width: '100%',
     backgroundImage: `url(${imgRandom}), url(${imgSame})`,
     backgroundPosition: 'left center, right center',

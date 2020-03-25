@@ -21,6 +21,8 @@ const useStyles = makeStyles({
     width: '60%',
     marginLeft: 'auto',
     marginRight: 'auto',
+    marginBottom: '20px',
+    marginTop:'-15px',
     display: 'block',
   },
   mapWrap: {
@@ -174,12 +176,12 @@ function Map({
 
   const renderPopup = f => {
     const { name, id, performance, endemicity, population } = f.properties
+    
     return (
       <Box display="block" variant="body1" component="div">
         <Typography variant="subtitle1" gutterBottom>
           {name}
         </Typography>
-        <Link href="/trends">Link</Link>
         <div>Prevalence: {feature.properties[`prev-${year}`]} %</div>
         {population && <div>Population: {format(',')(population)}</div>}
         {endemicity && <div>Endemicity: {endemicity}</div>}

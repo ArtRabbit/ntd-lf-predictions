@@ -13,7 +13,18 @@ import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
 import SectionTitle from './components/SectionTitle'
 
-const useStyles = makeStyles(theme => ({}))
+
+const useStyles = makeStyles(theme => ({
+
+  chartContainer: {
+    position: 'relative',
+    padding: 0
+  },
+  slopeContainer: {
+    marginTop: 38
+
+  }
+}))
 
 const PanelContainer = ({ children }) => (
   <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>
@@ -34,6 +45,8 @@ const HotSpotCountry = props => {
   } = useDataAPI()
 
   const [selectedSlope, setSelectedSlope] = useState()
+  const showDetail = selectedSlope && stateByCountryData;
+
   const { country } = useUIState()
 
   return (
@@ -58,8 +71,7 @@ const HotSpotCountry = props => {
 
       <div
         style={{
-          borderTop: '1px solid #BDBDBD',
-          borderBottom: '1px solid #BDBDBD',
+          borderTop: '1px solid #e0e0e0',
         }}
       >
         <Map
@@ -89,14 +101,14 @@ const HotSpotCountry = props => {
         text={`Get a detailed view of the IU performance. See where prevalence is improving, increasing, and what areas are reaching the WHO 1% threshold. To see alternative outcomes, change your treatment scenario in the top menu.`}
       />
 
-      <Box className={classes.chartContainer}>
-        {selectedSlope &&
-          stateByCountryData &&
-          Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
+      <Grid container spacing={0}>
+        {showDetail &&
+          <Grid item md={3} xs={12}>
+            {Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
             if (key === selectedSlope) {
               return (
-                <Box key={key} p={1}>
-                  <Typography variant="caption">{key}</Typography>
+                <Box key={key}>
+                  <Typography variant="body2"><strong>{key}</strong></Typography>
                   <SlopeChart
                     data={Object.values(data)}
                     width={250}
@@ -114,29 +126,34 @@ const HotSpotCountry = props => {
             }
             return null
           })}
-        <PanelContainer>
-          {stateByCountryData &&
-            Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
-              //TODO: get actual name from somewhere
-              return (
-                <Box key={key}>
-                  <SlopeChart
-                    data={Object.values(data)}
-                    width={40}
-                    height={300}
-                    start={2015}
-                    end={2030}
-                    name={key}
-                    setSelectedSlope={setSelectedSlope}
-                    countryKey={key}
-                    clipDomain={false}
-                    svgPadding={[0, 0, 0, 0]}
-                  />
-                </Box>
-              )
-            })}
-        </PanelContainer>
-      </Box>
+          </Grid>
+        }
+        <Grid item md={showDetail ? 9 : 12} xs={12} className={classes.chartContainer}>
+
+          <PanelContainer>
+            {stateByCountryData &&
+              Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
+                //TODO: get actual name from somewhere
+                return (
+                  <Box key={key} className={classes.slopeContainer}>
+                    <SlopeChart
+                      data={Object.values(data)}
+                      width={40}
+                      height={300}
+                      start={2015}
+                      end={2030}
+                      name={key}
+                      setSelectedSlope={setSelectedSlope}
+                      countryKey={key}
+                      clipDomain={false}
+                      svgPadding={[20, 0, 20, 0]}
+                    />
+                  </Box>
+                )
+              })}
+          </PanelContainer>
+        </Grid>
+      </Grid>
 
       <DiveDeeper
         title="Dive deeper"
