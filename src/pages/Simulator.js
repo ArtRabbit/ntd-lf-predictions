@@ -11,15 +11,18 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 
 import Button from '@material-ui/core/Button'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import FormHelperText from '@material-ui/core/FormHelperText'
-import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
-import Autocomplete from '@material-ui/lab/Autocomplete'
+import Paper from '@material-ui/core/Paper'
 import Tooltip from '@material-ui/core/Tooltip'
 import Slider from '@material-ui/core/Slider'
 
@@ -29,6 +32,13 @@ import SectionTitle from './components/SectionTitle'
 import ChartSettings from './components/ChartSettings'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
+
+import imgRandom from '../images/Random.svg';
+import imgSame from '../images/Same.svg';
+import imgAnopheles from '../images/Anopheles.jpg';
+import imgCulex from '../images/Culex.jpg';
+
+
 SimulatorEngine.simControler.documentReady()
 
 const useStyles = makeStyles(theme => ({
@@ -40,9 +50,12 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 10,
   },
   formControl: {
-    margin: theme.spacing(0, 0, 5, 0),
+    margin: theme.spacing(0, 0, 3, 0),
     minWidth: '100%',
     '& > label': {},
+  },
+  formControlSelect: {
+    margin: theme.spacing(0, 0, 3, 0),
   },
   contentLeftColumn: {},
   settings: {
@@ -72,6 +85,75 @@ const useStyles = makeStyles(theme => ({
     '& > *': {
       margin: theme.spacing(2, 0),
     },
+  },
+  withSlider: {
+    margin: theme.spacing(0, 0, 6, 0),
+    whiteSpace: 'nowrap',
+
+  },
+  modalButton: {
+    width: '50%',
+    //borderTopLeftRadius: 0,
+    //borderTopRightRadius: 0,
+    borderRadius: 0
+  },
+  modal: {
+    padding: theme.spacing(3, 3, 0, 3),
+    borderRadius: 0,
+    width: 310,
+    position: 'relative',
+    marginTop: theme.spacing(-3),
+    '&::after': {
+      content: `''`,
+      position: 'absolute',
+      left: '50%',
+      top: '-2rem',
+      transform: 'translate(-50%, 0%)',
+      width: '0',
+      height: '0',
+      border: '1rem solid transparent',
+      borderBottomColor: '#fff',
+    },
+  },
+  modalButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    margin: theme.spacing(0, 0, 0, -3),
+    width: `calc(100% + ${theme.spacing(6)}px)`,
+  },
+  adherence: {
+    height: 72,
+    width: '100%',
+    backgroundImage: `url(${imgRandom}), url(${imgSame})`,
+    backgroundPosition: 'left center, right center',
+    backgroundSize: 'auto',
+    backgroundRepeat: 'no-repeat, no-repeat',
+
+  },
+
+  imageOptions: {
+    paddingTop: theme.spacing(2),
+  },
+  imageOption: {
+    paddingTop: 74,
+    minWidth: 126,
+    marginRight: theme.spacing(1),
+    '&.anopheles': {
+      backgroundImage: `url(${imgAnopheles})`,
+      backgroundPosition: '14px top',
+      backgroundSize: '112px 74px',
+      backgroundRepeat: 'no-repeat',
+    },
+    '&.culex': {
+      backgroundImage: `url(${imgCulex})`,
+      backgroundPosition: '14px top',
+      backgroundSize: '112px 74px',
+      backgroundRepeat: 'no-repeat',
+
+    },
+    '& .MuiFormControlLabel-label': {
+      fontSize: '1rem'
+    }
   }
 }))
 
@@ -266,6 +348,7 @@ const Simulator = props => {
   const removeDose = params => { }
   const updateDose = params => { }
 
+
   return (
     <Layout>
       <HeadWithInputs
@@ -341,8 +424,8 @@ const Simulator = props => {
 
 
             <ChartSettings title="Settings" buttonText="Update Scenario" action={runCurrentScenario} >
-              <FormControl className={classes.formControl}>
-                <Typography gutterBottom>Base prevalence</Typography>
+              <FormControl >
+                <Typography className={classes.withSlider}>Base prevalence</Typography>
                 <InputLabel htmlFor="endemicity"></InputLabel>
                 <Slider
                   value={simParams.endemicity}
@@ -353,8 +436,12 @@ const Simulator = props => {
                   onChange={(event, newValue) => {
                     handleSliderChanges(newValue, 'endemicity')
                   }}
-                  valueLabelDisplay="auto"
                   aria-labelledby="slider"
+                  marks={[
+                    { value: 0, label: '0' },
+                    { value: 100, label: '100' },
+                  ]}
+                  valueLabelDisplay="on"
                 />
                 {/*             <p style={{ marginBottom: 0 }}>
               The mf prevalence in the population before intervention occurs.
@@ -363,8 +450,8 @@ const Simulator = props => {
               approximation only.{' '}
             </p> */}
               </FormControl>
-              <FormControl className={classes.formControl}>
-                <Typography gutterBottom>Number of runs</Typography>
+              <FormControl >
+                <FormLabel className={classes.withSlider}>Number of runs</FormLabel>
                 <InputLabel htmlFor="runs"></InputLabel>
                 <Slider
                   value={simParams.runs}
@@ -374,28 +461,33 @@ const Simulator = props => {
                   onChange={(event, newValue) => {
                     handleSliderChanges(newValue, 'runs')
                   }}
-                  valueLabelDisplay="auto"
                   aria-labelledby="slider"
+                  marks={[
+                    { value: 0, label: '0' },
+                    { value: 100, label: '100' },
+                  ]}
+                  valueLabelDisplay="on"
                 />
               </FormControl>
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  Species
-            </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
+              <FormControl className={classes.formControlSelect} >
+
+                <FormLabel component="legend">Type of mosquito</FormLabel>
+                <RadioGroup
+                  className={classes.imageOptions}
+                  row
+                  aria-label="Species"
+                  name="species"
                   value={simParams.species}
                   onChange={event => {
-                    setSimParams({ ...simParams, species: event.target.value })
+                    setSimParams({ ...simParams, species: Number(event.target.value) })
                   }}
                 >
-                  <MenuItem value={0}>Anopheles</MenuItem>
-                  <MenuItem value={1}>Culex</MenuItem>
-                </Select>
+                  <FormControlLabel className={`${classes.imageOption} anopheles`} value={0} control={<Radio color="primary" />} label="Anopheles" />
+                  <FormControlLabel className={`${classes.imageOption} culex`} value={1} control={<Radio color="primary" />} label="Culex" />
+                </RadioGroup>
               </FormControl>
-              <FormControl className={classes.formControl}>
-                <Typography gutterBottom>Vector: Bed Net Coverage (%)</Typography>
+              <FormControl >
+                <Typography className={classes.withSlider}>Vector: Bed Net Coverage (%)</Typography>
                 <InputLabel htmlFor="covN"></InputLabel>
                 <Slider
                   value={simParams.covN}
@@ -406,8 +498,12 @@ const Simulator = props => {
                   onChange={(event, newValue) => {
                     handleSliderChanges(newValue, 'covN')
                   }}
-                  valueLabelDisplay="auto"
                   aria-labelledby="slider"
+                  marks={[
+                    { value: 0, label: '0' },
+                    { value: 100, label: '100' },
+                  ]}
+                  valueLabelDisplay="on"
                 />
                 {/*             <p style={{ marginBottom: 0 }}>
               Bed nets are assumed to have been distributed at the start of
@@ -415,10 +511,8 @@ const Simulator = props => {
               lifetime of the intervention campaign.
             </p> */}
               </FormControl>
-              <FormControl className={classes.formControl}>
-                <Typography gutterBottom>
-                  Vector: Insecticide Coverage (%)
-            </Typography>
+              <FormControl >
+                <Typography className={classes.withSlider}>Vector: Insecticide Coverage (%)</Typography>
                 <InputLabel htmlFor="v_to_hR"></InputLabel>
                 <Slider
                   value={simParams.v_to_hR}
@@ -429,8 +523,12 @@ const Simulator = props => {
                   onChange={(event, newValue) => {
                     handleSliderChanges(newValue, 'v_to_hR')
                   }}
-                  valueLabelDisplay="auto"
                   aria-labelledby="slider"
+                  marks={[
+                    { value: 0, label: '0' },
+                    { value: 100, label: '100' },
+                  ]}
+                  valueLabelDisplay="on"
                 />
                 {/*             <p style={{ marginBottom: 0 }}>
               Insecticide is assumed to reduce the vector to host ratio only.
@@ -439,7 +537,7 @@ const Simulator = props => {
             </ChartSettings>
           </Grid>
           <Grid item md={3} xs={12} className={classes.settings}>
-            <Typography className={classes.title} variant="h5" component="h2">
+            <Typography className={classes.title} variant="h3" component="h2">
               Intervention
           </Typography>
             <FormControl className={classes.formControl}>
@@ -457,7 +555,7 @@ const Simulator = props => {
               </Select>
             </FormControl>
             <FormControl className={classes.formControl}>
-              <Typography gutterBottom>Target coverage</Typography>
+              <Typography className={classes.withSlider}>Target coverage</Typography>
               <InputLabel htmlFor="coverage"></InputLabel>
               <Slider
                 value={simParams.coverage}
@@ -465,8 +563,12 @@ const Simulator = props => {
                 step={1}
                 max={100}
                 onChange={handleCoverageChange}
-                valueLabelDisplay="auto"
                 aria-labelledby="slider"
+                marks={[
+                  { value: 0, label: '0' },
+                  { value: 100, label: '100' },
+                ]}
+                valueLabelDisplay="on"
               />
             </FormControl>
             <FormControl className={classes.formControl}>
@@ -548,7 +650,7 @@ const Simulator = props => {
                   // a.target.style.backgroundColor = '#aa2323'
                   setCurMDARound(i)
                   setDoseSettingsOpen(true)
-                  setDoseSettingsLeft(a.pageX - 100)
+                  setDoseSettingsLeft(a.pageX - 155)
                 }}
                 title={
                   simMDAtime[i] +
@@ -572,17 +674,16 @@ const Simulator = props => {
           </div>
         </Grid>
         {doseSettingsOpen && (
-          <Grid
-            item
-            md={3}
-            xs={12}
+          <Paper
+            elevation={3}
+            className={classes.modal}
             style={{ marginLeft: doseSettingsLeft }}
           >
             <Typography className={classes.title} variant="h5" component="h2">
               MDA round #{curMDARound + 1}
             </Typography>
             <FormControl className={classes.formControl}>
-              <Typography gutterBottom>Coverage</Typography>
+              <Typography className={classes.withSlider}>Coverage</Typography>
               <InputLabel htmlFor="rho"></InputLabel>
               <Slider
                 value={simMDAcoverage[curMDARound]}
@@ -594,8 +695,11 @@ const Simulator = props => {
                   newArray[curMDARound] = newValue
                   setSimMDAcoverage([...newArray])
                 }}
-                valueLabelDisplay="auto"
-                aria-labelledby="slider"
+                aria-labelledby="slider" marks={[
+                  { value: 0, label: '0' },
+                  { value: 100, label: '100' },
+                ]}
+                valueLabelDisplay="on"
               />
               {/*             <p style={{ marginBottom: 0 }}>
               Controls how randomly coverage is applied. For 0, coverage is
@@ -603,7 +707,7 @@ const Simulator = props => {
             </p> */}
             </FormControl>
             <FormControl className={classes.formControl}>
-              <Typography gutterBottom>Systemic adherence</Typography>
+              <Typography className={classes.withSlider}>Systemic adherence</Typography>
               <InputLabel htmlFor="rho"></InputLabel>
               <Slider
                 value={simMDAadherence[curMDARound]}
@@ -615,18 +719,19 @@ const Simulator = props => {
                   newArray[curMDARound] = newValue
                   setSimMDAadherence([...newArray])
                 }}
-                valueLabelDisplay="auto"
                 aria-labelledby="slider"
+                valueLabelDisplay="on"
               />
+              <div className={classes.adherence}></div>
               {/*             <p style={{ marginBottom: 0 }}>
               Controls how randomly coverage is applied. For 0, coverage is
               completely random. For 1, the same individuals are always treated.
             </p> */}
             </FormControl>
-            <div className={classes.buttons}>
+            <div className={classes.modalButtons}>
               <Button
+                className={classes.modalButton}
                 variant="contained"
-                color="primary"
                 disabled={simInProgress}
                 onClick={() => {
                   let newArray = [...simMDAcoverage]
@@ -637,8 +742,9 @@ const Simulator = props => {
                 }}
               >
                 REMOVE
-            </Button>
+              </Button>
               <Button
+                className={classes.modalButton}
                 variant="contained"
                 color="primary"
                 disabled={simInProgress}
@@ -648,9 +754,9 @@ const Simulator = props => {
                 }}
               >
                 UPDATE
-            </Button>
+              </Button>
             </div>
-          </Grid>
+          </Paper>
         )}
       </section>
 
