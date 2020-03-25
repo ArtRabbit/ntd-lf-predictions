@@ -61,6 +61,9 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 4, 1, 2),
     backgroundColor: theme.palette.secondary.light,
   },
+  settingsBody: {
+    padding: theme.spacing(4, 0),
+  },
   buttons: {
     display: 'flex',
     flexDirection: 'column',
@@ -538,58 +541,58 @@ const Simulator = props => {
             </ChartSettings>
           </Grid>
           <Grid item md={3} xs={12} className={classes.settings}>
-            <Typography className={classes.title} variant="h3" component="h2">
-              Intervention
-          </Typography>
-            <FormControl fullWidth variant="outlined" className={classes.formControl}>
-              <FormLabel component="legend">Frequency</FormLabel>
-              <Select
-                labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={simParams.mdaSixMonths}
-                onChange={handleFrequencyChange}
+            <Typography className={classes.title} variant="h3" component="h2">Intervention</Typography>
+            <div className={classes.settingsBody}>
+              <FormControl fullWidth variant="outlined" className={classes.formControl}>
+                <FormLabel component="legend">Frequency</FormLabel>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  value={simParams.mdaSixMonths}
+                  onChange={handleFrequencyChange}
 
-              >
-                <MenuItem value={12}>Annual</MenuItem>
-                <MenuItem value={6}>Every 6 months</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl fullWidth className={classes.formControl}>
-              <FormLabel component="legend" htmlFor="coverage" className={classes.withSlider}>Target coverage</FormLabel>
-              <Slider
-                value={simParams.coverage}
-                min={0}
-                step={1}
-                max={100}
-                onChange={handleCoverageChange}
-                aria-labelledby="slider"
-                marks={[
-                  { value: 0, label: '0' },
-                  { value: 100, label: '100' },
-                ]}
-                valueLabelDisplay="on"
-              />
-            </FormControl>
-            <FormControl fullWidth variant="outlined" className={classes.formControl}>
-              <FormLabel component="legend" htmlFor="demo-simple-select-helper-label">Drug regimen</FormLabel>
-              <Select
-                labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={simParams.mdaRegimen}
+                >
+                  <MenuItem value={12}>Annual</MenuItem>
+                  <MenuItem value={6}>Every 6 months</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth className={classes.formControl}>
+                <FormLabel component="legend" htmlFor="coverage" className={classes.withSlider}>Target coverage</FormLabel>
+                <Slider
+                  value={simParams.coverage}
+                  min={0}
+                  step={1}
+                  max={100}
+                  onChange={handleCoverageChange}
+                  aria-labelledby="slider"
+                  marks={[
+                    { value: 0, label: '0' },
+                    { value: 100, label: '100' },
+                  ]}
+                  valueLabelDisplay="on"
+                />
+              </FormControl>
+              <FormControl fullWidth variant="outlined" className={classes.formControl}>
+                <FormLabel component="legend" htmlFor="demo-simple-select-helper-label">Drug regimen</FormLabel>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  value={simParams.mdaRegimen}
 
-                onChange={event => {
-                  setSimParams({ ...simParams, mdaRegimen: event.target.value })
-                }}
-              >
-                <MenuItem value={1}>albendazole + ivermectin</MenuItem>
-                <MenuItem value={2}>albendazole + diethylcarbamazine</MenuItem>
-                <MenuItem value={3}>ivermectin</MenuItem>
-                <MenuItem value={4}>
-                  ivermectin + albendazole + diethylcarbamazine
+                  onChange={event => {
+                    setSimParams({ ...simParams, mdaRegimen: event.target.value })
+                  }}
+                >
+                  <MenuItem value={1}>albendazole + ivermectin</MenuItem>
+                  <MenuItem value={2}>albendazole + diethylcarbamazine</MenuItem>
+                  <MenuItem value={3}>ivermectin</MenuItem>
+                  <MenuItem value={4}>
+                    ivermectin + albendazole + diethylcarbamazine
                 </MenuItem>
-                <MenuItem value={5}>custom</MenuItem>
-              </Select>
-            </FormControl>
+                  <MenuItem value={5}>custom</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
             <div className={classes.buttons}>
               <Button
                 variant="contained"
@@ -652,7 +655,7 @@ const Simulator = props => {
                   // a.target.style.backgroundColor = '#aa2323'
                   setCurMDARound(i)
                   setDoseSettingsOpen(true)
-                  setDoseSettingsLeft(a.pageX - 155)
+                  setDoseSettingsLeft(a.target.getBoundingClientRect().left + (a.target.offsetWidth / 2) - 155)
                 }}
                 title={
                   simMDAtime[i] +
