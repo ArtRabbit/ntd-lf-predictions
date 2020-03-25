@@ -107,7 +107,7 @@ function Map({
   }
 
   const handleClick = event => {
-    const feature = event.features.find(f => f.layer.id === 'fill-countries')
+    const feature = event.features[0]
     if (feature) {
       dispatch({ type: 'SELECT', payload: { feature, event } })
     }
@@ -168,6 +168,34 @@ function Map({
   }
 
   // old map style mapbox://styles/kpcarter100/ck7w5zz9l026d1imn43721owm
+
+  const renderPopup = f => {
+    const { name, id, performance, endemicity, population } = f.properties
+    return (
+      <Box display="block" variant="body1" component="div">
+        <Typography variant="subtitle1" gutterBottom>
+          {name}
+        </Typography>
+        <Link href="/trends">Link</Link>
+        <div>Prevalence: {feature.properties[`prev-${year}`]} %</div>
+        {population && <div>Population: {format(',')(population)}</div>}
+        {endemicity && <div>Endemicity: {endemicity}</div>}
+        <div>Trend: {performance}</div>
+        <ul className="links">
+          <li>
+            <Link href="#" onClick={() => selectCountryClickHotspots(id)}>
+              Hotspots {name}
+            </Link>{' '}
+          </li>
+          <li>
+            <Link href="#" onClick={() => selectCountryClickTrends(id)}>
+              Trends {name}
+            </Link>
+          </li>
+        </ul>
+      </Box>
+    )
+  }
 
   return (
     <div className={classes.mapWrap}>
@@ -353,40 +381,7 @@ function Map({
             onClose={handleClose}
             anchor="top"
           >
-            <Box display="block" variant="body1" component="div">
-              <Typography variant="subtitle1" gutterBottom>
-                {feature.properties.name}
-              </Typography>
-              <Link href="/trends">Link</Link>
-              <div>Prevalence: {feature.properties[`prev-${year}`]} %</div>
-              <div>
-                Population: {format(',')(feature.properties.population)}
-              </div>
-              <div>Endemicity: {feature.properties.endemicity}</div>
-              <div>Trend: {feature.properties.performance}</div>
-              <ul className="links">
-                <li>
-                  <Link
-                    href="#"
-                    onClick={() =>
-                      selectCountryClickHotspots(feature.properties.id)
-                    }
-                  >
-                    Hotspots {feature.properties.name}
-                  </Link>{' '}
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    onClick={() =>
-                      selectCountryClickTrends(feature.properties.id)
-                    }
-                  >
-                    Trends {feature.properties.name}
-                  </Link>
-                </li>
-              </ul>
-            </Box>
+            {renderPopup(feature)}
           </Popup>
         )}
 
