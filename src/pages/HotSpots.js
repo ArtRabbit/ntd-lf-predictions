@@ -35,6 +35,8 @@ const HotSpots = props => {
   } = useDataAPI()
   const [selectedSlope, setSelectedSlope] = useState()
 
+  const showDetail = selectedSlope && stateByCountryData && countryData;
+
   return (
     <Layout>
       <HeadWithInputs
@@ -100,9 +102,12 @@ const HotSpots = props => {
         text={`Districts in country that are improving, getting worse or are below the 1% threashold`}
       />
 
-      <Box className={classes.chartContainer}>
-          {selectedSlope && stateByCountryData && countryData && Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
-              if ( key === selectedSlope) {
+
+      <Grid container spacing={0}>
+        {showDetail &&
+          <Grid item md={3} xs={12}>
+            {Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
+              if (key === selectedSlope) {
                 return (
                   <Box key={key} p={1}>
                     <Typography variant="caption">{countryData.data[key].name}</Typography>
@@ -119,35 +124,39 @@ const HotSpots = props => {
                       svgPadding={[20, 16, 20, 16]}
                     />
                   </Box>
-                  )
-                } 
-                return null
+                )
+              }
+              return null
             })}
-        <PanelContainer>
-          
-          {stateByCountryData && countryData &&
-            Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
-              return (
-                <Box key={key}>
-                  <SlopeChart
-                    data={Object.values(data)}
-                    width={40}
-                    height={300}
-                    start={2015}
-                    end={2030}
-                    name={countryData.data[key].name}
-                    setSelectedSlope={setSelectedSlope}
-                    countryKey={key}
-                    clipDomain={false}
-                    svgPadding={[20, 0, 0, 0]}
-                  />
-                </Box>
-              )
-            })}
+          </Grid>
+        }
+        <Grid item md={showDetail ? 9 : 12} xs={12} className={classes.chartContainer}>
+          <PanelContainer>
 
-            
-        </PanelContainer>
-      </Box>
+            {stateByCountryData && countryData &&
+              Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
+                return (
+                  <Box key={key}>
+                    <SlopeChart
+                      data={Object.values(data)}
+                      width={40}
+                      height={300}
+                      start={2015}
+                      end={2030}
+                      name={countryData.data[key].name}
+                      setSelectedSlope={setSelectedSlope}
+                      countryKey={key}
+                      clipDomain={false}
+                      svgPadding={[20, 0, 0, 0]}
+                    />
+                  </Box>
+                )
+              })}
+
+          </PanelContainer>
+        </Grid>
+      </Grid>
+
 
       <DiveDeeper
         title="Dive deeper"
