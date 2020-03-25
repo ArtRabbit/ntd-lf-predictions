@@ -11,11 +11,11 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 
 import Button from '@material-ui/core/Button'
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import Radio from '@material-ui/core/Radio'
+import RadioGroup from '@material-ui/core/RadioGroup'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormLabel from '@material-ui/core/FormLabel'
 
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -33,11 +33,10 @@ import ChartSettings from './components/ChartSettings'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 
-import imgRandom from '../images/Random.svg';
-import imgSame from '../images/Same.svg';
-import imgAnopheles from '../images/Anopheles.jpg';
-import imgCulex from '../images/Culex.jpg';
-
+import imgRandom from '../images/Random.svg'
+import imgSame from '../images/Same.svg'
+import imgAnopheles from '../images/Anopheles.jpg'
+import imgCulex from '../images/Culex.jpg'
 
 SimulatorEngine.simControler.documentReady()
 
@@ -71,10 +70,10 @@ const useStyles = makeStyles(theme => ({
   },
   simulator: {
     width: `calc(100% + ${theme.spacing(12)}px)`,
-    marginLeft: -theme.spacing(6)
+    marginLeft: -theme.spacing(6),
   },
   tabs: {
-    padding: theme.spacing(0, 6)
+    padding: theme.spacing(0, 6),
   },
   chartContainer: {
     position: 'relative',
@@ -89,13 +88,12 @@ const useStyles = makeStyles(theme => ({
   withSlider: {
     margin: theme.spacing(0, 0, 6, 0),
     whiteSpace: 'nowrap',
-
   },
   modalButton: {
     width: '50%',
     //borderTopLeftRadius: 0,
     //borderTopRightRadius: 0,
-    borderRadius: 0
+    borderRadius: 0,
   },
   modal: {
     padding: theme.spacing(3, 3, 0, 3),
@@ -128,7 +126,6 @@ const useStyles = makeStyles(theme => ({
     backgroundPosition: 'left center, right center',
     backgroundSize: 'auto',
     backgroundRepeat: 'no-repeat, no-repeat',
-
   },
 
   imageOptions: {
@@ -149,12 +146,11 @@ const useStyles = makeStyles(theme => ({
       backgroundPosition: '14px top',
       backgroundSize: '112px 74px',
       backgroundRepeat: 'no-repeat',
-
     },
     '& .MuiFormControlLabel-label': {
-      fontSize: '1rem'
-    }
-  }
+      fontSize: '1rem',
+    },
+  },
 }))
 
 function a11yProps(index) {
@@ -203,7 +199,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-        (simParams.mdaSixMonths / 12) * 12 * i
+          (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -235,7 +231,7 @@ const Simulator = props => {
 
   /* Simuilation, tabs etc */
   const [simInProgress, setSimInProgress] = useState(false)
-  const [tabLength, setTabLength] = useState(3)
+  const [tabLength, setTabLength] = useState(0)
   const [tabIndex, setTabIndex] = useState(0)
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue)
@@ -345,9 +341,6 @@ const Simulator = props => {
   })
   const [doseSettingsOpen, setDoseSettingsOpen] = useState(false)
   const [doseSettingsLeft, setDoseSettingsLeft] = useState(0)
-  const removeDose = params => { }
-  const updateDose = params => { }
-
 
   return (
     <Layout>
@@ -366,8 +359,7 @@ const Simulator = props => {
         fullwidth={true}
       />
       <section className={classes.simulator}>
-        <Grid container spacing={0} >
-
+        <Grid container spacing={0}>
           <Grid item xs={12} className={classes.tabs}>
             <Tabs
               value={tabIndex}
@@ -379,53 +371,56 @@ const Simulator = props => {
               scrollButtons="auto"
             >
               <Tab label="Scenario 1" {...a11yProps(0)} />
-              {tabLength > 1 && <Tab label="Scenario 2" {...a11yProps(1)} />}
-              {tabLength > 2 && <Tab label="Scenario 3" {...a11yProps(2)} />}
+              <Tab label="Scenario 2" {...a11yProps(1)} />
+              <Tab label="Scenario 3" {...a11yProps(2)} />
               {tabLength > 3 && <Tab label="Scenario 4" {...a11yProps(3)} />}
               {tabLength > 4 && <Tab label="Scenario 5" {...a11yProps(4)} />}
             </Tabs>
           </Grid>
 
           <Grid item md={9} xs={12} className={classes.chartContainer}>
-
             <div className={classes.tavs}>
-
               <TabPanel value={tabIndex} index={0}>
                 Scenario 1
-              <div style={{ overflow: 'hidden', height: '400px' }}>
+                <div style={{ overflow: 'hidden', height: '400px' }}>
                   {JSON.stringify(scenarioResults[0])}
                 </div>
               </TabPanel>
               <TabPanel value={tabIndex} index={1}>
                 Scenario 2
-              <div style={{ overflow: 'hidden', height: '400px' }}>
+                <div style={{ overflow: 'hidden', height: '400px' }}>
                   {JSON.stringify(scenarioResults[1])}
                 </div>
               </TabPanel>
               <TabPanel value={tabIndex} index={2}>
                 Scenario 3
-              <div style={{ overflow: 'hidden', height: '400px' }}>
+                <div style={{ overflow: 'hidden', height: '400px' }}>
                   {JSON.stringify(scenarioResults[2])}
                 </div>
               </TabPanel>
               <TabPanel value={tabIndex} index={3}>
                 Scenario 4
-              <div style={{ overflow: 'hidden', height: '400px' }}>
+                <div style={{ overflow: 'hidden', height: '400px' }}>
                   {JSON.stringify(scenarioResults[3])}
                 </div>
               </TabPanel>
               <TabPanel value={tabIndex} index={4}>
                 Scenario 5
-              <div style={{ overflow: 'hidden', height: '400px' }}>
+                <div style={{ overflow: 'hidden', height: '400px' }}>
                   {JSON.stringify(scenarioResults[4])}
                 </div>
               </TabPanel>
             </div>
 
-
-            <ChartSettings title="Settings" buttonText="Update Scenario" action={runCurrentScenario} >
-              <FormControl >
-                <Typography className={classes.withSlider}>Base prevalence</Typography>
+            <ChartSettings
+              title="Settings"
+              buttonText="Update Scenario"
+              action={runCurrentScenario}
+            >
+              <FormControl>
+                <Typography className={classes.withSlider}>
+                  Base prevalence
+                </Typography>
                 <InputLabel htmlFor="endemicity"></InputLabel>
                 <Slider
                   value={simParams.endemicity}
@@ -450,8 +445,10 @@ const Simulator = props => {
               approximation only.{' '}
             </p> */}
               </FormControl>
-              <FormControl >
-                <FormLabel className={classes.withSlider}>Number of runs</FormLabel>
+              <FormControl>
+                <FormLabel className={classes.withSlider}>
+                  Number of runs
+                </FormLabel>
                 <InputLabel htmlFor="runs"></InputLabel>
                 <Slider
                   value={simParams.runs}
@@ -469,8 +466,7 @@ const Simulator = props => {
                   valueLabelDisplay="on"
                 />
               </FormControl>
-              <FormControl className={classes.formControlSelect} >
-
+              <FormControl className={classes.formControlSelect}>
                 <FormLabel component="legend">Type of mosquito</FormLabel>
                 <RadioGroup
                   className={classes.imageOptions}
@@ -479,15 +475,30 @@ const Simulator = props => {
                   name="species"
                   value={simParams.species}
                   onChange={event => {
-                    setSimParams({ ...simParams, species: Number(event.target.value) })
+                    setSimParams({
+                      ...simParams,
+                      species: Number(event.target.value),
+                    })
                   }}
                 >
-                  <FormControlLabel className={`${classes.imageOption} anopheles`} value={0} control={<Radio color="primary" />} label="Anopheles" />
-                  <FormControlLabel className={`${classes.imageOption} culex`} value={1} control={<Radio color="primary" />} label="Culex" />
+                  <FormControlLabel
+                    className={`${classes.imageOption} anopheles`}
+                    value={0}
+                    control={<Radio color="primary" />}
+                    label="Anopheles"
+                  />
+                  <FormControlLabel
+                    className={`${classes.imageOption} culex`}
+                    value={1}
+                    control={<Radio color="primary" />}
+                    label="Culex"
+                  />
                 </RadioGroup>
               </FormControl>
-              <FormControl >
-                <Typography className={classes.withSlider}>Vector: Bed Net Coverage (%)</Typography>
+              <FormControl>
+                <Typography className={classes.withSlider}>
+                  Vector: Bed Net Coverage (%)
+                </Typography>
                 <InputLabel htmlFor="covN"></InputLabel>
                 <Slider
                   value={simParams.covN}
@@ -511,8 +522,10 @@ const Simulator = props => {
               lifetime of the intervention campaign.
             </p> */}
               </FormControl>
-              <FormControl >
-                <Typography className={classes.withSlider}>Vector: Insecticide Coverage (%)</Typography>
+              <FormControl>
+                <Typography className={classes.withSlider}>
+                  Vector: Insecticide Coverage (%)
+                </Typography>
                 <InputLabel htmlFor="v_to_hR"></InputLabel>
                 <Slider
                   value={simParams.v_to_hR}
@@ -539,11 +552,11 @@ const Simulator = props => {
           <Grid item md={3} xs={12} className={classes.settings}>
             <Typography className={classes.title} variant="h3" component="h2">
               Intervention
-          </Typography>
+            </Typography>
             <FormControl className={classes.formControl}>
               <InputLabel id="demo-simple-select-helper-label">
                 Fruequency
-            </InputLabel>
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
@@ -555,7 +568,9 @@ const Simulator = props => {
               </Select>
             </FormControl>
             <FormControl className={classes.formControl}>
-              <Typography className={classes.withSlider}>Target coverage</Typography>
+              <Typography className={classes.withSlider}>
+                Target coverage
+              </Typography>
               <InputLabel htmlFor="coverage"></InputLabel>
               <Slider
                 value={simParams.coverage}
@@ -574,7 +589,7 @@ const Simulator = props => {
             <FormControl className={classes.formControl}>
               <InputLabel htmlFor="demo-simple-select-helper-label">
                 Drug regimen
-            </InputLabel>
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
@@ -588,7 +603,7 @@ const Simulator = props => {
                 <MenuItem value={3}>ivermectin</MenuItem>
                 <MenuItem value={4}>
                   ivermectin + albendazole + diethylcarbamazine
-              </MenuItem>
+                </MenuItem>
                 <MenuItem value={5}>custom</MenuItem>
               </Select>
             </FormControl>
@@ -600,7 +615,7 @@ const Simulator = props => {
                 onClick={runCurrentScenario}
               >
                 UPDATE SCENARIO
-            </Button>
+              </Button>
               <Button
                 variant="contained"
                 color="primary"
@@ -608,22 +623,26 @@ const Simulator = props => {
                 onClick={runNewScenario}
               >
                 NEW SCENARIO
-            </Button>
+              </Button>
             </div>
             {simulationProgress !== 0 && simulationProgress !== 100 && (
               <div className={classes.progress}>
-                <LinearProgress variant="determinate" value={simulationProgress} color="secondary" />
+                <LinearProgress
+                  variant="determinate"
+                  value={simulationProgress}
+                  color="secondary"
+                />
               </div>
-
             )}
           </Grid>
         </Grid>
-        <Grid item md={12} xs={12} >
+        <Grid item md={12} xs={12}>
           <div
             style={{
               display: 'flex',
               height: 100,
               justifyContent: 'space-around',
+              marginTop: 30,
               marginBottom: 20,
               cursor: 'hand',
             }}
@@ -695,7 +714,8 @@ const Simulator = props => {
                   newArray[curMDARound] = newValue
                   setSimMDAcoverage([...newArray])
                 }}
-                aria-labelledby="slider" marks={[
+                aria-labelledby="slider"
+                marks={[
                   { value: 0, label: '0' },
                   { value: 100, label: '100' },
                 ]}
@@ -707,7 +727,9 @@ const Simulator = props => {
             </p> */}
             </FormControl>
             <FormControl className={classes.formControl}>
-              <Typography className={classes.withSlider}>Systemic adherence</Typography>
+              <Typography className={classes.withSlider}>
+                Systemic adherence
+              </Typography>
               <InputLabel htmlFor="rho"></InputLabel>
               <Slider
                 value={simMDAadherence[curMDARound]}
