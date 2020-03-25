@@ -1,6 +1,6 @@
 import React, { useEffect, forwardRef, useImperativeHandle } from 'react'
 import ReactMapGL, { Source, Layer, Popup, HTMLOverlay } from 'react-map-gl'
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useHistory, useRouteMatch, Link as RouterLink } from 'react-router-dom'
 //import AutoSizer from 'react-virtualized-auto-sizer'
 import {
   Tooltip,
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     marginLeft: 'auto',
     marginRight: 'auto',
     marginBottom: '20px',
-    marginTop:'-15px',
+    marginTop: '-15px',
     display: 'block',
   },
   mapWrap: {
@@ -118,29 +118,29 @@ function Map({
     }
   }
 
-  const selectCountryClickHotspots = countryId => {
-    if (match) {
-      if (match.params.section != 'trends') {
-        match.params.section = 'hotspots'
-      }
+  //   const selectCountryClickHotspots = countryId => {
+  //     if (match) {
+  //       if (match.params.section != 'trends') {
+  //         match.params.section = 'hotspots'
+  //       }
 
-      history.push(`/${match.params.section}/${countryId}`)
-    } else {
-      history.push(`/hotspots/${countryId}`)
-    }
-  }
+  //       history.push(`/${match.params.section}/${countryId}`)
+  //     } else {
+  //       history.push(`/hotspots/${countryId}`)
+  //     }
+  //   }
 
-  const selectCountryClickTrends = countryId => {
-    if (match) {
-      if (match.params.section != 'trends') {
-        match.params.section = 'trends'
-      }
+  //   const selectCountryClickTrends = countryId => {
+  //     if (match) {
+  //       if (match.params.section != 'trends') {
+  //         match.params.section = 'trends'
+  //       }
 
-      history.push(`/${match.params.section}/${countryId}`)
-    } else {
-      history.push(`/trends/${countryId}`)
-    }
-  }
+  //       history.push(`/${match.params.section}/${countryId}`)
+  //     } else {
+  //       history.push(`/trends/${countryId}`)
+  //     }
+  //   }
 
   const handleHover = event => {
     if (event.features) {
@@ -176,7 +176,7 @@ function Map({
 
   const renderPopup = f => {
     const { name, id, performance, endemicity, population } = f.properties
-    
+
     return (
       <Box display="block" variant="body1" component="div">
         <Typography variant="subtitle1" gutterBottom>
@@ -186,8 +186,23 @@ function Map({
         {population && <div>Population: {format(',')(population)}</div>}
         {endemicity && <div>Endemicity: {endemicity}</div>}
         <div>Trend: {performance}</div>
-        <ul className="links">
-          <li>
+        {feature.source === 'africa-countries' && (
+          <ul className="links">
+            <li>
+              <Link
+                component={RouterLink}
+                to={`/trends/${id}`}
+                children={`Trends ${name}`}
+              />
+            </li>
+            <li>
+              <Link
+                component={RouterLink}
+                to={`/hotspots/${id}`}
+                children={`Hotspots ${name}`}
+              />
+            </li>
+            {/* <li>
             <Link href="#" onClick={() => selectCountryClickHotspots(id)}>
               Hotspots {name}
             </Link>{' '}
@@ -196,8 +211,9 @@ function Map({
             <Link href="#" onClick={() => selectCountryClickTrends(id)}>
               Trends {name}
             </Link>
-          </li>
-        </ul>
+          </li> */}
+          </ul>
+        )}
       </Box>
     )
   }
@@ -283,7 +299,7 @@ function Map({
                   'case',
                   ['==', ['get', 'id'], feature?.properties.id || null],
                   'rgba(145, 145, 145, 1)',
-                  'rgba(145, 145, 145, 0.3)',
+                  'rgba(255, 255, 255, 0.5)',
                 ],
               }}
             />
