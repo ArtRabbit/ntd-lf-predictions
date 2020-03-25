@@ -18,20 +18,7 @@ import {
   sortBy as sortByFP,
 } from 'lodash/fp'
 import { sortBy, merge, min, max, zip, mapValues, first, last } from 'lodash'
-import {
-  interpolateReds,
-  scaleSequential,
-  color,
-  extent,
-  scaleLinear,
-  scaleQuantize,
-  scaleThreshold,
-  piecewise,
-  interpolateHcl,
-  scaleDiverging,
-  scaleDivergingPow,
-  interpolateRdBu,
-} from 'd3'
+import { color, extent, scaleLinear, interpolateHcl } from 'd3'
 import {
   REGIME_COVERAGE,
   REGIME_WHO,
@@ -40,7 +27,7 @@ import {
 } from '../constants'
 
 const seq5 = ['#fe4c73', '#ff8597', '#ffb1ba', '#ffd9dc', '#ffffff']
-
+const seq5b = ['#D1114C', '#E76079', '#F697A5', '#FFCBD1', '#FFFFFF']
 const div3 = ['#6236fd', '#ededed', '#fe4c73']
 const div5 = ['#6236fd', '#b793f7', '#ededed', '#fea4ae', '#fe4c73']
 const div7 = [
@@ -442,10 +429,18 @@ class DataAPI {
     const featureCollection = this.dataStore.featuresLevel2
     const IUs = this.iuData
     const scales = this.iuScales
+    const { country } = this.uiState
 
     if (featureCollection && IUs) {
       const { data } = IUs
-      return mergeFeatures({ data, featureCollection, key: 'IU_ID', scales })
+      return mergeFeatures({
+        data: country
+          ? pickByFP(x => x.relatedCountries.includes(country))(data)
+          : data,
+        featureCollection,
+        key: 'IU_ID',
+        scales,
+      })
     }
 
     return emptyFeatureCollection
