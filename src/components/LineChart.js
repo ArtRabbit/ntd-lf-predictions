@@ -49,7 +49,6 @@ function SlopeChart({
   }
 
   const handleEnterYear = (year,id) => {
-    console.log('setting year ',year)
     setSelected(id)
     setSelectedYear(year)
   }

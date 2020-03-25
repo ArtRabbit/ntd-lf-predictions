@@ -105,7 +105,6 @@ const Home = (props) => {
   }
 
   const hideIntro = () => {
-    console.log(setWelcomeScreen);
     setWelcomeScreen(false)
   }
 

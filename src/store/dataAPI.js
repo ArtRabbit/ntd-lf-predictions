@@ -24,6 +24,13 @@ import {
   color,
   extent,
   scaleLinear,
+  scaleQuantize,
+  scaleThreshold,
+  piecewise,
+  interpolateHcl,
+  scaleDiverging,
+  scaleDivergingPow,
+  interpolateRdBu,
 } from 'd3'
 import {
   REGIME_COVERAGE,
@@ -31,6 +38,20 @@ import {
   REGIME_FREQUENCY,
   REGIME_NO_MDA,
 } from '../constants'
+
+const seq5 = ['#fe4c73', '#ff8597', '#ffb1ba', '#ffd9dc', '#ffffff']
+
+const div3 = ['#6236fd', '#ededed', '#fe4c73']
+const div5 = ['#6236fd', '#b793f7', '#ededed', '#fea4ae', '#fe4c73']
+const div7 = [
+  '#6236fd',
+  '#a075fa',
+  '#cbb1f5',
+  '#ededed',
+  '#fbbdc2',
+  '#ff8b9a',
+  '#fe4c73',
+]
 
 const emptyFeatureCollection = { type: 'FeatureCollection', features: [] }
 
@@ -43,16 +64,38 @@ const groupProps = (obj, pattern) =>
 
 const roundPrevalence = p => round(p * 100, 2)
 
-const buildScales = stats => {
-  const prev = scaleSequential(interpolateReds)
-    .domain([0, stats.prevalence.max])
-    .nice(5)
+const buildScales = ({ data, stats }) => {
+  //   const prev = scaleSequential(interpolateReds)
+  //     .domain([0, stats.prevalence.max])
+  //     .nice(5)
 
-  const [min, max] = stats.performance
+  const prev = scaleLinear()
+    .domain([0, stats.prevalence.max])
+    .range(['#fff', '#FE4C73'])
+    .nice()
+
+  const mp = max(stats.performance.map(x => Math.abs(x)))
+
   const perf = scaleLinear()
-    // .domain([min < 0 ? min : 0, 0, max > 0 ? max : 0])
-    .domain([-30, 0, 30])
-    .range(['#03D386', '#EDEDED', '#FE4C73'])
+    .domain([-mp, 0, mp])
+    .range(['#6236fd', '#EDEDED', '#FE4C73'])
+    .interpolate(interpolateHcl)
+    .nice()
+
+  //   const perfDiv1 = scaleDiverging([-mp, 0, mp], t => interpolateRdBu(1 - t))
+  //   const perfDiv2 = scaleDiverging()
+  //     .domain([-mp, 0, mp])
+  //     .interpolator(t =>
+  //       piecewise(interpolateHcl, ['#6236fd', '#EDEDED', '#FE4C73'])(t)
+  //     )
+
+  //   const perfQuantize = scaleQuantize()
+  //     .domain([-mp, mp])
+  //     .range(steps5)
+
+  //   const perfTresh = scaleThreshold()
+  //     .domain([-mp / 2, mp / 2])
+  //     .range(steps3)
 
   return { prev, perf }
 }
@@ -410,19 +453,19 @@ class DataAPI {
 
   get countryScales() {
     const countries = this.countryData
-    if (countries) return buildScales(countries.stats)
+    if (countries) return buildScales(countries)
     return defaultScales
   }
 
   get stateScales() {
     const states = this.stateData
-    if (states) return buildScales(states.stats)
+    if (states) return buildScales(states)
     return defaultScales
   }
 
   get iuScales() {
     const IUs = this.iuData
-    if (IUs) return buildScales(IUs.stats)
+    if (IUs) return buildScales(IUs)
     return defaultScales
   }
 
