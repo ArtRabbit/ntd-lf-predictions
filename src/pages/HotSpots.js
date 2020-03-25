@@ -16,7 +16,13 @@ import LineChart from '../components/LineChart'
 import Map from '../components/Map'
 import { useDataAPI } from '../hooks/stateHooks'
 
-const useStyles = makeStyles(theme => ({}))
+const useStyles = makeStyles(theme => ({
+
+  chartContainer: {
+    position: 'relative',
+    padding: 0
+  }
+}))
 
 const PanelContainer = ({ children }) => (
   <div style={{ display: 'flex', overflow: 'auto', position: 'relative' }}>
@@ -76,7 +82,7 @@ const HotSpots = props => {
             sortBy(values(countryData.data), 'performance').map(country => {
               const { id, name, performance } = country
               return (
-                <Box key={id} p={1} mb={1}>
+                <Box key={id} p={1} mb={1} className={classes.chartContainer}>
                   <Typography variant="h5" component="h5">
                     {name}
                   </Typography>
