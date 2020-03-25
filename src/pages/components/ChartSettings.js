@@ -8,12 +8,15 @@ import Typography from '@material-ui/core/Typography';
 
 import Icon from '../../images/settings.svg';
 import IconHover from '../../images/settings-hover.svg';
+import CloseIcon from '../../images/close.svg';
+import CloseIconHover from '../../images/close-hover.svg';
 
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'absolute',
     right: 0,
-    top: 0
+    top: 0,
+    zIndex: 99,
   },
   button: {
     width: '100%',
@@ -56,6 +59,26 @@ const useStyles = makeStyles(theme => ({
       }
     }
   },
+  iconClose: {
+    backgroundColor: "transparent",
+    boxShadow: 'none',
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 99,
+    '& .MuiTouchRipple-root': {
+      backgroundImage: `url(${CloseIcon})`,
+      backgroundPosition: 'center',
+      backgroundSize: 'auto',
+      backgroundRepeat: 'no-repeat',
+    },
+    '&:hover': {
+      '& .MuiTouchRipple-root': {
+        backgroundImage: `url(${CloseIconHover})`,
+
+      }
+    }
+  },
 }));
 // <button mat-button aria-label="settings" className={classes.icon} onClick={(event) => handleClickOpen(event)}></button>
 const ChartSettings = ({ title, buttonText, action, children }) => {
@@ -70,7 +93,7 @@ const ChartSettings = ({ title, buttonText, action, children }) => {
     setOpen(true);
   };
 
-  const handleClickAway = () => {
+  const handleClickClose = () => {
     setOpen(false);
   };
 
@@ -85,11 +108,12 @@ const ChartSettings = ({ title, buttonText, action, children }) => {
     <div className={classes.root}>
       <Fab color="inherit" aria-label="settings" className={classes.icon} onClick={handleClickOpen}> </Fab>
       {open &&
-        <ClickAwayListener onClickAway={handleClickAway}>
+        <ClickAwayListener onClickAway={handleClickClose}>
           <Paper
             elevation={3}
             className={classes.modal}
           >
+            <Fab color="inherit" aria-label="settings" className={classes.iconClose} onClick={handleClickClose}> </Fab>
             <div className={classes.body}>
               <Typography variant="h3" component="h3">{title}</Typography>
               <div className={classes.form}>
