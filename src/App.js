@@ -104,6 +104,26 @@ const theme = createMuiTheme({
         color: "#fff",
         backgroundColor: '#6236ff'
       }
+    },
+    MuiFormLabel: {
+      root: {
+        color: '#000000',
+        fontWeight: 500,
+        fontSize: '1rem',
+        marginBottom: 8,
+      }
+    },
+    MuiOutlinedInput: {
+      root: {
+        //backgroundColor: "#fff",
+      }
+    },
+    MuiSelect: {
+      outlined: {
+        backgroundColor: "#fff",
+      }
+
+
     }
   },
   breakpoints: {

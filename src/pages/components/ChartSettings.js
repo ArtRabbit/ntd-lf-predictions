@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
 const ChartSettings = ({ title, buttonText, action, children }) => {
 
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   title = title ? title : 'Settings';
   buttonText = buttonText ? buttonText : 'Update graphs';

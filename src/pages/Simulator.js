@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   title: {
-    marginBottom: 10,
+    marginBottom: 24,
   },
   formControl: {
     margin: theme.spacing(0, 0, 3, 0),
@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
   },
   contentLeftColumn: {},
   settings: {
-    padding: theme.spacing(2, 2, 1, 2),
+    padding: theme.spacing(2, 4, 1, 2),
     backgroundColor: theme.palette.secondary.light,
   },
   buttons: {
@@ -136,7 +136,7 @@ const useStyles = makeStyles(theme => ({
   },
   imageOption: {
     paddingTop: 74,
-    minWidth: 126,
+    minWidth: 120,
     marginRight: theme.spacing(1),
     '&.anopheles': {
       backgroundImage: `url(${imgAnopheles})`,
@@ -149,6 +149,7 @@ const useStyles = makeStyles(theme => ({
       backgroundPosition: '14px top',
       backgroundSize: '112px 74px',
       backgroundRepeat: 'no-repeat',
+      marginRight: 0,
 
     },
     '& .MuiFormControlLabel-label': {
@@ -424,9 +425,8 @@ const Simulator = props => {
 
 
             <ChartSettings title="Settings" buttonText="Update Scenario" action={runCurrentScenario} >
-              <FormControl >
-                <Typography className={classes.withSlider}>Base prevalence</Typography>
-                <InputLabel htmlFor="endemicity"></InputLabel>
+              <FormControl fullWidth >
+                <FormLabel component="legend" htmlFor="endemicity" className={classes.withSlider}>Base prevalence</FormLabel>
                 <Slider
                   value={simParams.endemicity}
                   id="endemicity"
@@ -450,9 +450,8 @@ const Simulator = props => {
               approximation only.{' '}
             </p> */}
               </FormControl>
-              <FormControl >
-                <FormLabel className={classes.withSlider}>Number of runs</FormLabel>
-                <InputLabel htmlFor="runs"></InputLabel>
+              <FormControl fullWidth >
+                <FormLabel component="legend" htmlFor="runs" className={classes.withSlider}>Number of runs</FormLabel>
                 <Slider
                   value={simParams.runs}
                   min={1}
@@ -469,7 +468,7 @@ const Simulator = props => {
                   valueLabelDisplay="on"
                 />
               </FormControl>
-              <FormControl className={classes.formControlSelect} >
+              <FormControl fullWidth className={classes.formControlSelect} >
 
                 <FormLabel component="legend">Type of mosquito</FormLabel>
                 <RadioGroup
@@ -486,9 +485,8 @@ const Simulator = props => {
                   <FormControlLabel className={`${classes.imageOption} culex`} value={1} control={<Radio color="primary" />} label="Culex" />
                 </RadioGroup>
               </FormControl>
-              <FormControl >
-                <Typography className={classes.withSlider}>Vector: Bed Net Coverage (%)</Typography>
-                <InputLabel htmlFor="covN"></InputLabel>
+              <FormControl fullWidth >
+                <FormLabel component="legend" htmlFor="covN" className={classes.withSlider}>Vector: Bed Net Coverage (%)</FormLabel>
                 <Slider
                   value={simParams.covN}
                   id="covN"
@@ -511,9 +509,8 @@ const Simulator = props => {
               lifetime of the intervention campaign.
             </p> */}
               </FormControl>
-              <FormControl >
-                <Typography className={classes.withSlider}>Vector: Insecticide Coverage (%)</Typography>
-                <InputLabel htmlFor="v_to_hR"></InputLabel>
+              <FormControl fullWidth >
+                <FormLabel component="legend" htmlFor="v_to_hR" className={classes.withSlider}>Vector: Insecticide Coverage (%)</FormLabel>
                 <Slider
                   value={simParams.v_to_hR}
                   id="v_to_hR"
@@ -540,23 +537,21 @@ const Simulator = props => {
             <Typography className={classes.title} variant="h3" component="h2">
               Intervention
           </Typography>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="demo-simple-select-helper-label">
-                Fruequency
-            </InputLabel>
+            <FormControl fullWidth variant="outlined" className={classes.formControl}>
+              <FormLabel component="legend">Frequency</FormLabel>
               <Select
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
                 value={simParams.mdaSixMonths}
                 onChange={handleFrequencyChange}
+
               >
                 <MenuItem value={12}>Annual</MenuItem>
                 <MenuItem value={6}>Every 6 months</MenuItem>
               </Select>
             </FormControl>
-            <FormControl className={classes.formControl}>
-              <Typography className={classes.withSlider}>Target coverage</Typography>
-              <InputLabel htmlFor="coverage"></InputLabel>
+            <FormControl fullWidth className={classes.formControl}>
+              <FormLabel component="legend" htmlFor="coverage" className={classes.withSlider}>Target coverage</FormLabel>
               <Slider
                 value={simParams.coverage}
                 min={0}
@@ -571,14 +566,13 @@ const Simulator = props => {
                 valueLabelDisplay="on"
               />
             </FormControl>
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="demo-simple-select-helper-label">
-                Drug regimen
-            </InputLabel>
+            <FormControl fullWidth variant="outlined" className={classes.formControl}>
+              <FormLabel component="legend" htmlFor="demo-simple-select-helper-label">Drug regimen</FormLabel>
               <Select
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
                 value={simParams.mdaRegimen}
+
                 onChange={event => {
                   setSimParams({ ...simParams, mdaRegimen: event.target.value })
                 }}
@@ -588,7 +582,7 @@ const Simulator = props => {
                 <MenuItem value={3}>ivermectin</MenuItem>
                 <MenuItem value={4}>
                   ivermectin + albendazole + diethylcarbamazine
-              </MenuItem>
+                </MenuItem>
                 <MenuItem value={5}>custom</MenuItem>
               </Select>
             </FormControl>
@@ -679,12 +673,11 @@ const Simulator = props => {
             className={classes.modal}
             style={{ marginLeft: doseSettingsLeft }}
           >
-            <Typography className={classes.title} variant="h5" component="h2">
+            <Typography className={classes.title} variant="h5" component="h4">
               MDA round #{curMDARound + 1}
             </Typography>
-            <FormControl className={classes.formControl}>
-              <Typography className={classes.withSlider}>Coverage</Typography>
-              <InputLabel htmlFor="rho"></InputLabel>
+            <FormControl fullWidth className={classes.formControl}>
+              <FormLabel component="legend" htmlFor="rho" className={classes.withSlider}>Coverage</FormLabel>
               <Slider
                 value={simMDAcoverage[curMDARound]}
                 min={1}
@@ -706,9 +699,8 @@ const Simulator = props => {
               completely random. For 1, the same individuals are always treated.
             </p> */}
             </FormControl>
-            <FormControl className={classes.formControl}>
-              <Typography className={classes.withSlider}>Systemic adherence</Typography>
-              <InputLabel htmlFor="rho"></InputLabel>
+            <FormControl fullWidth className={classes.formControl}>
+              <FormLabel component="legend" htmlFor="rho" className={classes.withSlider}>Systemic adherence</FormLabel>
               <Slider
                 value={simMDAadherence[curMDARound]}
                 min={0}
