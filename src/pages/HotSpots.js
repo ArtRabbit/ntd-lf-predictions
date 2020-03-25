@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { observer } from 'mobx-react'
 import { values, sortBy, take } from 'lodash'
 
@@ -33,6 +33,7 @@ const HotSpots = props => {
     stateByCountryData,
     stateScales,
   } = useDataAPI()
+  const [selectedSlope, setSelectedSlope] = useState()
 
   return (
     <Layout>
@@ -100,24 +101,51 @@ const HotSpots = props => {
       />
 
       <Box className={classes.chartContainer}>
+          {selectedSlope && stateByCountryData && countryData && Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
+              if ( key === selectedSlope) {
+                return (
+                  <Box key={key} p={1}>
+                    <Typography variant="caption">{countryData.data[key].name}</Typography>
+                    <SlopeChart
+                      data={Object.values(data)}
+                      width={250}
+                      height={300}
+                      start={2015}
+                      end={2030}
+                      name={countryData.data[key].name}
+                      showAxis={true}
+                      showInfo={true}
+                      clipDomain={true}
+                      svgPadding={[20, 16, 20, 16]}
+                    />
+                  </Box>
+                  )
+                } 
+                return null
+            })}
         <PanelContainer>
-          {stateByCountryData &&
+          
+          {stateByCountryData && countryData &&
             Object.entries(stateByCountryData).map(([key, { data, stats }]) => {
               return (
-                <Box key={key} p={1}>
+                <Box key={key}>
                   <SlopeChart
                     data={Object.values(data)}
                     width={40}
                     height={300}
                     start={2015}
-                    end={2031}
+                    end={2030}
+                    name={countryData.data[key].name}
+                    setSelectedSlope={setSelectedSlope}
+                    countryKey={key}
                     clipDomain={false}
-                    svgPadding={[0, 0, 0, 0]}
+                    svgPadding={[20, 0, 0, 0]}
                   />
-                  <Typography variant="caption">{key}</Typography>
                 </Box>
               )
             })}
+
+            
         </PanelContainer>
       </Box>
 
