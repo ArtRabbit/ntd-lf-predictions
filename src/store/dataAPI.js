@@ -13,12 +13,25 @@ import {
   filter,
   mapKeys,
   omit,
+  flatMap,
+  pick as pickFP,
   every as everyFP,
   mapValues as mapValuesFP,
   pickBy as pickByFP,
   sortBy as sortByFP,
 } from 'lodash/fp'
-import { sortBy, merge, min, max, zip, mapValues, first, last } from 'lodash'
+import {
+  sortBy,
+  merge,
+  min,
+  max,
+  zip,
+  mapValues,
+  first,
+  last,
+  transform,
+  findIndex,
+} from 'lodash'
 import { color, extent, scaleLinear, interpolateHcl } from 'd3'
 import {
   REGIME_COVERAGE,
@@ -96,38 +109,48 @@ const defaultScales = {
 function addRankingAndStats(data) {
   const dataMap = keyBy('id')(data)
 
-  // create ranking
-  const rankings = flow(
-    values,
-    map(({ prevalence, id }) =>
-      entries(prevalence).map(([year, prevalence]) => ({
+  // create entries for each prevalence value and year
+  const prevByYear = flow(
+    flatMap(({ prevalence, id }) => {
+      return entries(prevalence).map(([year, prevalence]) => ({
         year,
         prevalence,
         id,
       }))
-    ),
-    flatten,
-    // group all values by year
-    groupBy('year'),
-    // add year and rank
-    mapValuesFP(v =>
-      sortBy(v, ['prevalence', 'id']).map((x, i) => ({
+    }),
+    groupBy('year')
+  )(data)
+
+  // sort entries and add ranks
+  const sortedPrev = transform(
+    prevByYear,
+    (result, value, year, data) => {
+      const prevYear = (parseInt(year) - 1).toString()
+      const sorted = sortByFP([
+        x => x.prevalence,
+        x => findIndex(result[prevYear], ['id', x.id]),
+        x => dataMap[x.id].name,
+      ])(value)
+      result[year] = sorted.map((x, i) => ({
         ...x,
         year: +x.year,
         rank: i + 1,
       }))
-    ),
-    // break-up grouping by year
+    },
+    {}
+  )
+
+  // group entries by ID
+  const sortedPrevByID = flow(
     values,
     flatten,
-    // build rank series
     groupBy('id'),
-    mapValuesFP(ranks => map(omit('id'))(ranks))
-  )(dataMap)
+    mapValuesFP(map(omit('id')))
+  )(sortedPrev)
 
   // add rankings and performance (delta start to end) to entries
   const processed = mapValuesFP(x => {
-    const ranks = rankings[x.id]
+    const ranks = sortedPrevByID[x.id]
     // check if prevalence series contains NaN values
     const isValid = flow(
       values,
