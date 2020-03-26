@@ -2,6 +2,28 @@ var mysql = require('mysql')
 var fs = require('fs')
 var util = require('util')
 
+const REGIME_WHO = 'Current WHO guidelines'
+const REGIME_COVERAGE = 'Enhanced coverage'
+const REGIME_FREQUENCY = 'Enhanced frequency'
+const REGIME_NO_MDA = 'No MDA'
+
+var getRegimeName = par => {
+  switch (par) {
+    case 'Current WHO guidelines':
+      return 'REGIME_WHO'
+      break
+    case 'Enhanced coverage':
+      return 'REGIME_COVERAGE'
+      break
+    case 'Enhanced frequency':
+      return 'REGIME_FREQUENCY'
+      break
+    case 'No MDA':
+      return 'REGIME_NO_MDA'
+      break
+  }
+}
+
 var con = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -9,42 +31,44 @@ var con = mysql.createConnection({
   database: 'ntd',
 })
 
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
+  }
+}
+
 con.connect(function(err) {
   if (err) throw err
   //   console.log('Connected!')
 
   /***** gather country array ******/
-  let regimeArray = []
-  let regimeArrayofObjects = {}
-  con.query('SELECT * FROM IULevel', function(err, result, fields) {
+  let countryArray = []
+  let countryArrayofObjects = {}
+  con.query('SELECT * FROM Relations', function(err, result, fields) {
     if (err) throw err
 
     result.forEach(element => {
-      noSpaceRegime = element.Regime.replace(/ /g, '')
-      const exists = regimeArray.find(params => {
-        return params == element.Regime
+      const exists = countryArray.find(params => {
+        return params == element.Country
       })
       if (!exists) {
-        regimeArray.push(element.Regime)
-        // regimeArrayofObjects.push({})
-        regimeArrayofObjects[noSpaceRegime] = []
+        countryArray.push(element.Country)
+        // countryArrayofObjects.push({})
+        countryArrayofObjects[element.Country] = []
       }
     })
-    console.log(regimeArray)
-    console.log(regimeArrayofObjects)
-    // console.log(regimeArray.length, 'countries')
 
-    /***** gather regimes for each regimes *****/
-    let regimes = Object.keys(regimeArray)
-    regimeArray.forEach(regime => {
-      //   console.log(regime)
-      let thisRegime = []
+    /***** gather StateCodes for each country *****/
+    let countryCodes = Object.keys(countryArrayofObjects)
+
+    countryCodes.forEach(countryCode => {
+      //   console.log(countryCode)
       con.query(
-        "SELECT * FROM IULevel WHERE Regime ='" + regime + "'",
+        "SELECT * FROM Relations WHERE Country ='" + countryCode + "'",
         function(err, result, fields) {
           if (err) throw err
-          // let thisCountryStates = []
-          thisRegime[0] = [
+          let thisCountryStates = []
+          thisCountryStates[0] = [
             'IUID',
             'Endemicity',
             'Population',
@@ -174,30 +198,90 @@ con.connect(function(err) {
             'Upper_Bound_Year2029',
             'Upper_Bound_Year2030',
           ]
+          // if (countryCode == 'AGO') {
+          console.log(countryCode, result.length)
 
-          //        console.log(result)
-          result.forEach((element2, stateIndex) => {
-            thisRegime[stateIndex + 1] = []
-            let valuesOnly = Object.values(element2)
-            //console.log(valuesOnly)
-            valuesOnly.forEach((element3, valueIndex) => {
-              if (valueIndex !== 0) {
-                //   console.log(element3)
-                thisRegime[stateIndex + 1].push(element3)
+          const myAsync = async () => {
+            await asyncForEach(result, element => {
+              // console.log(element)
+
+              const exists2 = countryArrayofObjects[countryCode].find(
+                params => {
+                  return params == element.IUID
+                }
+              )
+              if (!exists2) {
+                countryArrayofObjects[countryCode].push(element.IUID)
+                console.log(element.IUID)
+                //                  const myPromise = await con.query("SELECT * FROM StateLevel WHERE IUID ='" + element.state_code + "'") // not working
+                con.query(
+                  "SELECT * FROM IULevel WHERE IUID ='" + element.IUID + "'",
+                  function(err, result2, fields) {
+                    if (err) throw err
+                    // console.log(result2)
+                    // console.log(element.state_code, result2.length)
+
+                    const myAsync2 = async () => {
+                      var regimeName = ''
+                      await asyncForEach(result2, (element2, stateIndex) => {
+                        if (element2.Regime === 'Current WHO guidelines') {
+                          // if (element2.Regime === 'Enhanced coverage') {
+                          // if (element2.Regime === 'Enhanced frequency') {
+                          // if (element2.Regime === 'No MDA') {
+                          regimeName = getRegimeName(element2.Regime)
+                          thisCountryStates[stateIndex + 1] = []
+
+                          let valuesOnly = Object.values(element2)
+                          //console.log(valuesOnly)
+                          valuesOnly.forEach((element3, valueIndex) => {
+                            if (valueIndex !== 0) {
+                              // console.log(element3)
+                              thisCountryStates[stateIndex + 1].push(element3)
+                              //                        console.log(element3)
+                            }
+                          })
+                        }
+                      })
+                      console.log(thisCountryStates)
+                      let outputString = thisCountryStates
+                        .map(e => e.join(','))
+                        .join('\r\n')
+                      fs.appendFileSync(
+                        './ui-level-by-regime/' +
+                          countryCode +
+                          '-REGIME_WHO.csv',
+                        outputString
+                      )
+                      // fs.appendFileSync('./ui-level-by-regime/' + countryCode + '-REGIME_COVERAGE.csv', outputString)
+                      // fs.appendFileSync('./ui-level-by-regime/' + countryCode + '-REGIME_FREQUENCY.csv', outputString)
+                      // fs.appendFileSync('./ui-level-by-regime/' + countryCode + '-REGIME_NO_MDA.csv', outputString)
+                    }
+                    myAsync2()
+
+                    // countryArrayofObjects[countryCode].push(element.state_code)
+                  }
+                )
               }
             })
-            console.log(thisRegime)
-            let outputString = thisRegime.map(e => e.join(',')).join('\r\n')
-            let noSpaceRegime = regime.replace(/ /g, '')
+            console.log('Done with AGO')
+            // console.log(thisCountryStates.length)
+            let outputString = thisCountryStates
+              .map(e => e.join(','))
+              .join('\r\n')
             fs.writeFileSync(
-              '../iu-level/' + noSpaceRegime + '.csv',
+              './ui-level-by-regime/' + countryCode + '-REGIME_WHO.csv',
               outputString,
               'utf-8'
             )
-          })
+            // fs.writeFileSync('./ui-level-by-regime/' + countryCode + '-REGIME_COVERAGE.csv', outputString, 'utf-8')
+            // fs.writeFileSync('./ui-level-by-regime/' + countryCode + '-REGIME_FREQUENCY.csv', outputString, 'utf-8')
+            // fs.writeFileSync('./ui-level-by-regime/' + countryCode + '-REGIME_NO_MDA.csv', outputString, 'utf-8')
+          }
+          myAsync()
 
-          //   console.log(regimeArrayofObjects)
-          // fs.writeFileSync('./countries-and-its-stateids.json', JSON.stringify(regimeArrayofObjects), 'utf-8')
+          //   console.log(countryArrayofObjects)
+          //fs.writeFileSync('./countries-and-its-stateids.json', JSON.stringify(countryArrayofObjects), 'utf-8')
+          // }
         }
       )
     })

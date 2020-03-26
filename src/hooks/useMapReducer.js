@@ -28,7 +28,7 @@ const fit = (feature, vp) => {
       padding: 40,
     }
   )
-  console.log(feature)
+
   return {
     viewport: {
       longitude,

@@ -30,7 +30,8 @@ import {
   transform,
   findIndex,
 } from 'lodash'
-import { color, extent, scaleSymlog, interpolateHcl } from 'd3'
+import { color, extent, scaleSymlog, scaleLinear, interpolateHcl } from 'd3'
+
 import {
   REGIME_COVERAGE,
   REGIME_WHO,
@@ -38,18 +39,18 @@ import {
   REGIME_NO_MDA,
 } from '../constants'
 
-const seq5 = ['#fe4c73', '#FF7F9B', '#FFB2C3', '#FFCCD7', '#ffffff']
-const seq5b = ['#FF0038', '#FF7F9B', '#FFB2C3', '#FFCCD7', '#FFFFFF']
-const div3 = ['#03D386', '#ededed', '#fe4c73']
-const div5 = ['#03D386', '#B3F1DA', '#ededed', '#FFB2C3', '#fe4c73']
+const seq5 = ['#BA455E', '#CB7386', '#DDA2AF', '#EED0D7', '#ffffff']
+const seq5b = ['#A91636', '#BA455E', '#CB7386', '#DDA2AF', '#FFFFFF']
+const div3 = ['#32C2A2', '#ededed', '#fe4c73']
+const div5 = ['#32C2A2', '#84DAC7', '#ededed', '#FFB2C3', '#fe4c73']
 const div7 = [
-  '#03D386',
-  '#4EE0AA',
-  '#B3F1DA',
-  '#FFE5EB',
-  '#FFB2C3',
-  '#FF7F9B',
-  '#fe4c73',
+  '#32C2A2',
+  '#ADE6DA',
+  '#D6F3EC',
+  '#0000ff',
+  '#DDA2AF',
+  '#CB7386',
+  '#BA455E',
 ]
 
 const emptyFeatureCollection = { type: 'FeatureCollection', features: [] }
@@ -70,14 +71,14 @@ const buildScales = ({ data, stats }) => {
 
   const prev = scaleSymlog()
     .domain([0, stats.prevalence.max])
-    .range(['#fff', '#FE4C73'])
+    .range(['#fff','#d01c8b'])
     .nice()
 
   const mp = max(stats.performance.map(x => Math.abs(x)))
 
   const perf = scaleSymlog()
-    .domain([-mp, 0, mp])
-    .range(['#03D386', '#EDEDED', '#FE4C73'])
+    .domain([-mp, 0.1, 0, 0.1, mp])
+    .range(['#4dac26','#fff', '#fff','#fff', '#d01c8b'])
     .interpolate(interpolateHcl)
     .nice()
 
@@ -85,7 +86,7 @@ const buildScales = ({ data, stats }) => {
   //   const perfDiv2 = scaleDiverging()
   //     .domain([-mp, 0, mp])
   //     .interpolator(t =>
-  //       piecewise(interpolateHcl, ['#03D386', '#EDEDED', '#FE4C73'])(t)
+  //       piecewise(interpolateHcl, ['#32C2A2', '#D6F3EC', '#A91636'])(t)
   //     )
 
   //   const perfQuantize = scaleQuantize()

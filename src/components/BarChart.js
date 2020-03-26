@@ -21,16 +21,17 @@ function createVerticalAxis(scale, height) {
           stroke={i === 0 ? '#e0e0e0' : '#e0e0e0'}
           strokeDasharray={`4 ${i === 0 ? 0 : 3}`}
         ></line>
-      
+
         <text x={x + 4} y={height + 32} textAnchor="middle" fontSize="12">
-          { ( !(prev % 10) || prev === 0) ? `${prev}%` : '' }
+          {!(prev % 10) || prev === 0 ? `${prev}%` : ''}
         </text>
       </g>
     )
   })
 }
 
-function BarChart({ data: d, width }) {
+function BarChart({ dataAndStats, width }) {
+  const { stats, data: d } = dataAndStats
   const data = sortBy(d, element => first(element.ranks).prevalence)
 
   const [selected, setSelected] = useState()
@@ -46,8 +47,7 @@ function BarChart({ data: d, width }) {
   const labelPlacement = 0 - lPad
 
   const labelOffset = 0
-  //   TODO: derive domain from data
-  const domain = [0, 30]
+  const domain = [0, stats.prevalence.max]
 
   const xScaleAfter = scaleLinear()
     .domain(domain)
@@ -89,7 +89,7 @@ function BarChart({ data: d, width }) {
           dominantBaseline="central"
           fill="#000"
         >
-          2020
+          2000
         </text>
         <text
           fontSize="16"

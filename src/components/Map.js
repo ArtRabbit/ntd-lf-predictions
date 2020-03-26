@@ -291,16 +291,22 @@ function Map({
               type="fill"
               paint={{
                 'fill-color': [
-                  'coalesce',
-                  ['get', colorProp],
-                  // hide shape if no data available
+                  'case',
+                  !iuFeatures,
+                  [
+                    'coalesce',
+                    ['get', colorProp],
+                    // hide shape if no data available
+                    '#F2F1F1',
+                  ],
+                  // hide states if IUs provided
                   'rgba(0,0,0,0)',
                 ],
                 'fill-outline-color': [
                   'case',
                   ['==', ['get', 'id'], feature?.properties.id || null],
                   'rgba(145, 145, 145, 1)',
-                  'rgba(255, 255, 255, 0.5)',
+                  '#CCCACA',
                 ],
               }}
             />
@@ -335,8 +341,8 @@ function Map({
                 'fill-color': [
                   'coalesce',
                   ['get', colorProp],
-                  // hide shape if no data available
-                  'rgba(0,0,0,0)',
+                  // grey shapes if no data available
+                  '#F2F1F1',
                 ],
                 'fill-outline-color': [
                   'case',
