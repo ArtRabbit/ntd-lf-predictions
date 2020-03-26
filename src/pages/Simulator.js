@@ -33,10 +33,11 @@ import ChartSettings from './components/ChartSettings'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 
-import imgRandom from '../images/Random.svg'
-import imgSame from '../images/Same.svg'
+import imgRandom from '../images/sa-random.svg'
+import imgSame from '../images/sa-same.svg'
 import imgAnopheles from '../images/Anopheles.jpg'
 import imgCulex from '../images/Culex.jpg'
+import imgArrow from '../images/popuparrow.png'
 
 SimulatorEngine.simControler.documentReady()
 
@@ -74,6 +75,7 @@ const useStyles = makeStyles(theme => ({
   simulator: {
     width: `calc(100% + ${theme.spacing(12)}px)`,
     marginLeft: -theme.spacing(6),
+    position: 'relative'
   },
   tabs: {
     padding: theme.spacing(0, 6),
@@ -98,22 +100,34 @@ const useStyles = makeStyles(theme => ({
     //borderTopRightRadius: 0,
     borderRadius: 0,
   },
-  modal: {
+  roundModal: {
     padding: theme.spacing(3, 3, 0, 3),
     borderRadius: 0,
     width: 310,
-    position: 'relative',
-    marginTop: theme.spacing(-3),
+    position: 'absolute',
+    bottom: 50,
+    left: 0,
     '&::after': {
       content: `''`,
       position: 'absolute',
       left: '50%',
-      top: '-2rem',
+      width: 55,
+      height: 29,
+      bottom: -29,
+      backgroundImage: `url(${imgArrow})`,
+      backgroundPosition: 'center top',
+      backgroundSize: '55px 29px',
+      backgroundRepeat: 'no-repeat',
+      transform: 'translate(-50%, 0%)',
+      /*
+      bottom: '-2rem',
       transform: 'translate(-50%, 0%)',
       width: '0',
       height: '0',
       border: '1rem solid transparent',
-      borderBottomColor: '#fff',
+      borderTopColor: '#fff',
+      boxShadow: '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
+      */
     },
   },
   modalButtons: {
@@ -125,10 +139,28 @@ const useStyles = makeStyles(theme => ({
   adherence: {
     height: 72,
     width: '100%',
-    backgroundImage: `url(${imgRandom}), url(${imgSame})`,
-    backgroundPosition: 'left center, right center',
-    backgroundSize: 'auto',
-    backgroundRepeat: 'no-repeat, no-repeat',
+    position: 'relative',
+    '&:after, &:before': {
+      content: `''`,
+      position: 'absolute',
+      top: 0,
+      width: 72,
+      height: 72,
+    },
+    '&:before': {
+      left: 0,
+      backgroundImage: `url(${imgRandom})`,
+      backgroundPosition: 'left center',
+      backgroundSize: 'auto',
+      backgroundRepeat: 'no-repeat',
+    },
+    '&:after': {
+      right: 0,
+      backgroundImage: `url(${imgSame})`,
+      backgroundPosition: 'right center',
+      backgroundSize: 'auto',
+      backgroundRepeat: 'no-repeat',
+    },
   },
 
   imageOptions: {
@@ -729,8 +761,8 @@ const Simulator = props => {
         {doseSettingsOpen && (
           <Paper
             elevation={3}
-            className={classes.modal}
-            style={{ marginLeft: doseSettingsLeft }}
+            className={classes.roundModal}
+            style={{ left: doseSettingsLeft }}
           >
             <Typography className={classes.title} variant="h5" component="h4">
               MDA round #{curMDARound + 1}

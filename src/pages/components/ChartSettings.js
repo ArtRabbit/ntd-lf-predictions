@@ -17,6 +17,7 @@ const useStyles = makeStyles(theme => ({
     right: 0,
     top: 0,
     zIndex: 99,
+    height: '100%'
   },
   button: {
     width: '100%',
@@ -25,7 +26,8 @@ const useStyles = makeStyles(theme => ({
   modal: {
     position: 'absolute',
     right: 0,
-    top: 0,
+    top: '50%',
+    transform: 'translate(0%, -50%)',
     padding: theme.spacing(0),
     minWidth: 300,
     borderRadius: 0
@@ -84,7 +86,7 @@ const useStyles = makeStyles(theme => ({
 const ChartSettings = ({ title, buttonText, action, children }) => {
 
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   title = title ? title : 'Settings';
   buttonText = buttonText ? buttonText : 'Update graphs';
