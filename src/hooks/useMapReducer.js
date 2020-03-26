@@ -28,12 +28,13 @@ const fit = (feature, vp) => {
       padding: 40,
     }
   )
-
+  console.log(feature)
   return {
     viewport: {
       longitude,
       latitude,
-      zoom: feature.source !== 'africa-iu' ? zoom : vp.zoom,
+      //   only zoom-in if country
+      zoom: !!feature.properties.ADMIN0ISO3 ? zoom : vp.zoom,
     },
   }
 }

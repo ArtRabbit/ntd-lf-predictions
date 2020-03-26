@@ -13,12 +13,13 @@ import {
   filter,
   mapKeys,
   omit,
+  every as everyFP,
   mapValues as mapValuesFP,
   pickBy as pickByFP,
   sortBy as sortByFP,
 } from 'lodash/fp'
 import { sortBy, merge, min, max, zip, mapValues, first, last } from 'lodash'
-import { color, extent, scaleLinear, interpolateHcl } from 'd3'
+import { color, extent, scaleLinear,scaleSymlog,interpolateViridis, interpolateHcl } from 'd3'
 import {
   REGIME_COVERAGE,
   REGIME_WHO,
@@ -26,17 +27,17 @@ import {
   REGIME_NO_MDA,
 } from '../constants'
 
-const seq5 = ['#fe4c73', '#ff8597', '#ffb1ba', '#ffd9dc', '#ffffff']
-const seq5b = ['#D1114C', '#E76079', '#F697A5', '#FFCBD1', '#FFFFFF']
-const div3 = ['#6236fd', '#ededed', '#fe4c73']
-const div5 = ['#6236fd', '#b793f7', '#ededed', '#fea4ae', '#fe4c73']
+const seq5 = ['#fe4c73', '#FF7F9B', '#FFB2C3', '#FFCCD7', '#ffffff']
+const seq5b = ['#FF0038', '#FF7F9B', '#FFB2C3', '#FFCCD7', '#FFFFFF']
+const div3 = ['#03D386', '#ededed', '#fe4c73']
+const div5 = ['#03D386', '#B3F1DA', '#ededed', '#FFB2C3', '#fe4c73']
 const div7 = [
-  '#6236fd',
-  '#a075fa',
-  '#cbb1f5',
-  '#ededed',
-  '#fbbdc2',
-  '#ff8b9a',
+  '#03D386',
+  '#4EE0AA',
+  '#B3F1DA',
+  '#FFE5EB',
+  '#FFB2C3',
+  '#FF7F9B',
   '#fe4c73',
 ]
 
@@ -56,16 +57,17 @@ const buildScales = ({ data, stats }) => {
   //     .domain([0, stats.prevalence.max])
   //     .nice(5)
 
-  const prev = scaleLinear()
+
+  const prev = scaleSymlog()
     .domain([0, stats.prevalence.max])
     .range(['#fff', '#FE4C73'])
     .nice()
 
   const mp = max(stats.performance.map(x => Math.abs(x)))
 
-  const perf = scaleLinear()
+  const perf = scaleSymlog()
     .domain([-mp, 0, mp])
-    .range(['#6236fd', '#EDEDED', '#FE4C73'])
+    .range(['#03D386', '#EDEDED', '#FE4C73'])
     .interpolate(interpolateHcl)
     .nice()
 
@@ -73,7 +75,7 @@ const buildScales = ({ data, stats }) => {
   //   const perfDiv2 = scaleDiverging()
   //     .domain([-mp, 0, mp])
   //     .interpolator(t =>
-  //       piecewise(interpolateHcl, ['#6236fd', '#EDEDED', '#FE4C73'])(t)
+  //       piecewise(interpolateHcl, ['#03D386', '#EDEDED', '#FE4C73'])(t)
   //     )
 
   //   const perfQuantize = scaleQuantize()
@@ -127,9 +129,20 @@ function addRankingAndStats(data) {
   // add rankings and performance (delta start to end) to entries
   const processed = mapValuesFP(x => {
     const ranks = rankings[x.id]
-    const values = ranks.map(x => x.prevalence)
-    const performance = last(values) - first(values)
-    return { ...x, ranks, performance }
+    // check if prevalence series contains NaN values
+    const isValid = flow(
+      values,
+      map(x => isFinite(x.prevalence)),
+      everyFP(x => x)
+    )(ranks)
+
+    if (isValid) {
+      const pValues = ranks.map(x => x.prevalence)
+      const performance = last(pValues) - first(pValues)
+      return { ...x, ranks, performance }
+    }
+
+    return { ...x, ranks: null, performance: null }
   })(dataMap)
 
   // create prevalence stats
@@ -356,6 +369,23 @@ class DataAPI {
     return null
   }
 
+  // returns all IUs grouped by state for the selected country
+  get iuByStateData() {
+    const IUs = this.filteredIUsWithMeta
+    const { country } = this.uiState
+    const { relations } = this.dataStore
+
+    if (IUs && relations) {
+      return flow(
+        filter(x => x.relatedCountries[0] === country),
+        groupBy(x => x.relatedStates[0]),
+        mapValuesFP(addRankingAndStats)
+      )(IUs)
+    }
+
+    return null
+  }
+
   get iuData() {
     const ius = this.filteredIUsWithMeta
     const { relations } = this.dataStore
@@ -499,6 +529,7 @@ decorate(DataAPI, {
   countryData: computed,
   stateData: computed,
   stateByCountryData: computed,
+  iuByStateData: computed,
   iuData: computed,
   countryFeatures: computed,
   stateFeatures: computed,

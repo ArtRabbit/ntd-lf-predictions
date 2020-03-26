@@ -87,7 +87,7 @@ function BarChart({ data: d, width }) {
           y={-10}
           textAnchor="end"
           dominantBaseline="central"
-          fill="#B09AFD"
+          fill="#000"
         >
           2020
         </text>
@@ -98,7 +98,7 @@ function BarChart({ data: d, width }) {
           y={-10}
           textAnchor="start"
           dominantBaseline="central"
-          fill="#6236FD"
+          fill="#000"
         >
           2030
         </text>
@@ -117,7 +117,7 @@ function BarChart({ data: d, width }) {
                 x2={xScaleAfter(prevAfter)}
                 y1={0}
                 y2={0}
-                stroke="#6236FD"
+                stroke="#B09AFF"
                 strokeWidth={8}
               ></line>
               <line
@@ -125,7 +125,7 @@ function BarChart({ data: d, width }) {
                 x2={xScaleBefore(prevBefore)}
                 y1={0}
                 y2={0}
-                stroke="#B09AFD"
+                stroke="#CFC2FF"
                 strokeWidth={8}
               ></line>
               <text
