@@ -38,8 +38,8 @@ import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 
 import ScenarioGraph from '../components/ScenarioGraph'
 
-import imgRandom from '../images/sa-random.svg'
-import imgSame from '../images/sa-same.svg'
+import imgRandom from '../images/systemic-random.svg'
+import imgSame from '../images/systemic-same.svg'
 import imgAnopheles from '../images/Anopheles.jpg'
 import imgCulex from '../images/Culex.jpg'
 import imgArrow from '../images/popuparrow.png'
@@ -84,6 +84,7 @@ const useStyles = makeStyles(theme => ({
   },
   tabs: {
     padding: theme.spacing(0, 6),
+    borderBottom: '1px solid #e0e0e0',
   },
   chartContainer: {
     position: 'relative',
@@ -110,30 +111,8 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 0,
     width: 310,
     position: 'absolute',
-    bottom: 50,
-    left: 0,
-    '&::after': {
-      content: `''`,
-      position: 'absolute',
-      left: '50%',
-      width: 55,
-      height: 29,
-      bottom: -29,
-      backgroundImage: `url(${imgArrow})`,
-      backgroundPosition: 'center top',
-      backgroundSize: '55px 29px',
-      backgroundRepeat: 'no-repeat',
-      transform: 'translate(-50%, 0%)',
-      /*
-      bottom: '-2rem',
-      transform: 'translate(-50%, 0%)',
-      width: '0',
-      height: '0',
-      border: '1rem solid transparent',
-      borderTopColor: '#fff',
-      boxShadow: '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
-      */
-    },
+    top: 50,
+    left: '`calc(100% - 310px)`',
   },
   modalButtons: {
     display: 'flex',
@@ -149,8 +128,8 @@ const useStyles = makeStyles(theme => ({
       content: `''`,
       position: 'absolute',
       top: 0,
-      width: 72,
-      height: 72,
+      width: 100,
+      height: 100,
     },
     '&:before': {
       left: 0,
@@ -163,7 +142,7 @@ const useStyles = makeStyles(theme => ({
       right: 0,
       backgroundImage: `url(${imgSame})`,
       backgroundPosition: 'right center',
-      backgroundSize: 'auto',
+      backgroundSize: '100px',
       backgroundRepeat: 'no-repeat',
     },
   },
@@ -222,6 +201,8 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 }
+
+let countryLinks = [];
 
 const Simulator = props => {
   const classes = useStyles()
@@ -394,7 +375,7 @@ const Simulator = props => {
         // console.log('settingTabLength', tabLength + 1)
         setTabIndex(tabLength)
         setTabLength(tabLength + 1)
-        console.log(tabIndex, simParams)
+        //console.log(tabIndex, simParams)
         SimulatorEngine.simControler.newScenario = true
         SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
       } else {
@@ -405,6 +386,8 @@ const Simulator = props => {
   const queryString = window.location.search
   const urlParams = new URLSearchParams(queryString)
   const basePrevalance = urlParams.get('base_prev') // endemicity from URL
+  const country = urlParams.get('country')
+
   useEffect(() => {
     if (basePrevalance)
       setSimParams({
@@ -413,6 +396,12 @@ const Simulator = props => {
       })
     // console.log(simParams)
   }, [basePrevalance])
+
+  useEffect(() => {
+    if (country)
+      countryLinks = [{ to: '/trends/'+country, name: 'TRENDS '+(urlParams.get('name') ? urlParams.get('name') : country) },{ to: '/hotspots/'+country, name: 'HOTSPOTS '+(urlParams.get('name') ? urlParams.get('name') : country) }]
+      //console.log(countryLinks)
+  }, [country])
   const [doseSettingsOpen, setDoseSettingsOpen] = useState(false)
   const [doseSettingsLeft, setDoseSettingsLeft] = useState(0)
 
@@ -427,7 +416,7 @@ const Simulator = props => {
         transparent={true}
         disableInputs={true}
         title="Lymphatic filariasis Simulator"
-        text={`This simulator provides a way of assessing the impact of various interventions for a variety of backgrounds for Lymphatic filariasis transmission. Create your own scenarios and compare them to our baseline.`}
+        text={`This simulator provides a way of assessing the impact of various interventions for a variety of backgrounds for Lymphatic filariasis transmission.`}
       />
       {/*       {props.location.search}
       {window.location.search} */}
@@ -450,11 +439,9 @@ const Simulator = props => {
               variant="scrollable"
               scrollButtons="auto"
             >
-              <Tab label="Scenario 1" {...a11yProps(0)} />
-              <Tab label="Scenario 2" {...a11yProps(1)} />
-              <Tab label="Scenario 3" {...a11yProps(2)} />
-              {tabLength > 3 && <Tab label="Scenario 4" {...a11yProps(3)} />}
-              {tabLength > 4 && <Tab label="Scenario 5" {...a11yProps(4)} />}
+              {scenarioResults.map((result, i) => (
+                <Tab key={`tab-element-${i}`} label={`Scenario ${i}`} {...a11yProps(i)} />
+              ))}
             </Tabs>
           </Grid>
 
@@ -466,10 +453,79 @@ const Simulator = props => {
                   value={tabIndex}
                   index={i}
                 >
-                  Scenario {i}
-                  <div style={{ overflow: 'hidden', height: '400px' }}>
-                    <ScenarioGraph data={result} showAllResults={false} />
-                  </div>
+                  <Box p={1}>
+                  <Typography className={classes.title} variant="h3" component="h2">
+                    {`Scenario ${i}`}
+                  </Typography>
+                    
+                    <div>
+                      <ScenarioGraph data={result} inputs={simMDAcoverage} showAllResults={true} />
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        height: 100,
+                        justifyContent: 'space-around',
+                        marginTop: 30,
+                        marginBottom: 20,
+                        marginRight: 20,
+                        marginLeft: 55,
+                        cursor: 'hand',
+                      }}
+                    >
+                      {/* {(12 / simParams.mdaSixMonths) * 20} */}
+                      {simMDAtime.map((e, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            background: '#B09AFF',
+                            height: 100,
+                            minWidth: 1,
+                            borderWidth: 1,
+                            borderColor: 'white',
+                            borderStyle: 'solid',
+                          }}
+                          onMouseOver={a => {
+                            //a.target.style.borderColor = '#d01c8b'
+                          }}
+                          onMouseOut={a => {
+                            //a.target.style.borderColor = 'white'
+                          }}
+                          onClick={a => {
+                            //a.target.style.backgroundColor = '#d01c8b'
+                            //console.log(a.target)
+                            //console.log(a.target.getBoundingClientRect().left)
+                            //console.log(a.target.offsetWidth)
+                            setCurMDARound(i)
+                            setDoseSettingsOpen(true)
+                            /*setDoseSettingsLeft(
+                              a.target.getBoundingClientRect().left +
+                                (a.target.offsetWidth / 2 )  -
+                                155
+                            )*/
+                          }}
+                          title={
+                            simMDAtime[i] +
+                            ', ' +
+                            simMDAcoverage[i] +
+                            ', ' +
+                            simMDAadherence[i]
+                          }
+                        >
+                          <span
+                            style={{
+                              display: 'block',
+                              background:
+                                i === curMDARound ? '#d01c8b' : '#6236FF',
+                              height: simMDAcoverage[i],
+                              minWidth: 10,
+                            }}
+                          ></span>
+                        </div>
+                      ))}
+                    </div>
+
+                  </Box>
                 </TabPanel>
               ))}
             </div>
@@ -730,72 +786,12 @@ const Simulator = props => {
             )}
           </Grid>
         </Grid>
-        <Grid item md={12} xs={12}>
-          <div
-            style={{
-              display: 'flex',
-              height: 100,
-              justifyContent: 'space-around',
-              marginTop: 30,
-              marginBottom: 20,
-              cursor: 'hand',
-            }}
-          >
-            {/* {(12 / simParams.mdaSixMonths) * 20} */}
-            {simMDAtime.map((e, i) => (
-              <div
-                key={i}
-                style={{
-                  background: 'grey',
-                  height: 100,
-                  minWidth: 10,
-                  borderWidth: 1,
-                  borderColor: 'white',
-                  borderStyle: 'solid',
-                }}
-                onMouseOver={a => {
-                  // a.target.style.borderColor = '#aa2323'
-                }}
-                onMouseOut={a => {
-                  // a.target.style.borderColor = 'white'
-                }}
-                onClick={a => {
-                  // a.target.style.backgroundColor = '#aa2323'
-                  setCurMDARound(i)
-                  setDoseSettingsOpen(true)
-                  setDoseSettingsLeft(
-                    a.target.getBoundingClientRect().left +
-                      a.target.offsetWidth / 2 -
-                      155
-                  )
-                }}
-                title={
-                  simMDAtime[i] +
-                  ', ' +
-                  simMDAcoverage[i] +
-                  ', ' +
-                  simMDAadherence[i]
-                }
-              >
-                <span
-                  style={{
-                    display: 'block',
-                    background:
-                      i === curMDARound ? '#aa2323' : 'rgb(98, 54, 255)',
-                    height: simMDAcoverage[i],
-                    minWidth: 10,
-                  }}
-                ></span>
-              </div>
-            ))}
-          </div>
-        </Grid>
+        
         {doseSettingsOpen && (
           <ClickAwayListener onClickAway={closeRoundModal}>
             <Paper
               elevation={3}
               className={classes.roundModal}
-              style={{ left: doseSettingsLeft }}
             >
               <CloseButton action={closeRoundModal} />
 
@@ -838,7 +834,7 @@ const Simulator = props => {
                   htmlFor="rho"
                   className={classes.withSlider}
                 >
-                  Systemic adherence
+                  Systematic adherence
                 </FormLabel>
                 <Slider
                   value={simMDAadherence[curMDARound]}
@@ -894,9 +890,9 @@ const Simulator = props => {
 
       <DiveDeeper
         title="Get an overview"
-        links={[
-          { to: '/hotspots', name: 'TRENDS FOR ALL COUNTRIES' },
-          { to: '/country', name: 'PROBLEM AREAS FOR ALL COUNTRIES' },
+        links={[ ...countryLinks,
+          { to: '/trends', name: 'TRENDS FOR ALL COUNTRIES' },
+          { to: '/hotspots', name: 'HOTSPOTS FOR ALL COUNTRIES' },
         ]}
       />
     </Layout>

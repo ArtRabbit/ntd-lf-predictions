@@ -162,7 +162,7 @@ const TrendsCountry = props => {
             <SectionTitle
               top={false}
               headline="Development of prevalence"
-              text={`An overview of how the prevalence of LF in each country/district has developed over time. To see alternative outcomes, change the treatment scenario in the top menu.`}
+              text={`An overview of how the prevalence of LF in each district has developed over time. To see alternative outcomes, change the treatment scenario in the top menu.`}
             />
             {stateData && <BumpChart data={Object.values(stateData.data)} />}
           </Box>
@@ -171,7 +171,7 @@ const TrendsCountry = props => {
 
       <SectionTitle
         top={false}
-        headline="Trend Map"
+        headline="Trend map"
         text={`View good and bad performance by district and compare prevalence over time from 2000 to 2030. To see alternative outcomes, change the treatment scenario in the top menu.`}
       ></SectionTitle>
 

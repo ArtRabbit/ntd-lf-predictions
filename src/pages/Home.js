@@ -125,7 +125,7 @@ const Home = (props) => {
       <HeadWithInputs
         title="Lymphatic filariasis Projections"
         text={
-          `Welcome to the NTD Modelling Projections. The projections on this website provide guidance on the impact of different interventions strategies would have on achieving elimination as a public health problem.`
+          `Welcome to the lymphatic filariasis projections. The projections on this website provide guidance on the impact of more frequent, longer or higher coverage treatment strategies on achieving elimination as a public health problem.`
         }
         actionLabel={"Enter"}
         action={showIntro}

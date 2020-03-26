@@ -104,7 +104,7 @@ const HotSpots = props => {
       </Box>
 
       <SectionTitle
-        headline="District Activity"
+        headline="District activity"
         text={`Get a detailed view of the performance of individual districts in each country. See where prevalence is declining, increasing, and which areas are reaching the WHO 1% threshold. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
