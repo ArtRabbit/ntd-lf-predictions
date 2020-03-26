@@ -48,7 +48,7 @@ export default function Legend({
         tickFormat = format(tickFormat === undefined ? ',f' : tickFormat)
       }
     } else {
-      tickValues = x.ticks()
+      tickValues = x.ticks(5)
     }
 
     return (
