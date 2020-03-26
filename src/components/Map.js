@@ -33,6 +33,13 @@ const useStyles = makeStyles({
   popup: {
     zIndex: 10000,
   },
+  legendTitle: {
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    fontSize: '12px',
+    marginBottom: '0px',
+    paddingBottom: '0px'
+  }
 })
 
 function Map({
@@ -446,7 +453,10 @@ function Map({
               >
                 <Paper>
                   <Box p={1} pb={2}>
-                    Performance = 2030-2000 (prev)
+                    <Typography variant="body2" className={classes.legendTitle}>
+                        {trendMode ? 'Prevalence change 2000-2030' : 'Prevalence'}
+                    </Typography>
+                    
                     <Legend colorScale={colorScale} />
                   </Box>
                 </Paper>

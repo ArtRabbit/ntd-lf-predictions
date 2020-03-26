@@ -77,8 +77,8 @@ const buildScales = ({ data, stats }) => {
   const mp = max(stats.performance.map(x => Math.abs(x)))
 
   const perf = scaleSymlog()
-    .domain([-mp, 0.1, 0, 0.1, mp])
-    .range(['#4dac26','#fff', '#fff','#fff', '#d01c8b'])
+    .domain([-mp, 0.1, mp])
+    .range(['#4dac26', '#fff', '#d01c8b'])
     .interpolate(interpolateHcl)
     .nice()
 

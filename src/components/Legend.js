@@ -17,9 +17,9 @@ export default function Legend({
   colorScale,
   marginLeft = 16,
   marginRight = 16,
-  marginTop = 16,
+  marginTop = 6,
   marginBottom = 16,
-  height = 60,
+  height = 40,
   width = 250,
   tickFormat,
   tickSize = 6,
@@ -67,14 +67,27 @@ export default function Legend({
           xlinkHref={ramp(d).toDataURL()}
         ></image>
         <g transform={`translate(0,${height - marginBottom})`}>
-          {tickValues.map(t => (
-            <g key={t} transform={`translate(${x(t)},0)`}>
-              <line x1={0} x2={0} y1={4} y2={12} stroke="#000000"></line>
-              <text y={24} fontSize={10} textAnchor="middle">
-                {t}
-              </text>
-            </g>
-          ))}
+          {tickValues.map((t,index) => {
+            if ( t === 0 || index === 0 || index === tickValues.length-1 ) {
+              return (
+                <g key={t} transform={`translate(${x(t)},0)`}>
+                  <line x1={0} x2={0} y1={4} y2={12} stroke="#000000"></line>
+                  <text x={1} y={25} fontSize={12} textAnchor="middle">
+                    {`${t}%`}
+                  </text>
+                </g>
+              )
+            } else {
+              return (
+                <g key={t} transform={`translate(${x(t)},0)`}>
+                  <line x1={0} x2={0} y1={4} y2={12} stroke="#000000"></line>
+                </g>
+              )
+
+            }
+
+            
+          })}
         </g>
       </svg>
     )
