@@ -8,13 +8,7 @@ import { first, last, flatten, max } from 'lodash'
 const start = 2000
 const end = 2030
 
-function SlopeChart({
-  data,
-  width,
-  height,
-  clipDomain,
-  yDomain,
-}) {
+function LineChart({ data, width, height, clipDomain, yDomain }) {
   const [selected, setSelected] = useState()
   const [selectedYear, setSelectedYear] = useState()
   const lPad = 50
@@ -28,7 +22,6 @@ function SlopeChart({
   const xScale = scaleLinear()
     .domain([start, end])
     .range([0, width - (rPad + lPad)])
-
 
   const domain =
     yDomain || max(flatten(data.map(d => d.ranks.map(r => r.prevalence))))
@@ -48,7 +41,7 @@ function SlopeChart({
     setSelectedYear(null)
   }
 
-  const handleEnterYear = (year,id) => {
+  const handleEnterYear = (year, id) => {
     setSelected(id)
     setSelectedYear(year)
   }
@@ -60,23 +53,20 @@ function SlopeChart({
   const yearWidth = xScale(start + 1) - xScale(start)
   const halfYearWidth = Math.round(yearWidth / 2)
 
-
   return (
     <svg
       width={svgWidth}
       height={svgHeight}
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
     >
-      
-
       <g transform={`translate(${lPad},${yPad})`}>
         {/* <rect width={width} height={height} fill="#f0f0f0"></rect> */}
 
         {/* lable start and end years */}
         {xScale.ticks().map(year => {
-           if (year === start) {
-              return (
-                <g key={start}>
+          if (year === start) {
+            return (
+              <g key={start}>
                 <text
                   x={startX - halfYearWidth}
                   y={height + 32}
@@ -85,33 +75,36 @@ function SlopeChart({
                 >
                   {start}
                 </text>
-                </g>)
-           } else if ( year === end ) {
-             return (
+              </g>
+            )
+          } else if (year === end) {
+            return (
               <g key={end}>
-              <text
-                x={endX - halfYearWidth}
-                y={height + 32}
-                textAnchor="right"
-                fontSize="12"
-              >
-                {end}
-              </text>
-              </g>)
-           } else {
-              const yearOutput = '‘'+year.toString().substr(-2)
-              return (<g key={year}>
-              <text
-                x={xScale(year)}
-                y={height + 32}
-                textAnchor="middle"
-                fontSize="12"
-              >
-                {yearOutput}
-              </text>
-              </g>)
-
-           }
+                <text
+                  x={endX - halfYearWidth}
+                  y={height + 32}
+                  textAnchor="right"
+                  fontSize="12"
+                >
+                  {end}
+                </text>
+              </g>
+            )
+          } else {
+            const yearOutput = '‘' + year.toString().substr(-2)
+            return (
+              <g key={year}>
+                <text
+                  x={xScale(year)}
+                  y={height + 32}
+                  textAnchor="middle"
+                  fontSize="12"
+                >
+                  {yearOutput}
+                </text>
+              </g>
+            )
+          }
         })}
 
         {xScale.ticks().map(year => {
@@ -151,10 +144,6 @@ function SlopeChart({
           )
         })}
 
-        
-
-        
-
         {/* y-axis labels */}
         {yTicks.map(t => {
           const y = yScale(t)
@@ -169,7 +158,14 @@ function SlopeChart({
               >
                 {t}%
               </text>
-              <line x1={0} x2={(end-start)*yearWidth} y1={y} y2={y} stroke="#cfcfcf" strokeDasharray="4 3"></line>
+              <line
+                x1={0}
+                x2={(end - start) * yearWidth}
+                y1={y}
+                y2={y}
+                stroke="#cfcfcf"
+                strokeDasharray="4 3"
+              ></line>
             </g>
           )
         })}
@@ -183,15 +179,14 @@ function SlopeChart({
             const { year } = d
             return [xScale(year), y(d)]
           })
-          coords.push([coords[coords.length-1][0],height])
-          coords.push([0,height])
-          coords.push([0,coords[0][1]])
+          coords.push([coords[coords.length - 1][0], height])
+          coords.push([0, height])
+          coords.push([0, coords[0][1]])
           const l = line()(coords)
 
           const hoverTargets = ranks.map(d => {
             const { year } = d
             return (
-              
               <line
                 key={`${state}-${id}-${year}`}
                 x1={xScale(year)}
@@ -200,7 +195,7 @@ function SlopeChart({
                 y2={height + 15}
                 strokeWidth={yearWidth}
                 stroke="transparent"
-                onMouseEnter={() => handleEnterYear(year,id)}
+                onMouseEnter={() => handleEnterYear(year, id)}
                 onMouseLeave={handleLeave}
               ></line>
             )
@@ -208,31 +203,36 @@ function SlopeChart({
 
           const hoverDisplay = ranks.map(d => {
             const { year, rank, prevalence } = d
-            if ( year !== selectedYear ) return null
-              return (
-                <g
-                  key={`circle-${year}-${rank}`}
-                  transform={`translate(${xScale(year)}, ${y(d)})`}
-                >
-                  <circle
-                    r="18"
-                    fill={
-                      prevalence <= 1
-                        ? '#4dac26'
-                        : prevalence >= 6 && prevalence <= 10
-                        ? '#d01c8b'
-                        : prevalence > 10
-                        ? '#d01c8b'
-                        : '#6236FF'
-                    }
-                  ></circle>
-                  <text x="1" y="5" textAnchor="middle" fill="white" fontSize="12px" fontFamily="Roboto" dy="-1px">{`${prevalence}%`}</text>
-                </g>)
+            if (year !== selectedYear) return null
+            return (
+              <g
+                key={`circle-${year}-${rank}`}
+                transform={`translate(${xScale(year)}, ${y(d)})`}
+              >
+                <circle
+                  r="18"
+                  fill={
+                    prevalence <= 1
+                      ? '#4dac26'
+                      : prevalence >= 6 && prevalence <= 10
+                      ? '#d01c8b'
+                      : prevalence > 10
+                      ? '#d01c8b'
+                      : '#6236FF'
+                  }
+                ></circle>
+                <text
+                  x="1"
+                  y="5"
+                  textAnchor="middle"
+                  fill="white"
+                  fontSize="12px"
+                  fontFamily="Roboto"
+                  dy="-1px"
+                >{`${prevalence}%`}</text>
+              </g>
+            )
           })
-
-
-           
-          
 
           return (
             <g key={`${state}-${id}`}>
@@ -246,7 +246,6 @@ function SlopeChart({
             </g>
           )
         })}
-
       </g>
     </svg>
   )
@@ -254,6 +253,6 @@ function SlopeChart({
 
 export default props => (
   <AutoSizer disableHeight>
-    {({ width }) => <SlopeChart {...props} width={width} />}
+    {({ width }) => <LineChart {...props} width={width} />}
   </AutoSizer>
 )

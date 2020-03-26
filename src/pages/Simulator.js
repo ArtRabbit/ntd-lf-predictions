@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
-import { useTheme } from '@material-ui/styles';
+import { useTheme } from '@material-ui/styles'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -26,15 +26,17 @@ import TextField from '@material-ui/core/TextField'
 import Paper from '@material-ui/core/Paper'
 import Tooltip from '@material-ui/core/Tooltip'
 import Slider from '@material-ui/core/Slider'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
 import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
 import SectionTitle from './components/SectionTitle'
 import ChartSettings from './components/ChartSettings'
-import CloseButton from './components/CloseButton';
+import CloseButton from './components/CloseButton'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
+
+import ScenarioGraph from '../components/ScenarioGraph'
 
 import imgRandom from '../images/sa-random.svg'
 import imgSame from '../images/sa-same.svg'
@@ -78,7 +80,7 @@ const useStyles = makeStyles(theme => ({
   simulator: {
     width: `calc(100% + ${theme.spacing(12)}px)`,
     marginLeft: -theme.spacing(6),
-    position: 'relative'
+    position: 'relative',
   },
   tabs: {
     padding: theme.spacing(0, 6),
@@ -223,7 +225,7 @@ TabPanel.propTypes = {
 
 const Simulator = props => {
   const classes = useStyles()
-  const theme = useTheme();
+  const theme = useTheme()
 
   const [simParams, setSimParams] = useState({
     ...SimulatorEngine.simControler.params, // params editable via UI
@@ -239,7 +241,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-        (simParams.mdaSixMonths / 12) * 12 * i
+          (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -309,7 +311,10 @@ const Simulator = props => {
   }
   const [simulationProgress, setSimulationProgress] = useState(0)
   const [scenarioInputs, setScenarioInputs] = useState([])
-  const [scenarioResults, setScenarioResults] = useState([])
+  //   TODO: remove localStorage for production
+  const [scenarioResults, setScenarioResults] = useState(
+    JSON.parse(window.localStorage.getItem('scenarios')) || []
+  )
   const [scenarioMDAs, setScenarioMDAs] = useState([])
   const simulatorCallback = (resultObject, newScenario) => {
     if (typeof resultObject == 'number') {
@@ -344,6 +349,12 @@ const Simulator = props => {
         resultItem = JSON.parse(resultObject) // 3. Replace the property you're intested in
         scenarioResultsNew[correctTabIndex] = resultItem // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
         setScenarioResults(scenarioResultsNew) // 5. Set the state to our new copy
+
+        // TODO: remove, just for development
+        window.localStorage.setItem(
+          'scenarios',
+          JSON.stringify(scenarioResultsNew)
+        )
 
         let scenarioInputsNew = [...scenarioInputs]
         let inputsItem = scenarioInputsNew[correctTabIndex]
@@ -448,36 +459,18 @@ const Simulator = props => {
 
           <Grid item md={9} xs={12} className={classes.chartContainer}>
             <div className={classes.tavs}>
-              <TabPanel value={tabIndex} index={0}>
-                Scenario 1
-                <div style={{ overflow: 'hidden', height: '400px' }}>
-                  {JSON.stringify(scenarioResults[0])}
-                </div>
-              </TabPanel>
-              <TabPanel value={tabIndex} index={1}>
-                Scenario 2
-                <div style={{ overflow: 'hidden', height: '400px' }}>
-                  {JSON.stringify(scenarioResults[1])}
-                </div>
-              </TabPanel>
-              <TabPanel value={tabIndex} index={2}>
-                Scenario 3
-                <div style={{ overflow: 'hidden', height: '400px' }}>
-                  {JSON.stringify(scenarioResults[2])}
-                </div>
-              </TabPanel>
-              <TabPanel value={tabIndex} index={3}>
-                Scenario 4
-                <div style={{ overflow: 'hidden', height: '400px' }}>
-                  {JSON.stringify(scenarioResults[3])}
-                </div>
-              </TabPanel>
-              <TabPanel value={tabIndex} index={4}>
-                Scenario 5
-                <div style={{ overflow: 'hidden', height: '400px' }}>
-                  {JSON.stringify(scenarioResults[4])}
-                </div>
-              </TabPanel>
+              {scenarioResults.map((result, i) => (
+                <TabPanel
+                  key={`scenario-result-${i}`}
+                  value={tabIndex}
+                  index={i}
+                >
+                  Scenario {i}
+                  <div style={{ overflow: 'hidden', height: '400px' }}>
+                    <ScenarioGraph data={result} showAllResults={false} />
+                  </div>
+                </TabPanel>
+              ))}
             </div>
 
             <ChartSettings
@@ -771,8 +764,8 @@ const Simulator = props => {
                   setDoseSettingsOpen(true)
                   setDoseSettingsLeft(
                     a.target.getBoundingClientRect().left +
-                    a.target.offsetWidth / 2 -
-                    155
+                      a.target.offsetWidth / 2 -
+                      155
                   )
                 }}
                 title={
@@ -803,8 +796,6 @@ const Simulator = props => {
               className={classes.roundModal}
               style={{ left: doseSettingsLeft }}
             >
-
-
               <CloseButton action={closeRoundModal} />
 
               <Typography className={classes.title} variant="h5" component="h4">
@@ -817,7 +808,7 @@ const Simulator = props => {
                   className={classes.withSlider}
                 >
                   Coverage
-              </FormLabel>
+                </FormLabel>
                 <Slider
                   value={simMDAcoverage[curMDARound]}
                   min={1}
@@ -847,7 +838,7 @@ const Simulator = props => {
                   className={classes.withSlider}
                 >
                   Systemic adherence
-              </FormLabel>
+                </FormLabel>
                 <Slider
                   value={simMDAadherence[curMDARound]}
                   min={0}
@@ -881,7 +872,7 @@ const Simulator = props => {
                   }}
                 >
                   REMOVE
-              </Button>
+                </Button>
                 <Button
                   className={classes.modalButton}
                   variant="contained"
@@ -893,7 +884,7 @@ const Simulator = props => {
                   }}
                 >
                   UPDATE
-              </Button>
+                </Button>
               </div>
             </Paper>
           </ClickAwayListener>
