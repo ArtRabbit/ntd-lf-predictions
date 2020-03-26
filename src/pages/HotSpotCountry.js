@@ -118,8 +118,8 @@ const HotSpotCountry = props => {
       </Box>
 
       <SectionTitle
-        headline="Implementation Unit Activity"
-        text={`Get a detailed view of the IU performance. See where prevalence is improving, increasing, and what areas are reaching the WHO 1% threshold. To see alternative outcomes, change your treatment scenario in the top menu.`}
+        headline="District activity"
+        text={`Get a detailed view of performance in districts. See where prevalence is improving, increasing, and what areas are reaching the WHO 1% threshold. To see alternative outcomes, change your treatment scenario in the top menu.`}
       />
 
       <Grid container spacing={0}>

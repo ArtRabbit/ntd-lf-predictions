@@ -246,7 +246,7 @@ function SlopeChart({
                       fill={
                         a.prevalence <= 1
                           ? '#6ABD8E'
-                          : a.prevalence > 10
+                          : a.prevalence > 5
                           ? '#FF4C73'
                           : '#6236FF'
                       }
@@ -270,7 +270,7 @@ function SlopeChart({
                       fill={
                         b.prevalence <= 1
                           ? '#6ABD8E'
-                          : b.prevalence > 10
+                          : b.prevalence > 5
                           ? '#FF4C73'
                           : '#6236FF'
                       }

@@ -18,6 +18,7 @@ export const rankColor = (a, selected) => {
 export const slopeColor = (a, b, selected) => {
   if (selected) return '#6236FF'
   if (b.prevalence <= 1) return '#B3F1DA'
+  if (b.prevalence > 5) return '#FF4C73'
   if (b.prevalence > a.prevalence) return '#FF4C73'
   return '#6ABD8E'
 }
