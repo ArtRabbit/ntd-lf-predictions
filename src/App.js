@@ -44,10 +44,26 @@ const theme = createMuiTheme({
     },
     secondary: {
       light: '#eeeeee',
-      main: '#f50057', // 
+      main: '#FF4C73', // 
+    },
+    reds: {
+      high: '#FF4C73',
+      full: '#A91636',
+      eighty: '#BA455E',
+      sixty: '#CB7386',
+      forty: '#DDA2AF',
+      twenty: '#EED0D7'
+    },
+    greens: {
+      high: '#32C2A2',
+      full: '#32C2A2',
+      eighty: '#5BCEB4',
+      sixty: '#84DAC7',
+      forty: '#ADE6DA',
+      twenty: '#D6F3EC'
     },
     error: {
-      main: '#aa2323',
+      main: '#FF4C73',
     },
   },
   typography: {

@@ -245,8 +245,10 @@ function SlopeChart({
                       r="18"
                       fill={
                         a.prevalence <= 1
-                          ? '#6ABD8E'
-                          : a.prevalence > 5
+                          ? '#32C2A2'
+                          : a.prevalence >= 6 && a.prevalence <= 10
+                          ? '#BA455E'
+                          : a.prevalence > 10
                           ? '#FF4C73'
                           : '#6236FF'
                       }
@@ -269,8 +271,10 @@ function SlopeChart({
                       r="18"
                       fill={
                         b.prevalence <= 1
-                          ? '#6ABD8E'
-                          : b.prevalence > 5
+                          ? '#32C2A2'
+                          : b.prevalence >= 6 && b.prevalence <= 10
+                          ? '#BA455E'
+                          : b.prevalence > 10
                           ? '#FF4C73'
                           : '#6236FF'
                       }
@@ -293,8 +297,8 @@ function SlopeChart({
 
       {showLegend && (
         <div style={{ fontSize: 12, paddingTop: 16, lineHeight: 2 }}>
-          <div style={{ color: '#ff5e0d' }}>prevalence increasing</div>
-          <div style={{ color: '#12df93' }}>{`prevalence <= 1% by ${end}`}</div>
+          <div style={{ color: '#BA455E' }}>prevalence increasing</div>
+          <div style={{ color: '#32C2A2' }}>{`prevalence <= 1% by ${end}`}</div>
         </div>
       )}
     </div>

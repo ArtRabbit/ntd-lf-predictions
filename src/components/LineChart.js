@@ -218,7 +218,9 @@ function SlopeChart({
                     r="18"
                     fill={
                       prevalence <= 1
-                        ? '#6ABD8E'
+                        ? '#32C2A2'
+                        : prevalence >= 6 && prevalence <= 10
+                        ? '#BA455E'
                         : prevalence > 10
                         ? '#FF4C73'
                         : '#6236FF'

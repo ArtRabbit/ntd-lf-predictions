@@ -415,7 +415,7 @@ const Simulator = props => {
       <HeadWithInputs
         transparent={true}
         disableInputs={true}
-        title="Lympahtic filariasis Prevalence Simulator"
+        title="Lymphatic filariasis Simulator"
       />
       {/*       {props.location.search}
       {window.location.search} */}
