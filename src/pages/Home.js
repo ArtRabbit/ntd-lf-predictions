@@ -44,8 +44,8 @@ const useStyles = makeStyles(theme => ({
     zIndex: 9,
     float: 'left',
     paddingTop: theme.spacing(8),
+    clear: 'left',
     [theme.breakpoints.up('lg')]: {
-      clear: 'left'
     }
     /*
     position: 'absolute',

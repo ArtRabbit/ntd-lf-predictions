@@ -32,6 +32,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('md')]: {
       '&.full-height': {
         height: '100vh',
+        minHeight: 800,
         display: 'block',
         flex: 'none'
       }
