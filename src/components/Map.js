@@ -176,13 +176,13 @@ function Map({
 
   const renderPopup = f => {
     const { name, id, performance, endemicity, population } = f.properties
-
+    const prevalence = feature.properties[`prev-${year}`]
     return (
       <Box display="block" variant="body1" component="div">
         <Typography variant="subtitle1" gutterBottom>
           {name}
         </Typography>
-        <div>Prevalence: {feature.properties[`prev-${year}`]} %</div>
+        <div>Prevalence: {feature.properties[`prev-${year}`]}%</div>
         {population && <div>Population: {format(',')(population)}</div>}
         {endemicity && <div>Endemicity: {endemicity}</div>}
         <div>Trend: {performance}</div>
@@ -202,16 +202,17 @@ function Map({
                 children={`Hotspots ${name}`}
               />
             </li>
-            {/* <li>
-            <Link href="#" onClick={() => selectCountryClickHotspots(id)}>
-              Hotspots {name}
-            </Link>{' '}
-          </li>
-          <li>
-            <Link href="#" onClick={() => selectCountryClickTrends(id)}>
-              Trends {name}
-            </Link>
-          </li> */}
+          </ul>
+        )}
+        {feature.source === 'africa-iu' && (
+          <ul className="links">
+            <li>
+              <Link
+                component={RouterLink}
+                to={`/simulator/?base_prev=${prevalence}&country=${country}`}
+                children={`Simulate other interventions`}
+              />
+            </li>
           </ul>
         )}
       </Box>
@@ -271,10 +272,10 @@ function Map({
                 'line-color': [
                   'case',
                   ['==', ['get', 'id'], featureHover?.properties.id || null],
-                  '#6236FF',
+                  '#616161',
                   'rgba(0,0,0,0)',
                 ],
-                'line-width': 2,
+                'line-width': 1,
               }}
             />
           </Source>
@@ -313,7 +314,7 @@ function Map({
                 'line-color': [
                   'case',
                   ['==', ['get', 'id'], featureHover?.properties.id || null],
-                  '#6236FF',
+                  '#616161',
                   'rgba(0,0,0,0)',
                 ],
                 'line-width': 1,
@@ -355,7 +356,7 @@ function Map({
                 'line-color': [
                   'case',
                   ['==', ['get', 'id'], featureHover?.properties.id || null],
-                  '#6236FF',
+                  '#616161',
                   'rgba(0,0,0,0)',
                 ],
                 'line-width': 1,

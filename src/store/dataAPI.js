@@ -19,7 +19,7 @@ import {
   sortBy as sortByFP,
 } from 'lodash/fp'
 import { sortBy, merge, min, max, zip, mapValues, first, last } from 'lodash'
-import { color, extent, scaleLinear, interpolateHcl } from 'd3'
+import { color, extent, scaleLinear,scaleSymlog,interpolateViridis, interpolateHcl } from 'd3'
 import {
   REGIME_COVERAGE,
   REGIME_WHO,
@@ -27,17 +27,17 @@ import {
   REGIME_NO_MDA,
 } from '../constants'
 
-const seq5 = ['#fe4c73', '#ff8597', '#ffb1ba', '#ffd9dc', '#ffffff']
-const seq5b = ['#D1114C', '#E76079', '#F697A5', '#FFCBD1', '#FFFFFF']
-const div3 = ['#6236fd', '#ededed', '#fe4c73']
-const div5 = ['#6236fd', '#b793f7', '#ededed', '#fea4ae', '#fe4c73']
+const seq5 = ['#fe4c73', '#FF7F9B', '#FFB2C3', '#FFCCD7', '#ffffff']
+const seq5b = ['#FF0038', '#FF7F9B', '#FFB2C3', '#FFCCD7', '#FFFFFF']
+const div3 = ['#03D386', '#ededed', '#fe4c73']
+const div5 = ['#03D386', '#B3F1DA', '#ededed', '#FFB2C3', '#fe4c73']
 const div7 = [
-  '#6236fd',
-  '#a075fa',
-  '#cbb1f5',
-  '#ededed',
-  '#fbbdc2',
-  '#ff8b9a',
+  '#03D386',
+  '#4EE0AA',
+  '#B3F1DA',
+  '#FFE5EB',
+  '#FFB2C3',
+  '#FF7F9B',
   '#fe4c73',
 ]
 
@@ -57,16 +57,17 @@ const buildScales = ({ data, stats }) => {
   //     .domain([0, stats.prevalence.max])
   //     .nice(5)
 
-  const prev = scaleLinear()
+
+  const prev = scaleSymlog()
     .domain([0, stats.prevalence.max])
     .range(['#fff', '#FE4C73'])
     .nice()
 
   const mp = max(stats.performance.map(x => Math.abs(x)))
 
-  const perf = scaleLinear()
+  const perf = scaleSymlog()
     .domain([-mp, 0, mp])
-    .range(['#6236fd', '#EDEDED', '#FE4C73'])
+    .range(['#03D386', '#EDEDED', '#FE4C73'])
     .interpolate(interpolateHcl)
     .nice()
 
@@ -74,7 +75,7 @@ const buildScales = ({ data, stats }) => {
   //   const perfDiv2 = scaleDiverging()
   //     .domain([-mp, 0, mp])
   //     .interpolator(t =>
-  //       piecewise(interpolateHcl, ['#6236fd', '#EDEDED', '#FE4C73'])(t)
+  //       piecewise(interpolateHcl, ['#03D386', '#EDEDED', '#FE4C73'])(t)
   //     )
 
   //   const perfQuantize = scaleQuantize()
