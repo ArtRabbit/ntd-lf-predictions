@@ -43,6 +43,7 @@ const Layout = (props) => {
 
   const classes = useStyles();
   const classAdd = props.classAdd ? props.classAdd : '';
+  const disableFooter = props.disableFooter ? true : false;
 
   return (
     <div className={`${classes.root} ${classAdd}`}>
@@ -51,7 +52,7 @@ const Layout = (props) => {
         {props.children}
       </Container>
 
-      <Footer />
+      {!disableFooter && <Footer />}
 
     </div>
   )

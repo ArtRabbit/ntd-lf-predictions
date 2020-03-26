@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => ({
       marginBottom: 0,
       width: 'calc(100% - 200px)',
       height: 'calc(100% - 124px)',
+      minHeight: 800 - 124,
       marginLeft: -300,
       top: 0,
       right: 0,
@@ -36,7 +37,6 @@ const useStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.up('lg')]: {
       width: 'calc(100% - 420px)',
-      height: 'calc(100% - 124px)',
 
     },
   },
@@ -153,7 +153,7 @@ const Home = (props) => {
   };
 
   return (
-    <Layout classAdd="full-height" onKeyDown={(event) => handleKeyDown(event)}>
+    <Layout classAdd="full-height" disableFooter={welcomeScren} onKeyDown={(event) => handleKeyDown(event)}>
       {welcomeScren && <WelcomeScreen />}
       {!welcomeScren && <HomeScreen />}
 
