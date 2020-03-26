@@ -70,6 +70,11 @@ const HotSpotCountry = props => {
         </Typography>
       </ExpandableInfoStandalone>
 
+      <SectionTitle
+          top={true}
+          headline="Implementation unit performance"
+          text={`Get a detailed view of activity in implementation units. To see alternative outcomes, change your treatment scenario in the top menu.`}
+        />
       <div
         style={{
           borderTop: '1px solid #e0e0e0',

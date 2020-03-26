@@ -201,7 +201,7 @@ function SlopeChart({
                   <Fragment key={`ranks-${id}`}>
                     <path
                       d={l}
-                      stroke={slopeColor(a, b, id === selected)}
+                      stroke={slopeColor(a, b, false, id === selected ? true : false)}
                       strokeWidth={id === selected ? 2 : 1}
                       fill="none"
                     />
@@ -219,7 +219,7 @@ function SlopeChart({
                 <Fragment key={`ranks-${id}`}>
                   <path
                     d={l}
-                    stroke={slopeColor(a, b, id === selected)}
+                    stroke={slopeColor(a, b, false, id === selected ? true : false)}
                     strokeWidth={id === selected ? 2 : 1}
                     fill="none"
                   />
@@ -243,13 +243,7 @@ function SlopeChart({
                   >
                     <circle
                       r="18"
-                      fill={
-                        a.prevalence <= 1
-                          ? '#6ABD8E'
-                          : a.prevalence > 5
-                          ? '#FF4C73'
-                          : '#6236FF'
-                      }
+                      fill={slopeColor(a,a, false, true)}
                     ></circle>
                     <text
                       x="1"
@@ -267,13 +261,7 @@ function SlopeChart({
                   >
                     <circle
                       r="18"
-                      fill={
-                        b.prevalence <= 1
-                          ? '#6ABD8E'
-                          : b.prevalence > 5
-                          ? '#FF4C73'
-                          : '#6236FF'
-                      }
+                      fill={slopeColor(b,b, false, true)}
                     ></circle>
                     <text
                       x="1"
@@ -293,8 +281,8 @@ function SlopeChart({
 
       {showLegend && (
         <div style={{ fontSize: 12, paddingTop: 16, lineHeight: 2 }}>
-          <div style={{ color: '#ff5e0d' }}>prevalence increasing</div>
-          <div style={{ color: '#12df93' }}>{`prevalence <= 1% by ${end}`}</div>
+          <div style={{ color: '#BA455E' }}>prevalence increasing</div>
+          <div style={{ color: '#4dac26' }}>{`prevalence <= 1% by ${end}`}</div>
         </div>
       )}
     </div>

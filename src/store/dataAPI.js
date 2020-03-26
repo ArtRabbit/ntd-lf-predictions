@@ -13,13 +13,25 @@ import {
   filter,
   mapKeys,
   omit,
+  flatMap,
   every as everyFP,
   mapValues as mapValuesFP,
   pickBy as pickByFP,
   sortBy as sortByFP,
 } from 'lodash/fp'
-import { sortBy, merge, min, max, zip, mapValues, first, last } from 'lodash'
-import { color, extent, scaleLinear, interpolateHcl } from 'd3'
+import {
+  merge,
+  min,
+  max,
+  zip,
+  mapValues,
+  first,
+  last,
+  transform,
+  findIndex,
+} from 'lodash'
+import { color, extent, scaleSymlog, scaleLinear, interpolateHcl } from 'd3'
+
 import {
   REGIME_COVERAGE,
   REGIME_WHO,
@@ -27,18 +39,18 @@ import {
   REGIME_NO_MDA,
 } from '../constants'
 
-const seq5 = ['#fe4c73', '#ff8597', '#ffb1ba', '#ffd9dc', '#ffffff']
-const seq5b = ['#D1114C', '#E76079', '#F697A5', '#FFCBD1', '#FFFFFF']
-const div3 = ['#6236fd', '#ededed', '#fe4c73']
-const div5 = ['#6236fd', '#b793f7', '#ededed', '#fea4ae', '#fe4c73']
+const seq5 = ['#BA455E', '#CB7386', '#DDA2AF', '#EED0D7', '#ffffff']
+const seq5b = ['#A91636', '#BA455E', '#CB7386', '#DDA2AF', '#FFFFFF']
+const div3 = ['#32C2A2', '#ededed', '#fe4c73']
+const div5 = ['#32C2A2', '#84DAC7', '#ededed', '#FFB2C3', '#fe4c73']
 const div7 = [
-  '#6236fd',
-  '#a075fa',
-  '#cbb1f5',
-  '#ededed',
-  '#fbbdc2',
-  '#ff8b9a',
-  '#fe4c73',
+  '#32C2A2',
+  '#ADE6DA',
+  '#D6F3EC',
+  '#0000ff',
+  '#DDA2AF',
+  '#CB7386',
+  '#BA455E',
 ]
 
 const emptyFeatureCollection = { type: 'FeatureCollection', features: [] }
@@ -57,16 +69,16 @@ const buildScales = ({ data, stats }) => {
   //     .domain([0, stats.prevalence.max])
   //     .nice(5)
 
-  const prev = scaleLinear()
+  const prev = scaleSymlog()
     .domain([0, stats.prevalence.max])
-    .range(['#fff', '#FE4C73'])
+    .range(['#fff','#d01c8b'])
     .nice()
 
   const mp = max(stats.performance.map(x => Math.abs(x)))
 
-  const perf = scaleLinear()
-    .domain([-mp, 0, mp])
-    .range(['#6236fd', '#EDEDED', '#FE4C73'])
+  const perf = scaleSymlog()
+    .domain([-mp, 0.1, 0, 0.1, mp])
+    .range(['#4dac26','#fff', '#fff','#fff', '#d01c8b'])
     .interpolate(interpolateHcl)
     .nice()
 
@@ -74,7 +86,7 @@ const buildScales = ({ data, stats }) => {
   //   const perfDiv2 = scaleDiverging()
   //     .domain([-mp, 0, mp])
   //     .interpolator(t =>
-  //       piecewise(interpolateHcl, ['#6236fd', '#EDEDED', '#FE4C73'])(t)
+  //       piecewise(interpolateHcl, ['#32C2A2', '#D6F3EC', '#A91636'])(t)
   //     )
 
   //   const perfQuantize = scaleQuantize()
@@ -96,38 +108,48 @@ const defaultScales = {
 function addRankingAndStats(data) {
   const dataMap = keyBy('id')(data)
 
-  // create ranking
-  const rankings = flow(
-    values,
-    map(({ prevalence, id }) =>
-      entries(prevalence).map(([year, prevalence]) => ({
+  // create entries for each prevalence value and year
+  const prevByYear = flow(
+    flatMap(({ prevalence, id }) => {
+      return entries(prevalence).map(([year, prevalence]) => ({
         year,
         prevalence,
         id,
       }))
-    ),
-    flatten,
-    // group all values by year
-    groupBy('year'),
-    // add year and rank
-    mapValuesFP(v =>
-      sortBy(v, ['prevalence', 'id']).map((x, i) => ({
+    }),
+    groupBy('year')
+  )(data)
+
+  // sort entries and add ranks
+  const sortedPrev = transform(
+    prevByYear,
+    (result, value, year, data) => {
+      const prevYear = (parseInt(year) - 1).toString()
+      const sorted = sortByFP([
+        x => x.prevalence,
+        x => findIndex(result[prevYear], ['id', x.id]),
+        x => dataMap[x.id].name,
+      ])(value)
+      result[year] = sorted.map((x, i) => ({
         ...x,
         year: +x.year,
         rank: i + 1,
       }))
-    ),
-    // break-up grouping by year
+    },
+    {}
+  )
+
+  // group entries by ID
+  const sortedPrevByID = flow(
     values,
     flatten,
-    // build rank series
     groupBy('id'),
-    mapValuesFP(ranks => map(omit('id'))(ranks))
-  )(dataMap)
+    mapValuesFP(map(omit('id')))
+  )(sortedPrev)
 
   // add rankings and performance (delta start to end) to entries
   const processed = mapValuesFP(x => {
-    const ranks = rankings[x.id]
+    const ranks = sortedPrevByID[x.id]
     // check if prevalence series contains NaN values
     const isValid = flow(
       values,

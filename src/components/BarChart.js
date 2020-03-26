@@ -21,16 +21,17 @@ function createVerticalAxis(scale, height) {
           stroke={i === 0 ? '#e0e0e0' : '#e0e0e0'}
           strokeDasharray={`4 ${i === 0 ? 0 : 3}`}
         ></line>
-      
+
         <text x={x + 4} y={height + 32} textAnchor="middle" fontSize="12">
-          { ( !(prev % 10) || prev === 0) ? `${prev}%` : '' }
+          {!(prev % 10) || prev === 0 ? `${prev}%` : ''}
         </text>
       </g>
     )
   })
 }
 
-function BarChart({ data: d, width }) {
+function BarChart({ dataAndStats, width }) {
+  const { stats, data: d } = dataAndStats
   const data = sortBy(d, element => first(element.ranks).prevalence)
 
   const [selected, setSelected] = useState()
@@ -46,8 +47,7 @@ function BarChart({ data: d, width }) {
   const labelPlacement = 0 - lPad
 
   const labelOffset = 0
-  //   TODO: derive domain from data
-  const domain = [0, 30]
+  const domain = [0, stats.prevalence.max]
 
   const xScaleAfter = scaleLinear()
     .domain(domain)
@@ -87,9 +87,9 @@ function BarChart({ data: d, width }) {
           y={-10}
           textAnchor="end"
           dominantBaseline="central"
-          fill="#B09AFD"
+          fill="#000"
         >
-          2020
+          2000
         </text>
         <text
           fontSize="16"
@@ -98,7 +98,7 @@ function BarChart({ data: d, width }) {
           y={-10}
           textAnchor="start"
           dominantBaseline="central"
-          fill="#6236FD"
+          fill="#000"
         >
           2030
         </text>
@@ -117,7 +117,7 @@ function BarChart({ data: d, width }) {
                 x2={xScaleAfter(prevAfter)}
                 y1={0}
                 y2={0}
-                stroke="#6236FD"
+                stroke="#B09AFF"
                 strokeWidth={8}
               ></line>
               <line
@@ -125,7 +125,7 @@ function BarChart({ data: d, width }) {
                 x2={xScaleBefore(prevBefore)}
                 y1={0}
                 y2={0}
-                stroke="#B09AFD"
+                stroke="#CFC2FF"
                 strokeWidth={8}
               ></line>
               <text
