@@ -4,8 +4,6 @@ import { merge } from 'lodash'
 import bbox from '@turf/bbox'
 import { easeCubic } from 'd3'
 
-console.log(window.innerWidth)
-
 const initialState = {
   // TODO: should be controlled by app state
   year: 2020,

@@ -16,6 +16,9 @@ import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import Tooltip from '@material-ui/core/Tooltip'
+import {
+  REGIME_LABELS,
+} from '../../constants'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -136,7 +139,7 @@ const Inputs = props => {
         >
           {regimes.map(r => (
             <MenuItem key={r} value={r}>
-              {r}
+              {REGIME_LABELS[r]}
             </MenuItem>
           ))}
         </Select>
