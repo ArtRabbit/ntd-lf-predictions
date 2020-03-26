@@ -163,12 +163,12 @@ function Timeline({ dataAndStats, width }) {
                   <circle
                     key={year}
                     fill={
-                      prevalence <= 1 ? '#32C2A2'
+                      prevalence <= 1 ? '#4dac26'
                     : prevalence >= 6 && prevalence <= 10
-                    ? '#A91636'
+                    ? '#d01c8b'
                     : prevalence > 10
-                    ? '#FF4C73'
-                    : '#A91636'
+                    ? '#f1b6da'
+                    : '#d01c8b'
                     }
                     fillOpacity={prevalence <= 1 ? .5 : 0.6}
                     r={radiusScale(prevalence)}

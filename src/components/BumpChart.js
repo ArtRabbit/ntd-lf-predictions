@@ -212,12 +212,12 @@ function BumpChart({ data, width }) {
                     fillOpacity={prevalence < 1 || prevalence > 5 ? 1 : 0.3}
                     fill={
                       prevalence < 1
-                        ? '#32C2A2'
+                        ? '#4dac26'
                         : prevalence >= 6 && prevalence <= 10
-                        ? '#BA455E'
+                        ? '#d01c8b'
                         : prevalence > 10
-                        ? '#FF4C73'
-                        : '#EED0D7'
+                        ? '#d01c8b'
+                        : '#f1b6da'
                     }
                   ></circle>
                 </g>

@@ -201,7 +201,7 @@ function SlopeChart({
                   <Fragment key={`ranks-${id}`}>
                     <path
                       d={l}
-                      stroke={slopeColor(a, b, id === selected)}
+                      stroke={slopeColor(a, b, false, id === selected ? true : false)}
                       strokeWidth={id === selected ? 2 : 1}
                       fill="none"
                     />
@@ -219,7 +219,7 @@ function SlopeChart({
                 <Fragment key={`ranks-${id}`}>
                   <path
                     d={l}
-                    stroke={slopeColor(a, b, id === selected)}
+                    stroke={slopeColor(a, b, false, id === selected ? true : false)}
                     strokeWidth={id === selected ? 2 : 1}
                     fill="none"
                   />
@@ -243,15 +243,7 @@ function SlopeChart({
                   >
                     <circle
                       r="18"
-                      fill={
-                        a.prevalence <= 1
-                          ? '#32C2A2'
-                          : a.prevalence >= 6 && a.prevalence <= 10
-                          ? '#BA455E'
-                          : a.prevalence > 10
-                          ? '#FF4C73'
-                          : '#6236FF'
-                      }
+                      fill={slopeColor(a,a, false, true)}
                     ></circle>
                     <text
                       x="1"
@@ -269,15 +261,7 @@ function SlopeChart({
                   >
                     <circle
                       r="18"
-                      fill={
-                        b.prevalence <= 1
-                          ? '#32C2A2'
-                          : b.prevalence >= 6 && b.prevalence <= 10
-                          ? '#BA455E'
-                          : b.prevalence > 10
-                          ? '#FF4C73'
-                          : '#6236FF'
-                      }
+                      fill={slopeColor(b,b, false, true)}
                     ></circle>
                     <text
                       x="1"
@@ -298,7 +282,7 @@ function SlopeChart({
       {showLegend && (
         <div style={{ fontSize: 12, paddingTop: 16, lineHeight: 2 }}>
           <div style={{ color: '#BA455E' }}>prevalence increasing</div>
-          <div style={{ color: '#32C2A2' }}>{`prevalence <= 1% by ${end}`}</div>
+          <div style={{ color: '#4dac26' }}>{`prevalence <= 1% by ${end}`}</div>
         </div>
       )}
     </div>
