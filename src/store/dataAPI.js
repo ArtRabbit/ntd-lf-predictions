@@ -13,6 +13,7 @@ import {
   filter,
   mapKeys,
   omit,
+  every as everyFP,
   mapValues as mapValuesFP,
   pickBy as pickByFP,
   sortBy as sortByFP,
@@ -127,9 +128,20 @@ function addRankingAndStats(data) {
   // add rankings and performance (delta start to end) to entries
   const processed = mapValuesFP(x => {
     const ranks = rankings[x.id]
-    const values = ranks.map(x => x.prevalence)
-    const performance = last(values) - first(values)
-    return { ...x, ranks, performance }
+    // check if prevalence series contains NaN values
+    const isValid = flow(
+      values,
+      map(x => isFinite(x.prevalence)),
+      everyFP(x => x)
+    )(ranks)
+
+    if (isValid) {
+      const pValues = ranks.map(x => x.prevalence)
+      const performance = last(pValues) - first(pValues)
+      return { ...x, ranks, performance }
+    }
+
+    return { ...x, ranks: null, performance: null }
   })(dataMap)
 
   // create prevalence stats
@@ -356,6 +368,23 @@ class DataAPI {
     return null
   }
 
+  // returns all IUs grouped by state for the selected country
+  get iuByStateData() {
+    const IUs = this.filteredIUsWithMeta
+    const { country } = this.uiState
+    const { relations } = this.dataStore
+
+    if (IUs && relations) {
+      return flow(
+        filter(x => x.relatedCountries[0] === country),
+        groupBy(x => x.relatedStates[0]),
+        mapValuesFP(addRankingAndStats)
+      )(IUs)
+    }
+
+    return null
+  }
+
   get iuData() {
     const ius = this.filteredIUsWithMeta
     const { relations } = this.dataStore
@@ -499,6 +528,7 @@ decorate(DataAPI, {
   countryData: computed,
   stateData: computed,
   stateByCountryData: computed,
+  iuByStateData: computed,
   iuData: computed,
   countryFeatures: computed,
   stateFeatures: computed,

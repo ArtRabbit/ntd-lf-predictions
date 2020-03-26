@@ -40,13 +40,13 @@ const HotSpotCountry = props => {
     stateFeatures,
     iuFeatures,
     selectedCountry,
-    stateByCountryData,
+    iuByStateData,
     stateData,
     iuScales,
   } = useDataAPI()
 
   const [selectedSlope, setSelectedSlope] = useState()
-  const showDetail = selectedSlope && stateByCountryData
+  const showDetail = selectedSlope && iuByStateData
 
   const { country } = useUIState()
 
@@ -125,32 +125,32 @@ const HotSpotCountry = props => {
       <Grid container spacing={0}>
         {showDetail && (
           <Grid item md={3} xs={12}>
-            {Object.entries(stateByCountryData).map(
-              ([key, { data, stats }]) => {
-                if (key === selectedSlope) {
-                  return (
-                    <Box key={key}>
-                      <Typography variant="body2">
-                        <strong>{key}</strong>
-                      </Typography>
-                      <SlopeChart
-                        data={Object.values(data)}
-                        width={250}
-                        height={300}
-                        start={2015}
-                        end={2030}
-                        name={key}
-                        showAxis={true}
-                        showInfo={true}
-                        clipDomain={true}
-                        svgPadding={[20, 16, 20, 16]}
-                      />
-                    </Box>
-                  )
-                }
-                return null
+            {Object.entries(iuByStateData).map(([key, { data, stats }]) => {
+              // some entries might have no ranks attached because of NaN values for some years
+              const withRanks = Object.values(data).filter(d => !!d.ranks)
+              if (key === selectedSlope) {
+                return (
+                  <Box key={key}>
+                    <Typography variant="body2">
+                      <strong>{stateData.data[key].name}</strong>
+                    </Typography>
+                    <SlopeChart
+                      data={withRanks}
+                      width={250}
+                      height={300}
+                      start={2015}
+                      end={2030}
+                      name={stateData.data[key].name}
+                      showAxis={true}
+                      showInfo={true}
+                      clipDomain={true}
+                      svgPadding={[20, 16, 20, 16]}
+                    />
+                  </Box>
+                )
               }
-            )}
+              return null
+            })}
           </Grid>
         )}
         <Grid
@@ -160,28 +160,27 @@ const HotSpotCountry = props => {
           className={classes.chartContainer}
         >
           <PanelContainer>
-            {stateByCountryData &&
-              Object.entries(stateByCountryData).map(
-                ([key, { data, stats }]) => {
-                  //TODO: get actual name from somewhere
-                  return (
-                    <Box key={key} className={classes.slopeContainer}>
-                      <SlopeChart
-                        data={Object.values(data)}
-                        width={40}
-                        height={300}
-                        start={2015}
-                        end={2030}
-                        name={key}
-                        setSelectedSlope={setSelectedSlope}
-                        countryKey={key}
-                        clipDomain={false}
-                        svgPadding={[20, 0, 20, 0]}
-                      />
-                    </Box>
-                  )
-                }
-              )}
+            {iuByStateData &&
+              Object.entries(iuByStateData).map(([key, { data, stats }]) => {
+                // some entries might have no ranks attached because of NaN values for some years
+                const withRanks = Object.values(data).filter(d => !!d.ranks)
+                return (
+                  <Box key={key} className={classes.slopeContainer}>
+                    <SlopeChart
+                      data={withRanks}
+                      width={40}
+                      height={300}
+                      start={2015}
+                      end={2030}
+                      name={stateData.data[key].name}
+                      setSelectedSlope={setSelectedSlope}
+                      countryKey={key}
+                      clipDomain={false}
+                      svgPadding={[20, 0, 20, 0]}
+                    />
+                  </Box>
+                )
+              })}
           </PanelContainer>
         </Grid>
       </Grid>
