@@ -427,6 +427,7 @@ const Simulator = props => {
         transparent={true}
         disableInputs={true}
         title="Lymphatic filariasis Simulator"
+        text={`This simulator provides a way of assessing the impact of various interventions for a variety of backgrounds for Lymphatic filariasis transmission. Create your own scenarios and compare them to our baseline.`}
       />
       {/*       {props.location.search}
       {window.location.search} */}

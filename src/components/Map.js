@@ -185,7 +185,7 @@ function Map({
         <div>Prevalence: {feature.properties[`prev-${year}`]}%</div>
         {population && <div>Population: {format(',')(population)}</div>}
         {endemicity && <div>Endemicity: {endemicity}</div>}
-        <div>Trend: {performance}</div>
+        <div>Trend: { performance <= 0 ? (-1*performance)+'% decline' : (performance)+'% increase' }</div>
         {feature.source === 'africa-countries' && (
           <ul className="links">
             <li>
@@ -415,11 +415,11 @@ function Map({
         )}
 
         {/* Tooltip */}
-        {featureHover && (
+        {featureHover && !feature && (
           <Tooltip
             title={`${featureHover.properties.name} ${
               featureHover.properties[`prev-${year}`]
-            } % / ${featureHover.properties.performance}`}
+            } % | ${ featureHover.properties.performance <= 0 ? (-1*featureHover.properties.performance)+'% decline' : (featureHover.properties.performance)+'% increase' }`}
             open
             placement="top"
           >

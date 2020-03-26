@@ -13,6 +13,7 @@ function LineChart({ data, width, height, clipDomain, yDomain }) {
   const [selectedYear, setSelectedYear] = useState()
   const lPad = 50
   const rPad = 32
+  const tPad = 20
   const yPad = 32
   const svgHeight = height + yPad * 2
   const svgWidth = width
@@ -28,7 +29,7 @@ function LineChart({ data, width, height, clipDomain, yDomain }) {
 
   const yScale = scaleLinear()
     .domain(clipDomain ? [0, domain] : [0, 100])
-    .range([height, 0])
+    .range([height-tPad, 0])
 
   const yTicks = yScale.ticks(4)
   const xTicks = xScale.ticks(5)

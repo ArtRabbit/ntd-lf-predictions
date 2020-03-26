@@ -4,6 +4,8 @@ import { merge } from 'lodash'
 import bbox from '@turf/bbox'
 import { easeCubic } from 'd3'
 
+console.log(window.innerWidth)
+
 const initialState = {
   // TODO: should be controlled by app state
   year: 2020,
@@ -12,7 +14,7 @@ const initialState = {
   viewport: {
     latitude: -4,
     longitude: 20,
-    zoom: 3,
+    zoom: window.innerWidth < 1300 ? 2.5 : 3,
   },
 }
 

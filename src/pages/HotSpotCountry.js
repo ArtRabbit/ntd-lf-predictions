@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import { observer } from 'mobx-react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Box, Typography, Grid } from '@material-ui/core'
@@ -7,6 +7,7 @@ import { values, sortBy, take } from 'lodash'
 import { useDataAPI, useUIState } from '../hooks/stateHooks'
 
 import { Layout } from '../layout'
+import { abbrNum } from '../utils'
 import ExpandableInfoStandalone from './components/ExpandableInfoStandalone'
 import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
@@ -62,18 +63,29 @@ const HotSpotCountry = props => {
       <ExpandableInfoStandalone
         title={`${selectedCountry?.name || '...'} facts`}
       >
+        {selectedCountry && 
         <Typography component="p">
-          Population xxx
-          <br />
-          50k people affected in 2030
-          <br />3 districts with high prevalence
+          <Fragment key={`intro-${1}`}>
+            {`Population modelled: ${abbrNum(selectedCountry.population,0)}`}
+            <br />
+          </Fragment>
+          <Fragment key={`intro-${2}`}>
+            {`Prevalence 2020: ${selectedCountry.prevalence[2020]}%`}
+            <br />
+          </Fragment>
+          <Fragment key={`intro-${3}`}>
+            {`Probability of eradication by 2030: ${(selectedCountry.probability[2020]*100).toFixed(2)}%`}
+            <br />
+          </Fragment>
         </Typography>
+        }
       </ExpandableInfoStandalone>
+        
 
       <SectionTitle
           top={true}
-          headline="Implementation unit performance"
-          text={`Get a detailed view of activity in implementation units. To see alternative outcomes, change your treatment scenario in the top menu.`}
+          headline="Implementation unit hotspots"
+          text={`An overview of IU hotspots and areas of interest in all modelled areas. To see alternative outcomes, change the treatment scenario in the top menu.`}
         />
       <div
         style={{
@@ -94,7 +106,7 @@ const HotSpotCountry = props => {
       <Box className={classes.chartContainer}>
         <SectionTitle
           headline="Top affected districts"
-          text={`Get a detailed view of top affected districts and their projected development over time. To see alternative outcomes, change your treatment scenario in the top menu.`}
+          text={`A detailed view of the most affected districts and their projected development over time. To see alternative outcomes, change the treatment scenario in the top menu.`}
         />
         {stateData &&
           take(
@@ -124,7 +136,7 @@ const HotSpotCountry = props => {
 
       <SectionTitle
         headline="District activity"
-        text={`Get a detailed view of performance in districts. See where prevalence is improving, increasing, and what areas are reaching the WHO 1% threshold. To see alternative outcomes, change your treatment scenario in the top menu.`}
+        text={`A detailed view of district performance. See where prevalence is declining, increasing, and what areas are reaching the WHO 1% threshold. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
       <Grid container spacing={0}>

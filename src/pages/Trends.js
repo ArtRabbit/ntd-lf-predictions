@@ -51,12 +51,12 @@ const Trends = props => {
 
   return (
     <Layout>
-      <HeadWithInputs transparent={true} title="Lymphatic filariasis Trends" text={`The LF projection trends take output of the model and highlight different possible outcomes developed over time.`} />
+      <HeadWithInputs transparent={true} title="Lymphatic filariasis Trends" text={`The LF projection trends take the output of the model to highlight different possible outcomes developed over time.`} />
 
       <SectionTitle
         top={false}
         headline="Intervention needs"
-        text={`Compare the population in need of intervention in 2020 with the projections for 2030. To see alternative outcomes, change your treatment scenario in the top menu. `}
+        text={`Compare which populations are in need of intervention in 2020 with the projections for 2030. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
       {countryData && <BarChart dataAndStats={countryData} />}
@@ -64,7 +64,7 @@ const Trends = props => {
       <SectionTitle
         top={false}
         headline="Trend graph"
-        text={`Review historic prevalence and probable eradication over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
+        text={`Review historic prevalence and probability of elimination as a public health problem over time, from 2000 to 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
       />
 
       <Box className={classes.chartContainer}>
@@ -74,7 +74,7 @@ const Trends = props => {
       <SectionTitle
         top={false}
         headline="Trend map"
-        text={`View good and bad performance by district and compare prevalence over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
+        text={`View good and bad performance by district and compare prevalence over time from 2000 to 2030. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
       <div

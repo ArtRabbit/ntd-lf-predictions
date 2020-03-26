@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { observer } from 'mobx-react'
 import { Box, Typography, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { abbrNum } from '../utils'
 
 import { useDataAPI, useUIState } from '../hooks/stateHooks'
 import { Layout } from '../layout'
@@ -63,24 +64,36 @@ const TrendsCountry = props => {
       <HeadWithInputs
         transparent={true}
         title={`Lymphatic filariasis Trends: ${selectedCountry?.name || '...'}`}
-        text={`The LF projection trends take output of the model and highlight different possible outcomes developed over time. `}
+        text={`The LF projection trends take the output of the model to highlight different possible outcomes developed over time.`}
       />
 
       <ExpandableInfoStandalone
         title={`${selectedCountry?.name || '...'} facts`}
       >
         <Typography component="p">
-          Population xxx
-          <br />
-          50k people affected in 2030
-          <br />3 districts with high prevalence
+          {selectedCountry && 
+          <Typography component="p">
+            <Fragment key={`intro-${1}`}>
+              {`Population modelled: ${abbrNum(selectedCountry.population,0)}`}
+              <br />
+            </Fragment>
+            <Fragment key={`intro-${2}`}>
+              {`Prevalence 2020: ${selectedCountry.prevalence[2020]}%`}
+              <br />
+            </Fragment>
+            <Fragment key={`intro-${3}`}>
+              {`Probability of eradication by 2030: ${(selectedCountry.probability[2020]*100).toFixed(2)}%`}
+              <br />
+            </Fragment>
+          </Typography>
+          }
         </Typography>
       </ExpandableInfoStandalone>
 
       <SectionTitle
         top={true}
         headline="Intervention needs"
-        text={`Compare the population in need of intervention in 2020 with the projections for 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
+        text={`Compare which populations are in need of intervention in 2020 with the projections for 2030. To see alternative outcomes, change the treatment scenario in the top menu.`}
       ></SectionTitle>
       <Box className={classes.chartContainer}>
         {stateData && <BarChart dataAndStats={stateData} />}
@@ -89,7 +102,7 @@ const TrendsCountry = props => {
       <SectionTitle
         top={false}
         headline="Trend graph"
-        text={`Review historic prevalence and probable eradication over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
+        text={`Review historic prevalence and probability of elimination as a public health problem over time, from 2000 to 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
       ></SectionTitle>
       <Box className={classes.chartContainer}>
         {stateData && <Timeline dataAndStats={stateData} />}
@@ -149,7 +162,7 @@ const TrendsCountry = props => {
             <SectionTitle
               top={false}
               headline="Development of prevalence"
-              text={`Get an overview of how the prevalence of LF in each country/district developed over time. To see alternative outcomes, change your treatment scenario in the top menu.`}
+              text={`An overview of how the prevalence of LF in each country/district has developed over time. To see alternative outcomes, change the treatment scenario in the top menu.`}
             />
             {stateData && <BumpChart data={Object.values(stateData.data)} />}
           </Box>
@@ -159,7 +172,7 @@ const TrendsCountry = props => {
       <SectionTitle
         top={false}
         headline="Trend Map"
-        text={`View good and bad performance by district and compare prevalence over time through 2030. To see alternative outcomes, change your treatment scenario in the top menu.`}
+        text={`View good and bad performance by district and compare prevalence over time from 2000 to 2030. To see alternative outcomes, change the treatment scenario in the top menu.`}
       ></SectionTitle>
 
       <div

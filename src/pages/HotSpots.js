@@ -49,13 +49,13 @@ const HotSpots = props => {
       <HeadWithInputs
         transparent={true}
         title="Lymphatic filariasis Hotspots"
-        text="The LF hotspots showcase areas of activity, improvements or decline. "
+        text="The LF hotspots showcase areas of activity, improvements or decline."
       />
 
       <SectionTitle
         top={false}
         headline="District hotspots"
-        text={`Get an overview of district hotspots and areas of activity in all modelled countries. To see alternative outcomes, change your treatment scenario in the top menu.`}
+        text={`An overview of district hotspots and areas of interest in all modelled countries. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
       <div
@@ -75,7 +75,7 @@ const HotSpots = props => {
       <Box className={classes.chartContainer}>
         <SectionTitle
           headline="Top improving countries"
-          text={`See top improving countries and their projected development over time. To see alternative outcomes, change your treatment scenario in the top menu.`}
+          text={`The projected development of top improving countries over time. To see alternative outcomes, change the treatment scenario in the top menu.`}
         />
         {countryData &&
           take(
@@ -87,7 +87,7 @@ const HotSpots = props => {
                     <strong>{name}</strong>
                   </Typography>
                   <Typography variant="body2" component="p" color="primary">
-                    <strong>{`${-performance}% drop in the prevalence of LF`}</strong>
+                    <strong>{`${-performance}% decline in LF cases`}</strong>
                   </Typography>
                   <LineChart
                     data={[country]}
@@ -105,7 +105,7 @@ const HotSpots = props => {
 
       <SectionTitle
         headline="District Activity"
-        text={`Districts in country that are improving, getting worse or are below the 1% threashold`}
+        text={`Get a detailed view of the performance of individual districts in each country. See where prevalence is declining, increasing, and which areas are reaching the WHO 1% threshold. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
       <Grid container spacing={0}>

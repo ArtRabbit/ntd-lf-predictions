@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('md')]: {
       marginTop: 0,
       marginBottom: 0,
-      width: 'calc(100% - 200px)',
+      width: 'calc(100% - 420px)',
       height: 'calc(100% - 124px)',
       minHeight: 800 - 124,
       marginLeft: -300,
@@ -64,12 +64,12 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     height: '100%',
     zIndex: 11,
-    backgroundImage: 'linear-gradient(to bottom, #dedede, #000000)',
+    backgroundImage: 'linear-gradient(to bottom, #fff, #E0D7FF)',
     pointerEvents: 'none',
     opacity: 0,
     transition: 'opaciy 0.5s ease-in-out',
     '&.welcome': {
-      opacity: 0.2,
+      opacity: 0.7,
       pointerEvents: 'all',
     }
   }
@@ -125,9 +125,7 @@ const Home = (props) => {
       <HeadWithInputs
         title="Lymphatic filariasis Projections"
         text={
-          `Welcome to the NTD Modelling Projections. 
-          The projections on this website provide guidance on the impact of more frequent, 
-          longer or higher coverage treatment would have on achieving elimination as a public health problem.`
+          `Welcome to the NTD Modelling Projections. The projections on this website provide guidance on the impact of different interventions strategies would have on achieving elimination as a public health problem.`
         }
         actionLabel={"Enter"}
         action={showIntro}

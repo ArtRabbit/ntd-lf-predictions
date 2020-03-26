@@ -69,7 +69,7 @@ const Footer = (props) => {
 
             </Grid>
 
-            <Grid item md={3} sm={6} xs={12} className={classes.column}>
+            <Grid item md={4} sm={6} xs={12} className={classes.column}>
 
               <Typography variant="h6" component="h6" className={classes.headline} >Further information</Typography>
 
@@ -77,24 +77,15 @@ const Footer = (props) => {
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/about-lf" color="inherit">About</Link></Typography>
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/data" color="inherit">Data</Link></Typography>
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/methodology" color="inherit">Methodology</Link></Typography>
-                <Typography component="li" variant="body2"><Link component={RouterLink} to="/ntds" color="inherit">NTDs</Link></Typography>
+                <Typography component="li" variant="body2"><Link href="https://www.ntdmodelling.org/" rel="noopener" target="_blank" color="inherit" variant="body2">NTD Modelling Consortium</Link></Typography>
                 <Typography component="li" variant="body2"><Link component={RouterLink} to="/privacy" color="inherit">Privacy&amp;Cookies</Link></Typography>
               </ul>
 
             </Grid>
-            <Grid item md={3} sm={6} xs={12} className={classes.column}>
-              <Typography variant="h6" component="h6" className={classes.headline} >Contact</Typography>
-
-              <Typography display="block" variant="body2">Email: <Link href="mailto:ntdmodelling@gmail.com" rel="noopener" color="inherit">ntdmodelling@gmail.com</Link></Typography>
-              <Typography display="block" variant="body2">Twitter: <Link href="https://twitter.com/NtdModelling" rel="noopener" target="_blank" color="inherit" variant="body2">@ntdmodelling</Link></Typography>
-
-
-            </Grid>
             <Grid item md={3} sm={6} xs={12} className={classes.column} >
               <Typography variant="h6" component="h6" className={classes.headline} >In collaboration with</Typography>
-              <img className={classes.logo} src={OxfordLogo} alt="University of Oxford" />
               <img className={classes.logo} src={BigDataLogo} alt="Big Data Institute" />
-
+              <img className={classes.logo} src={OxfordLogo} alt="University of Oxford" />
             </Grid>
 
             <Grid item xs={12} className={classes.column}>
