@@ -223,7 +223,7 @@ TabPanel.propTypes = {
 
 const Simulator = props => {
   const classes = useStyles()
-  const theme = useTheme(); //console.log(theme);
+  const theme = useTheme();
 
   const [simParams, setSimParams] = useState({
     ...SimulatorEngine.simControler.params, // params editable via UI
