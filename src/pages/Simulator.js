@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/styles';
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -222,6 +223,7 @@ TabPanel.propTypes = {
 
 const Simulator = props => {
   const classes = useStyles()
+  const theme = useTheme(); //console.log(theme);
 
   const [simParams, setSimParams] = useState({
     ...SimulatorEngine.simControler.params, // params editable via UI
