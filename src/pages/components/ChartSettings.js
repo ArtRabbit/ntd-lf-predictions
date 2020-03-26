@@ -8,8 +8,8 @@ import Typography from '@material-ui/core/Typography';
 
 import Icon from '../../images/settings.svg';
 import IconHover from '../../images/settings-hover.svg';
-import CloseIcon from '../../images/close.svg';
-import CloseIconHover from '../../images/close-hover.svg';
+
+import CloseButton from './CloseButton';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -61,38 +61,21 @@ const useStyles = makeStyles(theme => ({
       }
     }
   },
-  iconClose: {
-    backgroundColor: "transparent",
-    boxShadow: 'none',
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    zIndex: 99,
-    '& .MuiTouchRipple-root': {
-      backgroundImage: `url(${CloseIcon})`,
-      backgroundPosition: 'center',
-      backgroundSize: 'auto',
-      backgroundRepeat: 'no-repeat',
-    },
-    '&:hover': {
-      '& .MuiTouchRipple-root': {
-        backgroundImage: `url(${CloseIconHover})`,
-
-      }
-    }
-  },
 }));
 // <button mat-button aria-label="settings" className={classes.icon} onClick={(event) => handleClickOpen(event)}></button>
-const ChartSettings = ({ title, buttonText, action, children }) => {
+const ChartSettings = ({ title, buttonText, action, onOpen, children }) => {
 
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
 
   title = title ? title : 'Settings';
   buttonText = buttonText ? buttonText : 'Update graphs';
 
   const handleClickOpen = () => {
     setOpen(true);
+    if (onOpen) {
+      onOpen();
+    }
   };
 
   const handleClickClose = () => {
@@ -115,7 +98,8 @@ const ChartSettings = ({ title, buttonText, action, children }) => {
             elevation={3}
             className={classes.modal}
           >
-            <Fab color="inherit" aria-label="settings" className={classes.iconClose} onClick={handleClickClose}> </Fab>
+            <CloseButton action={handleClickClose} />
+
             <div className={classes.body}>
               <Typography variant="h3" component="h3">{title}</Typography>
               <div className={classes.form}>

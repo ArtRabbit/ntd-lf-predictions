@@ -25,11 +25,13 @@ import TextField from '@material-ui/core/TextField'
 import Paper from '@material-ui/core/Paper'
 import Tooltip from '@material-ui/core/Tooltip'
 import Slider from '@material-ui/core/Slider'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
 import SectionTitle from './components/SectionTitle'
 import ChartSettings from './components/ChartSettings'
+import CloseButton from './components/CloseButton';
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 
@@ -235,7 +237,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-          (simParams.mdaSixMonths / 12) * 12 * i
+        (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -401,6 +403,11 @@ const Simulator = props => {
   const [doseSettingsOpen, setDoseSettingsOpen] = useState(false)
   const [doseSettingsLeft, setDoseSettingsLeft] = useState(0)
 
+  const closeRoundModal = event => {
+    setDoseSettingsOpen(false)
+    setCurMDARound(-1)
+  }
+
   return (
     <Layout>
       <HeadWithInputs
@@ -475,6 +482,7 @@ const Simulator = props => {
               title="Settings"
               buttonText="Update Scenario"
               action={runCurrentScenario}
+              onOpen={closeRoundModal}
             >
               <FormControl fullWidth>
                 <FormLabel
@@ -761,8 +769,8 @@ const Simulator = props => {
                   setDoseSettingsOpen(true)
                   setDoseSettingsLeft(
                     a.target.getBoundingClientRect().left +
-                      a.target.offsetWidth / 2 -
-                      155
+                    a.target.offsetWidth / 2 -
+                    155
                   )
                 }}
                 title={
@@ -787,100 +795,106 @@ const Simulator = props => {
           </div>
         </Grid>
         {doseSettingsOpen && (
-          <Paper
-            elevation={3}
-            className={classes.roundModal}
-            style={{ left: doseSettingsLeft }}
-          >
-            <Typography className={classes.title} variant="h5" component="h4">
-              MDA round #{curMDARound + 1}
-            </Typography>
-            <FormControl fullWidth className={classes.formControl}>
-              <FormLabel
-                component="legend"
-                htmlFor="rho"
-                className={classes.withSlider}
-              >
-                Coverage
+          <ClickAwayListener onClickAway={closeRoundModal}>
+            <Paper
+              elevation={3}
+              className={classes.roundModal}
+              style={{ left: doseSettingsLeft }}
+            >
+
+
+              <CloseButton action={closeRoundModal} />
+
+              <Typography className={classes.title} variant="h5" component="h4">
+                MDA round #{curMDARound + 1}
+              </Typography>
+              <FormControl fullWidth className={classes.formControl}>
+                <FormLabel
+                  component="legend"
+                  htmlFor="rho"
+                  className={classes.withSlider}
+                >
+                  Coverage
               </FormLabel>
-              <Slider
-                value={simMDAcoverage[curMDARound]}
-                min={1}
-                step={1}
-                max={100}
-                onChange={(event, newValue) => {
-                  let newArray = [...simMDAcoverage]
-                  newArray[curMDARound] = newValue
-                  setSimMDAcoverage([...newArray])
-                }}
-                aria-labelledby="slider"
-                marks={[
-                  { value: 0, label: '0' },
-                  { value: 100, label: '100' },
-                ]}
-                valueLabelDisplay="on"
-              />
-              {/*             <p style={{ marginBottom: 0 }}>
+                <Slider
+                  value={simMDAcoverage[curMDARound]}
+                  min={1}
+                  step={1}
+                  max={100}
+                  onChange={(event, newValue) => {
+                    let newArray = [...simMDAcoverage]
+                    newArray[curMDARound] = newValue
+                    setSimMDAcoverage([...newArray])
+                  }}
+                  aria-labelledby="slider"
+                  marks={[
+                    { value: 0, label: '0' },
+                    { value: 100, label: '100' },
+                  ]}
+                  valueLabelDisplay="on"
+                />
+                {/*             <p style={{ marginBottom: 0 }}>
               Controls how randomly coverage is applied. For 0, coverage is
               completely random. For 1, the same individuals are always treated.
             </p> */}
-            </FormControl>
-            <FormControl fullWidth className={classes.formControl}>
-              <FormLabel
-                component="legend"
-                htmlFor="rho"
-                className={classes.withSlider}
-              >
-                Systemic adherence
+              </FormControl>
+              <FormControl fullWidth className={classes.formControl}>
+                <FormLabel
+                  component="legend"
+                  htmlFor="rho"
+                  className={classes.withSlider}
+                >
+                  Systemic adherence
               </FormLabel>
-              <Slider
-                value={simMDAadherence[curMDARound]}
-                min={0}
-                step={0.1}
-                max={1}
-                onChange={(event, newValue) => {
-                  let newArray = [...simMDAadherence]
-                  newArray[curMDARound] = newValue
-                  setSimMDAadherence([...newArray])
-                }}
-                aria-labelledby="slider"
-                valueLabelDisplay="on"
-              />
-              <div className={classes.adherence}></div>
-              {/*             <p style={{ marginBottom: 0 }}>
+                <Slider
+                  value={simMDAadherence[curMDARound]}
+                  min={0}
+                  step={0.1}
+                  max={1}
+                  onChange={(event, newValue) => {
+                    let newArray = [...simMDAadherence]
+                    newArray[curMDARound] = newValue
+                    setSimMDAadherence([...newArray])
+                  }}
+                  aria-labelledby="slider"
+                  valueLabelDisplay="on"
+                />
+                <div className={classes.adherence}></div>
+                {/*             <p style={{ marginBottom: 0 }}>
               Controls how randomly coverage is applied. For 0, coverage is
               completely random. For 1, the same individuals are always treated.
             </p> */}
-            </FormControl>
-            <div className={classes.modalButtons}>
-              <Button
-                className={classes.modalButton}
-                variant="contained"
-                disabled={simInProgress}
-                onClick={() => {
-                  let newArray = [...simMDAcoverage]
-                  newArray[curMDARound] = 0
-                  setSimMDAcoverage([...newArray])
-                  setCurMDARound(-1)
-                  setDoseSettingsOpen(false)
-                }}
-              >
-                REMOVE
+              </FormControl>
+              <div className={classes.modalButtons}>
+                <Button
+                  className={classes.modalButton}
+                  variant="contained"
+                  disabled={simInProgress}
+                  onClick={() => {
+                    let newArray = [...simMDAcoverage]
+                    newArray[curMDARound] = 0
+                    setSimMDAcoverage([...newArray])
+                    setCurMDARound(-1)
+                    setDoseSettingsOpen(false)
+                  }}
+                >
+                  REMOVE
               </Button>
-              <Button
-                className={classes.modalButton}
-                variant="contained"
-                color="primary"
-                disabled={simInProgress}
-                onClick={() => {
-                  setCurMDARound(-1)
-                  setDoseSettingsOpen(false)
-                }}
-              >
-                UPDATE
+                <Button
+                  className={classes.modalButton}
+                  variant="contained"
+                  color="primary"
+                  disabled={simInProgress}
+                  onClick={() => {
+                    setCurMDARound(-1)
+                    setDoseSettingsOpen(false)
+                  }}
+                >
+                  UPDATE
               </Button>
-            </div>
-          </Paper>
+              </div>
+            </Paper>
+          </ClickAwayListener>
         )}
       </section>
 
