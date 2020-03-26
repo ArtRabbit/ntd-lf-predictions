@@ -59,7 +59,7 @@ const Trends = props => {
         text={`Compare the population in need of intervention in 2020 with the projections for 2030. To see alternative outcomes, change your treatment scenario in the top menu. `}
       />
 
-      {countryData && <BarChart data={Object.values(countryData.data)} />}
+      {countryData && <BarChart dataAndStats={countryData} />}
 
       <SectionTitle
         top={false}
