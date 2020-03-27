@@ -109,6 +109,12 @@ const useStyles = makeStyles(theme => ({
     '& > *': {
       margin: theme.spacing(2, 0),
     },
+    '& > p': {
+      margin: 0,
+      fontSize: 8,
+      display: 'block',
+      textAlign: 'center'
+    },
   },
   withSlider: {
     margin: theme.spacing(0, 0, 6, 0),
@@ -936,12 +942,15 @@ const Simulator = props => {
             {simulationProgress !== 0 && simulationProgress !== 100 && (
               <div className={classes.progress}>
                 <LinearProgress
-                  variant="determinate"
+                  variant="indeterminate"
                   value={simulationProgress}
                   color="secondary"
                 />
+
+                <p>{simulationProgress}%</p>
               </div>
             )}
+
           </Grid>
         </Grid>
       </section>
