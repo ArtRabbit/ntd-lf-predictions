@@ -245,7 +245,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-          (simParams.mdaSixMonths / 12) * 12 * i
+        (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -618,7 +618,7 @@ const Simulator = props => {
                             {simParams.mdaSixMonths === 6
                               ? curMDARound % 2
                                 ? new Date().getFullYear() +
-                                  Math.floor(curMDARound / 2)
+                                Math.floor(curMDARound / 2)
                                 : new Date().getFullYear() + curMDARound / 2
                               : new Date().getFullYear() + curMDARound}
                             {curMDARound % 2 ? ' (2nd round)' : ''}
@@ -957,6 +957,16 @@ const Simulator = props => {
                 onClick={runCurrentScenario}
               >
                 UPDATE SCENARIO
+              </Button>
+
+              <Button
+                variant="contained"
+                disabled={simInProgress} /*  || scenarioInputs.length === 0 */
+                onClick={() => {
+                  alert('todo')
+                }}
+              >
+                REMOVE SCENARIO
               </Button>
             </div>
             {simulationProgress !== 0 && simulationProgress !== 100 && (
