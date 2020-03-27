@@ -137,20 +137,20 @@ export var SessionData = {
   },
 }
 export var ScenarioIndex = {
-  getIndex: function() {
+  getIndex: function () {
     return Number(localStorage.getItem('scenarioIndex'))
   },
-  setIndex: function(ind) {
+  setIndex: function (ind) {
     try {
       var ses = SessionData.retrieveSession()
       var scen = ses.scenarios[ind]
       params = scen.params
-    } catch (err) {}
+    } catch (err) { }
 
     return localStorage.setItem('scenarioIndex', ind)
   },
 }
-export var Person = function(a, b) {
+export var Person = function (a, b) {
   //constructor(a,b) {
   this.b = s.gamma(a, b)
   this.M = 0.5
@@ -164,7 +164,7 @@ export var Person = function(a, b) {
 
   //}
 
-  this.repRate = function() {
+  this.repRate = function () {
     if (params.nu == 0) {
       if (this.WM > 0) {
         return this.WF
@@ -176,7 +176,7 @@ export var Person = function(a, b) {
     }
   }
 
-  this.biteRate = function() {
+  this.biteRate = function () {
     if (this.a < 108.0) {
       //less than 9 * 12 = 108.0
       return this.a / 108.0
@@ -185,7 +185,7 @@ export var Person = function(a, b) {
     }
   }
 
-  this.react = function() {
+  this.react = function () {
     var bNReduction = 1 - (1 - params.sN) * this.bedNet
     //immune state update
 
@@ -194,13 +194,13 @@ export var Person = function(a, b) {
     //male worm update
     var births = statFunctions.poisson(
       0.5 *
-        bNReduction *
-        params.xi *
-        this.biteRate() *
-        params.L3 *
-        Math.exp(-1 * params.theta * this.I) *
-        this.b *
-        params.dt
+      bNReduction *
+      params.xi *
+      this.biteRate() *
+      params.L3 *
+      Math.exp(-1 * params.theta * this.I) *
+      this.b *
+      params.dt
     ) //exp(-1 * beta * I)
     //births = param->poisson_dist(0.5 * param->xi  * biteRate() * param->L3 * exp(-1 * param->theta * I) * b *  param->dt); //exp(-1 * beta * I)
     var deaths = statFunctions.poisson(params.mu * this.WM * params.dt)
@@ -209,13 +209,13 @@ export var Person = function(a, b) {
     //female worm update
     births = statFunctions.poisson(
       0.5 *
-        bNReduction *
-        params.xi *
-        this.biteRate() *
-        params.L3 *
-        Math.exp(-1 * params.theta * this.I) *
-        this.b *
-        params.dt
+      bNReduction *
+      params.xi *
+      this.biteRate() *
+      params.L3 *
+      Math.exp(-1 * params.theta * this.I) *
+      this.b *
+      params.dt
     ) //* exp(-1 * beta * I)
     //births = param->poisson_dist(0.5  * param->xi  * biteRate() * param->L3 * exp(-1 * param->theta * I) * b *  param->dt); //exp(-1 * beta * I)
     deaths = statFunctions.poisson(params.mu * this.WF * params.dt)
@@ -259,7 +259,7 @@ export var Person = function(a, b) {
     }
   }
 
-  this.initialise = function() {
+  this.initialise = function () {
     this.W = 0
     this.WM = 0
     this.WF = 0
@@ -269,7 +269,7 @@ export var Person = function(a, b) {
     this.u = s.normal(params.u0, Math.sqrt(params.sigma))
   }
 }
-export var Model = function(n) {
+export var Model = function (n) {
   //constructor(n){
 
   this.sU = 0
@@ -287,7 +287,7 @@ export var Model = function(n) {
   }
   //}
 
-  this.saveOngoing = function(t, mp, wp, lp) {
+  this.saveOngoing = function (t, mp, wp, lp) {
     lp = 1 - Math.exp(-lp) //convert to a prevalence
     this.ts.push(t)
     this.Ms.push(mp * 100) //convert all to percentages.
@@ -295,7 +295,7 @@ export var Model = function(n) {
     this.Ls.push(lp * 100)
   }
 
-  this.L3 = function() {
+  this.L3 = function () {
     var mf = 0.0
     var bTot = 0.0
     for (var i = 0; i < this.n; i++) {
@@ -313,7 +313,7 @@ export var Model = function(n) {
     )
   }
 
-  this.prevalence = function() {
+  this.prevalence = function () {
     var p = 0
     for (var i = 0; i < this.n; i++) {
       p += s.random() < 1 - Math.exp(-this.people[i].M)
@@ -321,7 +321,7 @@ export var Model = function(n) {
     return p / this.n
   }
 
-  this.aPrevalence = function() {
+  this.aPrevalence = function () {
     var p = 0
     for (var i = 0; i < this.n; i++) {
       p += this.people[i].W > 0
@@ -329,7 +329,7 @@ export var Model = function(n) {
     return p / this.n
   }
 
-  this.MDAEvent = function() {
+  this.MDAEvent = function () {
     for (var i = 0; i < this.n; i++) {
       if (s.normal(this.people[i].u, 1) < 0) {
         //param->uniform_dist()<param->covMDA
@@ -340,7 +340,7 @@ export var Model = function(n) {
     }
   }
 
-  this.bedNetEvent = function() {
+  this.bedNetEvent = function () {
     params.sig = params.sig + params.lbda * params.dN * params.covN
     for (var i = 0; i < this.n; i++) {
       if (s.random() < params.covN) {
@@ -352,7 +352,7 @@ export var Model = function(n) {
     }
   }
 
-  this.nRounds = function() {
+  this.nRounds = function () {
     var inds = []
     for (var i = 0; i < this.Ms.length; i++) {
       if (this.Ms[i] < 1.0) {
@@ -366,12 +366,12 @@ export var Model = function(n) {
     }
   }
 
-  this.reduction = function(yr) {
+  this.reduction = function (yr) {
     var myr = yr * 6
     return this.Ms[myr] / this.Ms[0]
   }
 
-  this.reductionYears = function() {
+  this.reductionYears = function () {
     var ryrs = []
     for (var yr = 0; yr < 20; yr++) {
       ryrs.push(this.reduction(yr))
@@ -379,7 +379,7 @@ export var Model = function(n) {
     return ryrs
   }
 
-  this.evolveAndSaves = function(tot_t, mdaJSON) {
+  this.evolveAndSaves = function (tot_t, mdaJSON) {
     var t = 0
     var icount = 0
     var maxMDAt = 1200.0
@@ -549,7 +549,7 @@ export var params = {
   IDAControl: 0, //if 1 then programme switches to IDA after five rounds of standard MDA defined with chi and tau.
 }
 export var statFunctions = {
-  immuneRK4Step: function(W, I) {
+  immuneRK4Step: function (W, I) {
     var k1 = params.dt * (W - params.z * I)
     var k2 = params.dt * (W - params.z * (I + 0.5 * k1))
     var k3 = params.dt * (W - params.z * (I + 0.5 * k2))
@@ -557,7 +557,7 @@ export var statFunctions = {
     return I + 0.1666667 * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
   },
 
-  L3Uptake: function(mf) {
+  L3Uptake: function (mf) {
     if (params.mosquitoSpecies == 0) {
       return (
         params.kappas1 *
@@ -568,14 +568,14 @@ export var statFunctions = {
     }
   },
 
-  expTrunc: function(lambda, trunc) {
+  expTrunc: function (lambda, trunc) {
     return (
       (-1 / lambda) *
       Math.log(1 - Math.random() * (1 - Math.exp(-lambda * trunc)))
     )
   },
 
-  poisson: function(mean) {
+  poisson: function (mean) {
     var L = Math.exp(-mean)
     var p = 1.0
     var k = 0
@@ -588,7 +588,7 @@ export var statFunctions = {
     return k - 1
   },
 
-  NormSInv: function(p) {
+  NormSInv: function (p) {
     var a1 = -39.6968302866538,
       a2 = 220.946098424521,
       a3 = -275.928510446969
@@ -639,7 +639,7 @@ export var statFunctions = {
     return retVal
   },
 
-  setBR: function(intervention) {
+  setBR: function (intervention) {
     if (intervention) {
       params.lbda = params.lbdaR * params.lbda_original
       params.xi =
@@ -651,7 +651,7 @@ export var statFunctions = {
     }
   },
 
-  setVH: function(intervention) {
+  setVH: function (intervention) {
     if (intervention) {
       params.v_to_h = params.v_to_hR * params.v_to_h_original
       params.xi =
@@ -663,7 +663,7 @@ export var statFunctions = {
     }
   },
 
-  setMu: function(intervention) {
+  setMu: function (intervention) {
     if (intervention) {
       params.sig = params.sigR //increase mortality due to bed nets. dN = 0.41 death rate
     } else {
@@ -671,7 +671,7 @@ export var statFunctions = {
     }
   },
 
-  setPropMDA: function(regimen) {
+  setPropMDA: function (regimen) {
     // var ps = simControler.modelParams();
     var ps = simControler.params
     var chis = [0.99, 0.95, 0.99, 1.0, Number(ps.microfilaricide) / 100, 0.99]
@@ -680,7 +680,7 @@ export var statFunctions = {
     params.wPropMDA = 1 - taus[Number(regimen) - 1]
   },
 
-  closest: function(num, arr) {
+  closest: function (num, arr) {
     var mid
     var lo = 0
     var hi = arr.length - 1
@@ -698,7 +698,7 @@ export var statFunctions = {
     return hi
   },
 
-  setVHFromPrev: function(p, species) {
+  setVHFromPrev: function (p, species) {
     /*
         var anVH = [5., 5.55555556, 6.11111111, 6.66666667, 7.22222222, 7.77777778, 8.33333333, 8.88888889, 9.44444444,  10. ],
             cVH = [ 4.,  4.55555556,  5.11111111,  5.66666667,  6.22222222, 6.77777778,  7.33333333,  7.88888889,  8.44444444,  9.],
@@ -706,21 +706,21 @@ export var statFunctions = {
             cP = [ 0.09306863,  0.11225442,  0.1267763 ,  0.13999753,  0.15040748, 0.16114762,  0.16863057,  0.17532108,  0.1827041 ,  0.18676246];
     */
     var anVH = [
-        3.66666667,
-        4,
-        4.33333333,
-        4.66666667,
-        5,
-        5.55555556,
-        6.11111111,
-        6.66666667,
-        7.22222222,
-        7.77777778,
-        8.33333333,
-        8.88888889,
-        9.44444444,
-        10,
-      ],
+      3.66666667,
+      4,
+      4.33333333,
+      4.66666667,
+      5,
+      5.55555556,
+      6.11111111,
+      6.66666667,
+      7.22222222,
+      7.77777778,
+      8.33333333,
+      8.88888889,
+      9.44444444,
+      10,
+    ],
       cVH = [
         3.33333333,
         3.66666667,
@@ -786,7 +786,7 @@ export var statFunctions = {
     return vhs[i]
   },
 
-  setInputParams: function(dict) {
+  setInputParams: function (dict) {
     // var ps = simControler.modelParams();
     var ps = simControler.params
     params.inputs = ps
@@ -887,7 +887,7 @@ export var simControler = {
     //fixInput(false);
   },
   median: values => {
-    values.sort(function(a, b) {
+    values.sort(function (a, b) {
       return a - b
     })
 
@@ -896,7 +896,7 @@ export var simControler = {
     if (values.length % 2) return values[half]
     else return (values[half - 1] + values[half]) / 2.0
   },
-  runMapSimulation: function(simulatorCallback) {
+  runMapSimulation: function (simulatorCallback) {
     statFunctions.setInputParams({ nMDA: 40 })
     // var scenLabel = $("#inputScenarioLabel").val();
     //max number of mda rounds even if doing it six monthly.
@@ -925,8 +925,8 @@ export var simControler = {
     var n = scenario['results'].length
     var T =
       scenario['results'] &&
-      scenario['results'][0] &&
-      scenario['results'][0]['ts']
+        scenario['results'][0] &&
+        scenario['results'][0]['ts']
         ? scenario['results'][0]['ts'].length
         : 0 // this is just a hotfix so it doesn't crash, however things don't work as they are supposed to
     //    console.log('T')
@@ -971,7 +971,7 @@ export var simControler = {
       medL: medL,
     }
   },
-  runScenario: function(paramsFromUI, simulatorCallback) {
+  runScenario: function (paramsFromUI, simulatorCallback) {
     //        console.log(paramsFromUI);
     this.params = { ...paramsFromUI }
     var i = SessionData.numScenarios()
@@ -988,6 +988,10 @@ export var simControler = {
       // simulatorCallback();
     }
   },
+  removeScenario: function () {
+    // todo
+    //SessionData.deleteScenario()
+  },
   fixInput: fix_input => {
     var curScen = ScenarioIndex.getIndex()
     if (fix_input == null) {
@@ -1000,7 +1004,7 @@ export var simControler = {
         .val("Scenario " + (curScen + 1)); */
     }
   },
-  documentReady: function() {
+  documentReady: function () {
     params.lbda_original = params.lbda
     params.v_to_h_original = params.v_to_h
     params.sig_original = params.sig
