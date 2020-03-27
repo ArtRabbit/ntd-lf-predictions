@@ -113,7 +113,7 @@ const useStyles = makeStyles(theme => ({
       margin: 0,
       fontSize: 12,
       display: 'block',
-      textAlign: 'center'
+      textAlign: 'center',
     },
   },
   withSlider: {
@@ -239,13 +239,14 @@ const Simulator = props => {
   useEffect(() => {
     // handleFrequencyChange()
     populateMDA()
-  }, [simParams.mdaSixMonths])
+  }, [simParams.mdaSixMonths, simParams.coverage])
   const populateMDA = () => {
+    console.log('populateMDA')
     var MDAtime = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-        (simParams.mdaSixMonths / 12) * 12 * i
+          (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -618,7 +619,7 @@ const Simulator = props => {
                             {simParams.mdaSixMonths === 6
                               ? curMDARound % 2
                                 ? new Date().getFullYear() +
-                                Math.floor(curMDARound / 2)
+                                  Math.floor(curMDARound / 2)
                                 : new Date().getFullYear() + curMDARound / 2
                               : new Date().getFullYear() + curMDARound}
                             {curMDARound % 2 ? ' (2nd round)' : ''}
@@ -980,7 +981,6 @@ const Simulator = props => {
                 <p>{simulationProgress}%</p>
               </div>
             )}
-
           </Grid>
         </Grid>
       </section>
