@@ -242,7 +242,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-          (simParams.mdaSixMonths / 12) * 12 * i
+        (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -404,8 +404,8 @@ const Simulator = props => {
       )
       console.log(newScenarios)
       setScenarioResults([...newScenarios])
-      setTabLength(tabLength - 1)
-      setTabIndex(tabIndex - 1)
+      setTabLength(Math.max(0, tabLength - 1))
+      setTabIndex(Math.max(0, tabIndex - 1))
       window.localStorage.setItem('scenarios', JSON.stringify(newScenarios))
 
       // SimulatorEngine.simControler.removeScenario(tabIndex)
@@ -658,7 +658,7 @@ const Simulator = props => {
                             {simParams.mdaSixMonths === 6
                               ? curMDARound % 2
                                 ? new Date().getFullYear() +
-                                  Math.floor(curMDARound / 2)
+                                Math.floor(curMDARound / 2)
                                 : new Date().getFullYear() + curMDARound / 2
                               : new Date().getFullYear() + curMDARound}
                             {curMDARound % 2 ? ' (2nd round)' : ''}
