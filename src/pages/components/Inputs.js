@@ -10,12 +10,11 @@ import Box from '@material-ui/core/Box'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Typography from '@material-ui/core/Typography'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import Tooltip from '@material-ui/core/Tooltip'
+
 import {
   REGIME_LABELS,
 } from '../../constants'

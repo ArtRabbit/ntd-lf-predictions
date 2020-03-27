@@ -4,35 +4,17 @@ import PropTypes from 'prop-types'
 import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTheme } from '@material-ui/styles'
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-
-import Button from '@material-ui/core/Button'
-import Radio from '@material-ui/core/Radio'
-import RadioGroup from '@material-ui/core/RadioGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormControl from '@material-ui/core/FormControl'
-import FormLabel from '@material-ui/core/FormLabel'
-
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import Select from '@material-ui/core/Select'
-import TextField from '@material-ui/core/TextField'
-import Paper from '@material-ui/core/Paper'
-import Tooltip from '@material-ui/core/Tooltip'
-import Slider from '@material-ui/core/Slider'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import {
+  Box, Grid, Typography, CircularProgress, Tabs, Tab, Button, Radio, RadioGroup,
+  FormControlLabel, FormControl, FormLabel, MenuItem, Select, Paper, Slider, ClickAwayListener, Tooltip
+} from '@material-ui/core'
 
 import HeadWithInputs from './components/HeadWithInputs'
 import DiveDeeper from './components/DiveDeeper'
 import SectionTitle from './components/SectionTitle'
 import ChartSettings from './components/ChartSettings'
 import CloseButton from './components/CloseButton'
+import ConfirmationDialog from './components/ConfirmationDialog'
 
 import * as SimulatorEngine from './components/simulator/SimulatorEngine'
 
@@ -42,7 +24,7 @@ import imgRandom from '../images/systemic-random.svg'
 import imgSame from '../images/systemic-same.svg'
 import imgAnopheles from '../images/Anopheles.jpg'
 import imgCulex from '../images/Culex.jpg'
-import imgArrow from '../images/popuparrow.png'
+import imgInfoIcon from '../images/info-24-px.svg'
 
 SimulatorEngine.simControler.documentReady()
 
@@ -124,6 +106,17 @@ const useStyles = makeStyles(theme => ({
   withSlider: {
     margin: theme.spacing(0, 0, 6, 0),
     whiteSpace: 'nowrap',
+  },
+  withHelp: {
+    cursor: 'help',
+    backgroundImage: `url(${imgInfoIcon})`,
+    backgroundPosition: 'right center',
+    backgroundSize: 'auto',
+    backgroundRepeat: 'no-repeat',
+    width: 'fit-content',
+    paddingRight: 30,
+    margin: theme.spacing(-1, 0, 5, 0),
+    padding: theme.spacing(1, 0),
   },
   modalButton: {
     width: '50%',
@@ -244,12 +237,12 @@ const Simulator = props => {
     populateMDA()
   }, [simParams.mdaSixMonths, simParams.coverage])
   const populateMDA = () => {
-    console.log('populateMDA')
+    // console.log('populateMDA')
     var MDAtime = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-          (simParams.mdaSixMonths / 12) * 12 * i
+        (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -396,10 +389,40 @@ const Simulator = props => {
       SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
     }
   }
+
+
   const removeCurrentScenario = () => {
     if (!simInProgress) {
-      alert('todo')
-      //SimulatorEngine.simControler.removeScenario()
+      // alert('todo')
+
+      console.log(scenarioResults)
+      console.log(scenarioResults[tabIndex])
+
+      let newScenarios = [...scenarioResults]
+      newScenarios = newScenarios.filter(
+        item => item !== scenarioResults[tabIndex]
+      )
+      console.log(newScenarios)
+      setScenarioResults([...newScenarios])
+      setTabLength(Math.max(0, tabLength - 1))
+      setTabIndex(Math.max(0, tabIndex - 1))
+      window.localStorage.setItem('scenarios', JSON.stringify(newScenarios))
+
+      // SimulatorEngine.simControler.removeScenario(tabIndex)
+    }
+  }
+
+  // confirmation for remove scenario
+  const [confirmatonOpen, setConfirmatonOpen] = useState(false)
+  const confirmRemoveCurrentScenario = () => {
+    if (!simInProgress) {
+      setConfirmatonOpen(true)
+    }
+  }
+  const confirmedRemoveCurrentScenario = () => {
+    if (!simInProgress) {
+      setConfirmatonOpen(false)
+      removeCurrentScenario()
     }
   }
 
@@ -533,7 +556,7 @@ const Simulator = props => {
                         id="larvae-prevalence"
                         value={graphMetric}
                         onChange={ev => {
-                          console.log(ev.target.value)
+                          // console.log(ev.target.value)
                           setGraphMetric(ev.target.value)
                         }}
                       >
@@ -635,7 +658,7 @@ const Simulator = props => {
                             {simParams.mdaSixMonths === 6
                               ? curMDARound % 2
                                 ? new Date().getFullYear() +
-                                  Math.floor(curMDARound / 2)
+                                Math.floor(curMDARound / 2)
                                 : new Date().getFullYear() + curMDARound / 2
                               : new Date().getFullYear() + curMDARound}
                             {curMDARound % 2 ? ' (2nd round)' : ''}
@@ -677,13 +700,15 @@ const Simulator = props => {
                             fullWidth
                             className={classes.formControl}
                           >
-                            <FormLabel
-                              component="legend"
-                              htmlFor="rho"
-                              className={classes.withSlider}
-                            >
-                              Systematic adherence
+                            <Tooltip title="Controls how randomly coverage is applied. For 0, coverage is completely random. For 1, the same individuals are always treated." aria-label="info">
+                              <FormLabel
+                                component="legend"
+                                htmlFor="rho"
+                                className={`${classes.withSlider} ${classes.withHelp}`}
+                              >
+                                Systematic adherence
                             </FormLabel>
+                            </Tooltip>
                             <Slider
                               value={simMDAadherence[curMDARound]}
                               min={0}
@@ -970,7 +995,7 @@ const Simulator = props => {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={simInProgress} /*  || scenarioInputs.length === 0 */
+                disabled={(simInProgress || scenarioResults.length === 0)} /*  || scenarioInputs.length === 0 */
                 onClick={runCurrentScenario}
               >
                 UPDATE SCENARIO
@@ -978,11 +1003,18 @@ const Simulator = props => {
 
               <Button
                 variant="contained"
-                disabled={simInProgress} /*  || scenarioInputs.length === 0 */
-                onClick={removeCurrentScenario}
+                disabled={(simInProgress || scenarioResults.length === 0)} /*  || scenarioInputs.length === 0 */
+                onClick={confirmRemoveCurrentScenario}
               >
                 REMOVE SCENARIO
               </Button>
+
+              <ConfirmationDialog
+                title="Do you want to delete this scenario?"
+                onClose={() => { setConfirmatonOpen(false) }}
+                onConfirm={confirmedRemoveCurrentScenario}
+                open={confirmatonOpen}
+              />
             </div>
             {simulationProgress !== 0 && simulationProgress !== 100 && (
               <div className={classes.progress}>
