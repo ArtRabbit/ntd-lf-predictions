@@ -102,7 +102,7 @@ const useStyles = makeStyles(theme => ({
     padding: 0,
   },
   chartTitle: {
-    display: 'inline-block'
+    display: 'inline-block',
   },
   progress: {
     width: '100%',
@@ -245,7 +245,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-        (simParams.mdaSixMonths / 12) * 12 * i
+          (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -439,13 +439,18 @@ const Simulator = props => {
     //console.log(countryLinks)
   }, [country])
   const [doseSettingsOpen, setDoseSettingsOpen] = useState(false)
-  const [doseSettingsLeft, setDoseSettingsLeft] = useState(0)
 
   const closeRoundModal = event => {
     setDoseSettingsOpen(false)
     setCurMDARound(-1)
   }
 
+  useEffect(() => {
+    if (typeof scenarioResults[tabIndex] === 'undefined') {
+      console.log('No scenarios? Running a new one...')
+      runCurrentScenario()
+    }
+  }, [])
   return (
     <Layout>
       <HeadWithInputs
@@ -483,27 +488,22 @@ const Simulator = props => {
                 />
               ))}
 
-              {tabLength < 5 && <Tab
-                key={`tab-element-99`}
-                label={`+ Add one`}
-                disabled={simInProgress}
-                onClick={runNewScenario}
-              >
-              </Tab>
-              }
+              {tabLength < 5 && (
+                <Tab
+                  key={`tab-element-99`}
+                  label={`+ Add one`}
+                  disabled={simInProgress}
+                  onClick={runNewScenario}
+                ></Tab>
+              )}
             </Tabs>
           </Grid>
 
           <Grid item md={9} xs={12} className={classes.chartContainer}>
             {scenarioResults.map((result, i) => (
-              <TabPanel
-                key={`scenario-result-${i}`}
-                value={tabIndex}
-                index={i}
-              >
+              <TabPanel key={`scenario-result-${i}`} value={tabIndex} index={i}>
                 <div className={classes.simulatorBody}>
                   <div className={classes.simulatorInnerBody}>
-
                     <Typography
                       className={classes.chartTitle}
                       variant="h3"
@@ -520,14 +520,17 @@ const Simulator = props => {
                         labelId="larvae-prevalence"
                         id="larvae-prevalence"
                         value={0}
-                        onChange={() => { alert('todo') }}
+                        onChange={() => {
+                          alert('todo')
+                        }}
                       >
-                        <MenuItem value={0}>Mosquito larvae prevalence</MenuItem>
+                        <MenuItem value={0}>
+                          Mosquito larvae prevalence
+                        </MenuItem>
                         <MenuItem value={1}>prevalence 1</MenuItem>
                         <MenuItem value={2}>prevalence 2</MenuItem>
                       </Select>
                     </FormControl>
-
 
                     <div>
                       <ScenarioGraph
@@ -606,17 +609,31 @@ const Simulator = props => {
                         <Paper elevation={3} className={classes.roundModal}>
                           <CloseButton action={closeRoundModal} />
 
-                          <Typography className={classes.title} variant="h5" component="h4">
-                            MDA round #{curMDARound + 1}
+                          <Typography
+                            className={classes.title}
+                            variant="h5"
+                            component="h4"
+                          >
+                            {/* MDA round #  */}
+                            {simParams.mdaSixMonths === 6
+                              ? curMDARound % 2
+                                ? new Date().getFullYear() +
+                                  Math.floor(curMDARound / 2)
+                                : new Date().getFullYear() + curMDARound / 2
+                              : new Date().getFullYear() + curMDARound}
+                            {curMDARound % 2 ? ' (2nd round)' : ''}
                           </Typography>
-                          <FormControl fullWidth className={classes.formControl}>
+                          <FormControl
+                            fullWidth
+                            className={classes.formControl}
+                          >
                             <FormLabel
                               component="legend"
                               htmlFor="rho"
                               className={classes.withSlider}
                             >
                               Coverage
-                </FormLabel>
+                            </FormLabel>
                             <Slider
                               value={simMDAcoverage[curMDARound]}
                               min={1}
@@ -639,14 +656,17 @@ const Simulator = props => {
               completely random. For 1, the same individuals are always treated.
             </p> */}
                           </FormControl>
-                          <FormControl fullWidth className={classes.formControl}>
+                          <FormControl
+                            fullWidth
+                            className={classes.formControl}
+                          >
                             <FormLabel
                               component="legend"
                               htmlFor="rho"
                               className={classes.withSlider}
                             >
                               Systematic adherence
-                </FormLabel>
+                            </FormLabel>
                             <Slider
                               value={simMDAadherence[curMDARound]}
                               min={0}
@@ -680,7 +700,7 @@ const Simulator = props => {
                               }}
                             >
                               REMOVE
-                </Button>
+                            </Button>
                             <Button
                               className={classes.modalButton}
                               variant="contained"
@@ -692,7 +712,7 @@ const Simulator = props => {
                               }}
                             >
                               UPDATE
-                </Button>
+                            </Button>
                           </div>
                         </Paper>
                       </ClickAwayListener>
@@ -933,7 +953,7 @@ const Simulator = props => {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={simInProgress || scenarioInputs.length === 0}
+                disabled={simInProgress} /*  || scenarioInputs.length === 0 */
                 onClick={runCurrentScenario}
               >
                 UPDATE SCENARIO
