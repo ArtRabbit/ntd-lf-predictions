@@ -739,16 +739,16 @@ const Simulator = props => {
                 <Slider
                   value={simParams.endemicity}
                   id="endemicity"
-                  min={1}
-                  step={1}
-                  max={100}
+                  min={5}
+                  step={0.5}
+                  max={18}
                   onChange={(event, newValue) => {
                     handleSliderChanges(newValue, 'endemicity')
                   }}
                   aria-labelledby="slider"
                   marks={[
-                    { value: 0, label: '0' },
-                    { value: 100, label: '100' },
+                    { value: 5, label: '5%' },
+                    { value: 18, label: '18%' },
                   ]}
                   valueLabelDisplay="on"
                 />

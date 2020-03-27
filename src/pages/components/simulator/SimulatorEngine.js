@@ -505,10 +505,7 @@ export var Model = function(n) {
     this.Ms = this.Ms.slice(200, this.Ms.length)
     this.Ls = this.Ls.slice(200, this.Ls.length)
     var maxt = this.ts[200]
-    // this.ts = math.subtract(this.ts.slice(200, this.ts.length), maxt); // !!!!!!!!!!!!!!
     this.ts = subtract(this.ts.slice(200, this.ts.length), maxt) // !!!!!!!!!!!!!!
-    // this.ts = this.ts.slice(200, this.ts.length) - maxt
-    //plot(this.ts,this.Ws,this.Ms,this.Ls);
   }
 }
 export var params = {
@@ -798,8 +795,11 @@ export var statFunctions = {
     params.mdaFreq = ps.mdaSixMonths === 'True' ? 6.0 : 12.0
     var end =
       dict && dict.endemicity ? dict.endemicity / 100 : ps.endemicity / 100
+    console.log(end)
     var sps = ps.species
+    console.log(sps)
     params.v_to_h = Number(statFunctions.setVHFromPrev(end, Number(sps))) //Number(ps.endemicity);//
+    console.log(params.v_to_h)
     params.covMDA = Number(ps.coverage / 100.0)
     params.covN = Number(ps.covN / 100)
     params.v_to_hR = 1 - Number(ps.v_to_hR / 100)
@@ -868,8 +868,8 @@ export var simControler = {
     dyrs = stats.doses
     ryrs = stats.reduction
 
-    //    console.log(ts) // !!!!!!!!!!!!!!! not working properly!
-    //    console.log(dyrs) // !!!!!!!!!!!!!!! not working properly!
+    //    console.log(ts)
+    //    console.log(dyrs)
     SessionData.storeStats({
       ts: ts,
       prev_reds: ryrs,
@@ -901,16 +901,7 @@ export var simControler = {
     // var scenLabel = $("#inputScenarioLabel").val();
     //max number of mda rounds even if doing it six monthly.
 
-    //    if (FORM_FILLED_IN) {
-    // !!!!!!!!!!!!!!! IF FORM IS FILLED IN, RUN THIS /// !!!!!!!!!!!!!!!
     var mdaJSON = simControler.mdaObj //generateMDAFromForm()
-    //  } else {
-    // !!!!!!!!!!!!!!! IF FORM IS NOT FILLED IN, GET MDA JSON FROM INPUT FILE /// !!!!!!!!!!!!!!!
-    //mdaJSON = MDA_STRAIGHT_FROM_INPUT_FILE
-    //    }
-
-    // reply: form is always filled.
-
     var maxN = simControler.params.runs // Number($("#runs").val());
     var runs = []
     var progression = 0
@@ -922,7 +913,6 @@ export var simControler = {
       runs.push(SessionData.convertRun(m))
       simulatorCallback(parseInt((progression * 100) / maxN))
       if (progression === maxN) {
-        // $("#map-progress-bar").hide();
         clearInterval(progress)
         SessionData.storeResults(runs, 'scenLabel 1')
         simControler.scenarioRunStats(simulatorCallback)
@@ -933,8 +923,6 @@ export var simControler = {
   },
   reductionStatsCalc: (scenario, coverage) => {
     var n = scenario['results'].length
-    //        var T = scenario["results"][0]["ts"].length;  //scenario["results"][0]["ts"].length; !!!!!!!!!!!!!! doesnt seem to work
-    // var T = 0;
     var T =
       scenario['results'] &&
       scenario['results'][0] &&
