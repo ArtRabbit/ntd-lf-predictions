@@ -401,13 +401,11 @@ class DataAPI {
 
   // return all states for selected regime and country, ranked by prevalence over years, and stats
   get stateDataCurrentCountry() {
-    const allStates = this.stateData
+    const statesByCountry = this.stateByCountryData
     const { country } = this.uiState
 
-    if (allStates && country) {
-      const { stats, data } = allStates
-      const picked = pickByFP(['relatedCountries.0', country])(data)
-      return { data: picked, stats }
+    if (statesByCountry && country) {
+      return statesByCountry[country]
     }
 
     return null
