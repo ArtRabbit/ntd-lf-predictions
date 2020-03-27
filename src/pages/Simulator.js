@@ -242,8 +242,9 @@ const Simulator = props => {
   useEffect(() => {
     // handleFrequencyChange()
     populateMDA()
-  }, [simParams.mdaSixMonths])
+  }, [simParams.mdaSixMonths, simParams.coverage])
   const populateMDA = () => {
+    console.log('populateMDA')
     var MDAtime = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
@@ -987,7 +988,6 @@ const Simulator = props => {
                 <span>{simulationProgress}%</span>
               </div>
             )}
-
           </Grid>
         </Grid>
       </section>
