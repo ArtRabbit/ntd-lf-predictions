@@ -64,14 +64,14 @@ const groupProps = (obj, pattern) =>
 
 const roundPrevalence = p => round(p * 100, 2)
 
-const buildScales = ({ data, stats }) => {
+const buildScales = (stats, data) => {
   //   const prev = scaleSequential(interpolateReds)
   //     .domain([0, stats.prevalence.max])
   //     .nice(5)
 
   const prev = scaleSymlog()
     .domain([0, stats.prevalence.max])
-    .range(['#fff','#d01c8b'])
+    .range(['#fff', '#d01c8b'])
     .nice()
 
   const mp = max(stats.performance.map(x => Math.abs(x)))
@@ -97,6 +97,8 @@ const buildScales = ({ data, stats }) => {
   //     .domain([-mp / 2, mp / 2])
   //     .range(steps3)
 
+  //   console.log('>>> build stats', stats)
+
   return { prev, perf }
 }
 
@@ -105,11 +107,45 @@ const defaultScales = {
   perf: () => '#000000',
 }
 
-function addRankingAndStats(data) {
+// calculates min/max values for prevalence and performance
+function generateStats(data) {
+  const prevExtent = flow(
+    values,
+    map(({ prevalence }) => {
+      const pValues = values(prevalence)
+      return [min(pValues), max(pValues)]
+    })
+  )(data)
+
+  const [minN, maxN] = zip(...prevExtent)
+
+  // create performance stats
+  const performances = flow(map('performance'))(data)
+
+  const stats = {
+    // TODO: use array for prevalence extent (more consistent)
+    prevalence: { min: min(minN) ?? 0, max: max(maxN) ?? 0 },
+    performance: extent(performances),
+  }
+
+  //   console.log('>>> generate stats', data.length, data, stats)
+
+  return stats
+}
+
+// adds rank to entries for each year based on prevalence
+function addRanking(data) {
   const dataMap = keyBy('id')(data)
 
   // create entries for each prevalence value and year
   const prevByYear = flow(
+    // only take entries where all prevalence values (for every year) are numbers
+    filter(x =>
+      flow(
+        map(isFinite),
+        everyFP(x => x)
+      )(x.prevalence)
+    ),
     flatMap(({ prevalence, id }) => {
       return entries(prevalence).map(([year, prevalence]) => ({
         year,
@@ -121,7 +157,7 @@ function addRankingAndStats(data) {
   )(data)
 
   // sort entries and add ranks
-  const sortedPrev = transform(
+  const prevByYearWithRank = transform(
     prevByYear,
     (result, value, year, data) => {
       const prevYear = (parseInt(year) - 1).toString()
@@ -140,58 +176,29 @@ function addRankingAndStats(data) {
   )
 
   // group entries by ID
-  const sortedPrevByID = flow(
+  const ranksByID = flow(
     values,
     flatten,
     groupBy('id'),
     mapValuesFP(map(omit('id')))
-  )(sortedPrev)
+  )(prevByYearWithRank)
 
-  // add rankings and performance (delta start to end) to entries
-  const processed = mapValuesFP(x => {
-    const ranks = sortedPrevByID[x.id]
-    // check if prevalence series contains NaN values
-    const isValid = flow(
-      values,
-      map(x => isFinite(x.prevalence)),
-      everyFP(x => x)
-    )(ranks)
+  // add rankings to entries
+  const ranked = map(x => ({
+    ...x,
+    ranks: ranksByID[x.id] || null,
+  }))(data)
 
-    if (isValid) {
-      const pValues = ranks.map(x => x.prevalence)
-      const performance = last(pValues) - first(pValues)
-      return { ...x, ranks, performance }
-    }
+  //   console.log('>>> ranking', data.length, data, ranked)
 
-    return { ...x, ranks: null, performance: null }
-  })(dataMap)
-
-  // create prevalence stats
-  const prevExtent = flow(
-    values,
-    map(({ prevalence }) => {
-      const pValues = values(prevalence)
-      return [min(pValues), max(pValues)]
-    })
-  )(processed)
-
-  const [minN, maxN] = zip(...prevExtent)
-
-  // create performance stats
-  const performances = flow(values, map('performance'))(processed)
-
-  const stats = {
-    //   TODO: use array for prevalence extent (more consistent)
-    prevalence: { min: min(minN) ?? 0, max: max(maxN) ?? 0 },
-    performance: extent(performances),
-  }
-
-  return { data: processed, stats }
+  return ranked
 }
 
-function addIDRelations({ data, relations, key }) {
+// creates data entries for countries, states, and UIs
+function createEntries({ data, relations, key }) {
   const groupRelByKey = groupBy(key)(relations)
-  return flow(
+
+  const entr = flow(
     map(row => {
       const { [key]: id, Population } = row
       const meta = groupRelByKey[id][0]
@@ -204,10 +211,14 @@ function addIDRelations({ data, relations, key }) {
           ? meta.StateName
           : meta.IUName
 
+      const prevalence = mapValuesFP(roundPrevalence)(groupProps(row, 'Prev_'))
+      const prevValues = values(prevalence)
+      const performance = last(prevValues) - first(prevValues)
+
       const probability = groupProps(row, 'elimination')
-      const prev = groupProps(row, 'Prev_')
-      const lower = groupProps(row, 'Lower')
-      const upper = groupProps(row, 'Upper')
+      //   could be enabled if needed
+      //   const lower = groupProps(row, 'Lower')
+      //   const upper = groupProps(row, 'Upper')
 
       const related = groupRelByKey[id]
       const relatedCountries = flow(groupBy('Country'), keys)(related)
@@ -219,10 +230,11 @@ function addIDRelations({ data, relations, key }) {
         name,
         population: round(Population, 0),
         endemicity: row.Endemicity,
-        prevalence: mapValuesFP(roundPrevalence)(prev),
+        prevalence,
+        performance,
         probability,
-        lower,
-        upper,
+        // lower,
+        // upper,
         relatedCountries,
         relatedStates,
         relatedIU,
@@ -230,39 +242,49 @@ function addIDRelations({ data, relations, key }) {
       return enhanced
     })
   )(data)
+
+  //   console.log('>>> create Entries', data.length, data, entr)
+
+  return entr
 }
 
+// merges data collection into feature collection (geo)
 function mergeFeatures({ data, featureCollection, key, scales }) {
-  const { prev, perf } = scales
-  const features = featureCollection.features
+  const dataMap = keyBy('id')(data)
+
+  const filtered = featureCollection.features
     // only take features, which are in the data
     .filter(feature => {
       const id = feature.properties[key]
-      return data[id] ?? false
+      return dataMap[id] ?? false
     })
-    .map(feature => {
-      const id = feature.properties[key]
-      const featureData = data[id]
-      const { performance } = featureData
-      const prevalenceOverTime = featureData?.prevalence ?? {}
-      const population = featureData?.population ?? '–'
-      const endemicity = featureData?.endemicity ?? '–'
 
-      // get color from scale if prevalence value available
-      const colorsByYear = mapValues(prevalenceOverTime, p_prevalence =>
-        isFinite(p_prevalence) ? color(prev(p_prevalence)).hex() : null
-      )
+  const { prev, perf } = scales
+  const features = filtered.map(feature => {
+    const id = feature.properties[key]
+    const featureData = dataMap[id]
+    const { performance } = featureData
+    const prevalenceOverTime = featureData?.prevalence ?? {}
+    const endemicity = featureData?.endemicity ?? '–'
+    // const population = featureData?.population ?? '–'
 
-      return merge({}, feature, {
-        properties: {
-          ...mapKeys(year => `color-${year}`)(colorsByYear),
-          ...mapKeys(year => `prev-${year}`)(prevalenceOverTime),
-          performance,
-          'color-perf': perf(performance),
-          endemicity,
-        },
-      })
+    // get color from scale if prevalence value available
+    const colorsByYear = mapValues(prevalenceOverTime, p_prevalence =>
+      isFinite(p_prevalence) ? color(prev(p_prevalence)).hex() : null
+    )
+
+    return merge({}, feature, {
+      properties: {
+        ...mapKeys(year => `color-${year}`)(colorsByYear),
+        ...mapKeys(year => `prev-${year}`)(prevalenceOverTime),
+        performance,
+        'color-perf': perf(performance),
+        endemicity,
+      },
     })
+  })
+
+  //   console.log('>>> merge features', filtered.length, filtered, features)
 
   return { type: 'FeatureCollection', features }
 }
@@ -280,8 +302,8 @@ class DataAPI {
       : { Regime: regime }
   }
 
-  // filter countries by endemicity and regime
-  get filteredCountries() {
+  // returns all country rows from CSV file filtered by regime
+  get filteredCountryRows() {
     const { countries } = this.dataStore
 
     if (countries) {
@@ -291,8 +313,8 @@ class DataAPI {
     return null
   }
 
-  // filter states by endemicity and regime
-  get filteredStates() {
+  // returns all state rows from CSV file filtered by regime
+  get filteredStateRows() {
     const { states } = this.dataStore
 
     if (states) {
@@ -302,8 +324,8 @@ class DataAPI {
     return null
   }
 
-  // filter states by endemicity and regime
-  get filteredIU() {
+  // returns all IU rows from CSV file filtered by regime
+  get filteredIURows() {
     const { ius } = this.dataStore
 
     if (ius) {
@@ -313,86 +335,108 @@ class DataAPI {
     return null
   }
 
-  // add relations to countries
-  get filteredCountriesWithMeta() {
-    const countries = this.filteredCountries
+  // return all countries for selected regime
+  get countriesCurrentRegime() {
+    const countries = this.filteredCountryRows
     const { relations } = this.dataStore
 
     if (countries && relations) {
-      return addIDRelations({ data: countries, relations, key: 'Country' })
+      return createEntries({ data: countries, relations, key: 'Country' })
     }
 
     return null
   }
 
-  // add relations to states
-  get filteredStatesWithMeta() {
-    const states = this.filteredStates
+  // return all states for selected regime
+  get statesCurrentRegime() {
+    const states = this.filteredStateRows
     const { relations } = this.dataStore
 
     if (states && relations) {
-      return addIDRelations({ data: states, relations, key: 'StateCode' })
+      return createEntries({ data: states, relations, key: 'StateCode' })
     }
 
     return null
   }
 
-  // add relations to IUs
-  get filteredIUsWithMeta() {
-    const ius = this.filteredIU
+  // return all IUs for selected regime
+  get IUsCurrentRegime() {
+    const ius = this.filteredIURows
     const { relations } = this.dataStore
 
     if (ius && relations) {
-      return addIDRelations({ data: ius, relations, key: 'IUID' })
+      return createEntries({ data: ius, relations, key: 'IUID' })
     }
 
     return null
   }
 
+  // return all countries for selected regime, ranked by prevalence over years, and stats
   get countryData() {
-    const countries = this.filteredCountriesWithMeta
+    const countries = this.countriesCurrentRegime
+    const stats = this.countryStats
     const { relations } = this.dataStore
 
     if (countries && relations) {
-      return addRankingAndStats(countries)
+      const data = addRanking(countries)
+      return { data: keyBy('id')(data), stats }
     }
 
     return null
   }
 
+  // return all states for selected regime, ranked by prevalence over years, and stats
   get stateData() {
-    const states = this.filteredStatesWithMeta
+    const states = this.statesCurrentRegime
+    const stats = this.stateStats
     const { relations } = this.dataStore
-    const { country } = this.uiState
 
     if (states && relations) {
-      const stateSelection = country
-        ? filter(['relatedCountries.0', country])(states)
-        : states
-      return addRankingAndStats(stateSelection)
+      const data = addRanking(states)
+      return { data: keyBy('id')(data), stats }
     }
 
     return null
   }
 
-  // returns all states grouped by country
+  // return all states for selected regime and country, ranked by prevalence over years, and stats
+  get stateDataCurrentCountry() {
+    const allStates = this.stateData
+    const { country } = this.uiState
+
+    if (allStates && country) {
+      const { stats, data } = allStates
+      const picked = pickByFP(['relatedCountries.0', country])(data)
+      return { data: picked, stats }
+    }
+
+    return null
+  }
+
+  // return all states for selected regime grouped by country
+  // for each country, states are ranked by prevalence over years, and stats are added
   get stateByCountryData() {
-    const states = this.filteredStatesWithMeta
+    const states = this.statesCurrentRegime
     const { relations } = this.dataStore
 
     if (states && relations) {
       return flow(
         groupBy(x => x.relatedCountries[0]),
-        mapValuesFP(addRankingAndStats)
+        mapValuesFP(s => {
+          const stats = generateStats(s)
+          const data = addRanking(s)
+          return { data: keyBy('id')(data), stats }
+        })
       )(states)
     }
 
     return null
   }
 
-  // returns all IUs grouped by state for the selected country
+  // return all IUs for selected regime and country, grouped by states
+  // each group is ranked by prevalence over years, and stats are added
   get iuByStateData() {
-    const IUs = this.filteredIUsWithMeta
+    const IUs = this.IUsCurrentRegime
     const { country } = this.uiState
     const { relations } = this.dataStore
 
@@ -400,19 +444,27 @@ class DataAPI {
       return flow(
         filter(x => x.relatedCountries[0] === country),
         groupBy(x => x.relatedStates[0]),
-        mapValuesFP(addRankingAndStats)
+        mapValuesFP(ius => {
+          const stats = generateStats(ius)
+          const data = addRanking(ius)
+          return { data: keyBy('id')(data), stats }
+        })
       )(IUs)
     }
 
     return null
   }
 
+  // return all IUs for selected regime, ranked by prevalence over years, and stats
+  // if country is selected, only states of selected country will be returned
   get iuData() {
-    const ius = this.filteredIUsWithMeta
+    const ius = this.IUsCurrentRegime
+    const stats = this.IUStats
     const { relations } = this.dataStore
 
     if (ius && relations) {
-      return addRankingAndStats(ius)
+      const data = addRanking(ius)
+      return { data: keyBy('id')(data), stats }
     }
 
     return null
@@ -420,13 +472,12 @@ class DataAPI {
 
   get countryFeatures() {
     const featureCollection = this.dataStore.featuresLevel0
-    const countries = this.countryData
+    const countries = this.countriesCurrentRegime
     const scales = this.countryScales
 
     if (featureCollection && countries) {
-      const { data } = countries
       return mergeFeatures({
-        data,
+        data: countries,
         featureCollection,
         key: 'ADMIN0ISO3',
         scales,
@@ -456,17 +507,31 @@ class DataAPI {
 
   get stateFeatures() {
     const featureCollection = this.dataStore.featuresLevel1
-    const states = this.stateData
+    const states = this.statesCurrentRegime
+    const scales = this.stateScales
+
+    if (featureCollection && states) {
+      return mergeFeatures({
+        data: states,
+        featureCollection,
+        key: 'ADMIN1ID',
+        scales,
+      })
+    }
+
+    return emptyFeatureCollection
+  }
+
+  //   TODO: connect to stateFeatures()
+  get stateFeaturesCurrentCountry() {
+    const featureCollection = this.dataStore.featuresLevel1
+    const states = this.statesCurrentRegime
     const { country } = this.uiState
     const scales = this.stateScales
 
     if (featureCollection && states) {
-      const { data } = states
-
       return mergeFeatures({
-        data: country
-          ? pickByFP(x => x.relatedCountries.includes(country))(data)
-          : data,
+        data: filter(x => x.relatedCountries.includes(country))(states),
         featureCollection,
         key: 'ADMIN1ID',
         scales,
@@ -478,16 +543,13 @@ class DataAPI {
 
   get iuFeatures() {
     const featureCollection = this.dataStore.featuresLevel2
-    const IUs = this.iuData
+    const IUs = this.IUsCurrentRegime
     const scales = this.iuScales
     const { country } = this.uiState
 
-    if (featureCollection && IUs) {
-      const { data } = IUs
+    if (featureCollection && IUs && country) {
       return mergeFeatures({
-        data: country
-          ? pickByFP(x => x.relatedCountries.includes(country))(data)
-          : data,
+        data: filter(x => x.relatedCountries.includes(country))(IUs),
         featureCollection,
         key: 'IU_ID',
         scales,
@@ -498,25 +560,55 @@ class DataAPI {
   }
 
   get countryScales() {
-    const countries = this.countryData
-    if (countries) return buildScales(countries)
+    const stats = this.countryStats
+    if (stats) {
+      return buildScales(stats)
+    }
     return defaultScales
   }
 
   get stateScales() {
-    const states = this.stateData
-    if (states) return buildScales(states)
+    const stats = this.stateStats
+    if (stats) {
+      return buildScales(stats)
+    }
     return defaultScales
   }
 
   get iuScales() {
-    const IUs = this.iuData
-    if (IUs) return buildScales(IUs)
+    const stats = this.IUStats
+    if (stats) {
+      return buildScales(stats)
+    }
     return defaultScales
   }
 
+  get countryStats() {
+    const countries = this.countriesCurrentRegime
+    if (countries) {
+      return generateStats(countries)
+    }
+    return null
+  }
+
+  get stateStats() {
+    const states = this.statesCurrentRegime
+    if (states) {
+      return generateStats(states)
+    }
+    return null
+  }
+
+  get IUStats() {
+    const IUs = this.IUsCurrentRegime
+    if (IUs) {
+      return generateStats(IUs)
+    }
+    return null
+  }
+
   get countrySuggestions() {
-    const countries = this.filteredCountriesWithMeta
+    const countries = this.countriesCurrentRegime
 
     if (countries) {
       const result = flow(
@@ -549,18 +641,20 @@ class DataAPI {
 decorate(DataAPI, {
   countryData: computed,
   stateData: computed,
+  stateDataCurrentCountry: computed,
   stateByCountryData: computed,
   iuByStateData: computed,
   iuData: computed,
   countryFeatures: computed,
   stateFeatures: computed,
+  stateFeaturesCurrentCountry: computed,
   iuFeatures: computed,
-  filteredCountries: computed,
-  filteredStates: computed,
-  filteredIU: computed,
-  filteredCountriesWithMeta: computed,
-  filteredStatesWithMeta: computed,
-  filteredIUsWithMeta: computed,
+  filteredCountryRows: computed,
+  filteredStateRows: computed,
+  filteredIURows: computed,
+  countriesCurrentRegime: computed,
+  statesCurrentRegime: computed,
+  IUsCurrentRegime: computed,
   rowFilter: computed,
   countrySuggestions: computed,
   regimes: computed,
@@ -569,6 +663,9 @@ decorate(DataAPI, {
   countryScales: computed,
   stateScales: computed,
   iuScales: computed,
+  countryStats: computed,
+  stateStats: computed,
+  IUStats: computed,
 })
 
 export default DataAPI

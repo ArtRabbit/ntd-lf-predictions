@@ -46,10 +46,9 @@ const TrendsCountry = props => {
   const classes = useStyles()
   const {
     selectedCountry,
-    countryData,
     countryFeatures,
-    stateFeatures,
-    stateData,
+    stateFeaturesCurrentCountry: stateFeatures,
+    stateDataCurrentCountry: stateData,
     stateScales,
   } = useDataAPI()
 
@@ -71,22 +70,27 @@ const TrendsCountry = props => {
         title={`${selectedCountry?.name || '...'} facts`}
       >
         <Typography component="p">
-          {selectedCountry && 
-          <Typography component="p">
-            <Fragment key={`intro-${1}`}>
-              {`Population modelled: ${abbrNum(selectedCountry.population,0)}`}
-              <br />
-            </Fragment>
-            <Fragment key={`intro-${2}`}>
-              {`Prevalence 2020: ${selectedCountry.prevalence[2020]}%`}
-              <br />
-            </Fragment>
-            <Fragment key={`intro-${3}`}>
-              {`Probability of eradication by 2030: ${(selectedCountry.probability[2020]*100).toFixed(2)}%`}
-              <br />
-            </Fragment>
-          </Typography>
-          }
+          {selectedCountry && (
+            <Typography component="p">
+              <Fragment key={`intro-${1}`}>
+                {`Population modelled: ${abbrNum(
+                  selectedCountry.population,
+                  0
+                )}`}
+                <br />
+              </Fragment>
+              <Fragment key={`intro-${2}`}>
+                {`Prevalence 2020: ${selectedCountry.prevalence[2020]}%`}
+                <br />
+              </Fragment>
+              <Fragment key={`intro-${3}`}>
+                {`Probability of eradication by 2030: ${(
+                  selectedCountry.probability[2020] * 100
+                ).toFixed(2)}%`}
+                <br />
+              </Fragment>
+            </Typography>
+          )}
         </Typography>
       </ExpandableInfoStandalone>
 

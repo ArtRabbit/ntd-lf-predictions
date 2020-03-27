@@ -38,11 +38,11 @@ const HotSpotCountry = props => {
 
   const {
     countryFeatures,
-    stateFeatures,
+    stateFeaturesCurrentCountry: stateFeatures,
     iuFeatures,
     selectedCountry,
     iuByStateData,
-    stateData,
+    stateDataCurrentCountry: stateData,
     iuScales,
   } = useDataAPI()
 
