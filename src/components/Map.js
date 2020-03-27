@@ -7,6 +7,7 @@ import { format } from 'd3'
 import useMapReducer from '../hooks/useMapReducer'
 import Legend from './Legend'
 import Tooltip from './Tooltip'
+import { NO_DATA } from '../constants'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 const useStyles = makeStyles({
@@ -176,20 +177,23 @@ function Map({
   const renderPopup = f => {
     const { name, id, performance, endemicity, population } = f.properties
     const prevalence = feature.properties[`prev-${year}`]
+    const performanceInfo =
+      prevalence !== 'null'
+        ? performance <= 0
+          ? -1 * performance + '% decline'
+          : performance + '% increase'
+        : NO_DATA
     return (
       <Box display="block" variant="body1" component="div">
         <Typography variant="subtitle1" gutterBottom>
           {name}
         </Typography>
-        <div>Prevalence: {feature.properties[`prev-${year}`]}%</div>
+        <div>
+          Prevalence: {prevalence !== 'null' ? `${prevalence}%` : NO_DATA}
+        </div>
         {population && <div>Population: {format(',')(population)}</div>}
         {endemicity && <div>Endemicity: {endemicity}</div>}
-        <div>
-          Trend:{' '}
-          {performance <= 0
-            ? -1 * performance + '% decline'
-            : performance + '% increase'}
-        </div>
+        <div>Trend: {performanceInfo}</div>
         {feature.source === 'africa-countries' && (
           <ul className="links">
             <li>
