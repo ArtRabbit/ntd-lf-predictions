@@ -244,7 +244,7 @@ const Simulator = props => {
     populateMDA()
   }, [simParams.mdaSixMonths, simParams.coverage])
   const populateMDA = () => {
-    console.log('populateMDA')
+    // console.log('populateMDA')
     var MDAtime = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
@@ -398,8 +398,22 @@ const Simulator = props => {
   }
   const removeCurrentScenario = () => {
     if (!simInProgress) {
-      alert('todo')
-      //SimulatorEngine.simControler.removeScenario()
+      // alert('todo')
+
+      console.log(scenarioResults)
+      console.log(scenarioResults[tabIndex])
+
+      let newScenarios = [...scenarioResults]
+      newScenarios = newScenarios.filter(
+        item => item !== scenarioResults[tabIndex]
+      )
+      console.log(newScenarios)
+      setScenarioResults([...newScenarios])
+      setTabLength(tabLength - 1)
+      setTabIndex(tabIndex - 1)
+      window.localStorage.setItem('scenarios', JSON.stringify(newScenarios))
+
+      // SimulatorEngine.simControler.removeScenario(tabIndex)
     }
   }
 
@@ -533,7 +547,7 @@ const Simulator = props => {
                         id="larvae-prevalence"
                         value={graphMetric}
                         onChange={ev => {
-                          console.log(ev.target.value)
+                          // console.log(ev.target.value)
                           setGraphMetric(ev.target.value)
                         }}
                       >
