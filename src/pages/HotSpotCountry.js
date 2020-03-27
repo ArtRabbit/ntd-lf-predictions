@@ -63,30 +63,31 @@ const HotSpotCountry = props => {
       <ExpandableInfoStandalone
         title={`${selectedCountry?.name || '...'} facts`}
       >
-        {selectedCountry && 
-        <Typography component="p">
-          <Fragment key={`intro-${1}`}>
-            {`Population modelled: ${abbrNum(selectedCountry.population,0)}`}
-            <br />
-          </Fragment>
-          <Fragment key={`intro-${2}`}>
-            {`Prevalence 2020: ${selectedCountry.prevalence[2020]}%`}
-            <br />
-          </Fragment>
-          <Fragment key={`intro-${3}`}>
-            {`Probability of eradication by 2030: ${(selectedCountry.probability[2020]*100).toFixed(2)}%`}
-            <br />
-          </Fragment>
-        </Typography>
-        }
+        {selectedCountry && (
+          <Typography component="p">
+            <Fragment key={`intro-${1}`}>
+              {`Population modelled: ${abbrNum(selectedCountry.population, 0)}`}
+              <br />
+            </Fragment>
+            <Fragment key={`intro-${2}`}>
+              {`Prevalence 2020: ${selectedCountry.prevalence[2020]}%`}
+              <br />
+            </Fragment>
+            <Fragment key={`intro-${3}`}>
+              {`Probability of eradication by 2030: ${(
+                selectedCountry.probability[2020] * 100
+              ).toFixed(2)}%`}
+              <br />
+            </Fragment>
+          </Typography>
+        )}
       </ExpandableInfoStandalone>
-        
 
       <SectionTitle
-          top={true}
-          headline="Implementation unit hotspots"
-          text={`An overview of IU hotspots and areas of interest in all modelled areas. To see alternative outcomes, change the treatment scenario in the top menu.`}
-        />
+        top={true}
+        headline="Implementation unit hotspots"
+        text={`An overview of IU hotspots and areas of interest in all modelled areas. To see alternative outcomes, change the treatment scenario in the top menu.`}
+      />
       <div
         style={{
           borderTop: '1px solid #e0e0e0',
@@ -124,7 +125,7 @@ const HotSpotCountry = props => {
                     data={[state]}
                     width={800}
                     height={100}
-                    yDomain={30}
+                    yDomain={stateData.stats.prevalence.max}
                     clipDomain
                   />
                 </Box>
