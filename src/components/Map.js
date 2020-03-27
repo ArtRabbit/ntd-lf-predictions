@@ -426,7 +426,7 @@ function Map({
           <Tooltip
             title={`${featureHover.properties.name} ${
               featureHover.properties[`prev-${year}`]
-            } % | ${ featureHover.properties.performance <= 0 ? (-1*featureHover.properties.performance)+'% decline' : (featureHover.properties.performance)+'% increase' }`}
+            }% ${ featureHover.properties.performance <= 0 ? '⬇'+(-1*featureHover.properties.performance)+'%' : '⬆'+(featureHover.properties.performance)+'%' }`}
             open
             placement="top"
           >
