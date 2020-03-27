@@ -7,7 +7,7 @@ import { useTheme } from '@material-ui/styles'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
-import LinearProgress from '@material-ui/core/LinearProgress'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 
@@ -67,7 +67,8 @@ const useStyles = makeStyles(theme => ({
   },
   contentLeftColumn: {},
   settings: {
-    padding: theme.spacing(4, 4, 2, 2),
+    position: 'relative',
+    padding: theme.spacing(4, 4, 8, 2),
     backgroundColor: theme.palette.secondary.light,
   },
   settingsBody: {
@@ -106,14 +107,18 @@ const useStyles = makeStyles(theme => ({
   },
   progress: {
     width: '100%',
-    '& > *': {
-      margin: theme.spacing(2, 0),
-    },
-    '& > p': {
+    position: 'absolute',
+    textAlign: 'center',
+    bottom: theme.spacing(3),
+    left: 0,
+    fontSize: 0,
+    '& > span': {
       margin: 0,
       fontSize: 12,
-      display: 'block',
-      textAlign: 'center'
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
     },
   },
   withSlider: {
@@ -130,8 +135,6 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3, 3, 0, 3),
     borderRadius: 0,
     width: 310,
-    position: 'absolute',
-
     position: 'absolute',
     left: '50%',
     bottom: 116,
@@ -391,6 +394,13 @@ const Simulator = props => {
       SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
     }
   }
+  const removeCurrentScenario = () => {
+    if (!simInProgress) {
+      alert('todo');
+      //SimulatorEngine.simControler.removeScenario()
+    }
+  }
+
   const runNewScenario = () => {
     if (!simInProgress) {
       if (tabLength < 5) {
@@ -962,22 +972,19 @@ const Simulator = props => {
               <Button
                 variant="contained"
                 disabled={simInProgress} /*  || scenarioInputs.length === 0 */
-                onClick={() => {
-                  alert('todo')
-                }}
+                onClick={removeCurrentScenario}
               >
                 REMOVE SCENARIO
               </Button>
             </div>
             {simulationProgress !== 0 && simulationProgress !== 100 && (
               <div className={classes.progress}>
-                <LinearProgress
-                  variant="indeterminate"
+                <CircularProgress
+                  variant="determinate"
                   value={simulationProgress}
                   color="secondary"
                 />
-
-                <p>{simulationProgress}%</p>
+                <span>{simulationProgress}%</span>
               </div>
             )}
 
