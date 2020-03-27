@@ -202,7 +202,7 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 }
 
-let countryLinks = [];
+let countryLinks = []
 
 const Simulator = props => {
   const classes = useStyles()
@@ -399,8 +399,21 @@ const Simulator = props => {
 
   useEffect(() => {
     if (country)
-      countryLinks = [{ to: '/trends/'+country, name: 'TRENDS '+(urlParams.get('name') ? urlParams.get('name') : country) },{ to: '/hotspots/'+country, name: 'HOTSPOTS '+(urlParams.get('name') ? urlParams.get('name') : country) }]
-      //console.log(countryLinks)
+      countryLinks = [
+        {
+          to: '/trends/' + country,
+          name:
+            'TRENDS ' +
+            (urlParams.get('name') ? urlParams.get('name') : country),
+        },
+        {
+          to: '/hotspots/' + country,
+          name:
+            'HOTSPOTS ' +
+            (urlParams.get('name') ? urlParams.get('name') : country),
+        },
+      ]
+    //console.log(countryLinks)
   }, [country])
   const [doseSettingsOpen, setDoseSettingsOpen] = useState(false)
   const [doseSettingsLeft, setDoseSettingsLeft] = useState(0)
@@ -440,7 +453,11 @@ const Simulator = props => {
               scrollButtons="auto"
             >
               {scenarioResults.map((result, i) => (
-                <Tab key={`tab-element-${i}`} label={`Scenario ${i}`} {...a11yProps(i)} />
+                <Tab
+                  key={`tab-element-${i}`}
+                  label={`Scenario ${i}`}
+                  {...a11yProps(i)}
+                />
               ))}
             </Tabs>
           </Grid>
@@ -454,12 +471,21 @@ const Simulator = props => {
                   index={i}
                 >
                   <Box p={1}>
-                  <Typography className={classes.title} variant="h3" component="h2">
-                    {`Scenario ${i}`}
-                  </Typography>
-                    
+                    <Typography
+                      className={classes.title}
+                      variant="h3"
+                      component="h2"
+                    >
+                      {`Scenario ${i}`}
+                    </Typography>
+
                     <div>
-                      <ScenarioGraph data={result} inputs={simMDAcoverage} showAllResults={true} />
+                      <ScenarioGraph
+                        data={result}
+                        inputs={simMDAcoverage}
+                        showAllResults={false}
+                        metrics={['Ms']}
+                      />
                     </div>
                     <div
                       style={{
@@ -524,7 +550,6 @@ const Simulator = props => {
                         </div>
                       ))}
                     </div>
-
                   </Box>
                 </TabPanel>
               ))}
@@ -786,13 +811,10 @@ const Simulator = props => {
             )}
           </Grid>
         </Grid>
-        
+
         {doseSettingsOpen && (
           <ClickAwayListener onClickAway={closeRoundModal}>
-            <Paper
-              elevation={3}
-              className={classes.roundModal}
-            >
+            <Paper elevation={3} className={classes.roundModal}>
               <CloseButton action={closeRoundModal} />
 
               <Typography className={classes.title} variant="h5" component="h4">
@@ -890,7 +912,8 @@ const Simulator = props => {
 
       <DiveDeeper
         title="Get an overview"
-        links={[ ...countryLinks,
+        links={[
+          ...countryLinks,
           { to: '/trends', name: 'TRENDS FOR ALL COUNTRIES' },
           { to: '/hotspots', name: 'HOTSPOTS FOR ALL COUNTRIES' },
         ]}

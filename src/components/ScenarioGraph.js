@@ -1,5 +1,5 @@
 import React from 'react'
-import { zip, zipObject, map } from 'lodash'
+import { zip, zipObject, map, flatten, flattenDeep, pick, values } from 'lodash'
 import { scaleLinear, extent, line } from 'd3'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
@@ -14,10 +14,16 @@ function ScenarioGraph({
   data,
   width = 600,
   height = 400,
+  metrics = ['Ms', 'Ws', 'Ls'],
   showAllResults,
   inputs,
 }) {
   const dataSelection = showAllResults ? data.results : [data.results[0]]
+  const domainX = extent(flatten(map(dataSelection, 'ts')))
+  const domainY = extent(
+    flattenDeep(map(dataSelection, x => values(pick(x, metrics))))
+  )
+
   const lPad = 50
   const rPad = 32
   const tPad = 20
@@ -26,13 +32,14 @@ function ScenarioGraph({
   const svgWidth = width
 
   const x = scaleLinear()
-    .domain(extent(data.results[0].ts))
+    .domain(domainX)
     .range([0, width])
     .nice()
 
   const y = scaleLinear()
-    .domain([0, 100])
+    .domain(domainY)
     .range([height, 0])
+    .nice()
 
   const ticksX = x.ticks()
   const ticksY = y.ticks()
@@ -42,68 +49,68 @@ function ScenarioGraph({
     const series = zip(ts, Ms, Ws, Ls)
     const seriesObj = map(series, x => zipObject(['ts', 'Ms', 'Ws', 'Ls'], x))
 
-    /*
-        <Path data={seriesObj} prop="Ws" x={x} y={y} color="#00ff00" />
-        <Path data={seriesObj} prop="Ls" x={x} y={y} color="#0000ff" />
-    */
-
     return (
       <>
-        <Path data={seriesObj} prop="Ms" x={x} y={y} color="#6236FF" />
-        
+        {metrics.map(m => (
+          <Path key={m} data={seriesObj} prop={m} x={x} y={y} color="#6236FF" />
+        ))}
       </>
     )
   }
 
   return (
-    <svg width={svgWidth} height={svgHeight} viewBox={`0 0 ${svgWidth} ${svgHeight}`}>
+    <svg
+      width={svgWidth}
+      height={svgHeight}
+      viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+    >
       <g transform={`translate(${lPad},${yPad})`}>
-      {ticksX.map((t, i) => {
-        const xt = x(t)
-        return (
-          <g key={xt}>
-            <line
-              key={t}
-              x1={xt}
-              x2={xt}
-              y1={-5}
-              y2={height}
-              stroke="#D8D8D8"
-              {...(i === 0 || i === ticksX.length - 1
-                ? {}
-                : { strokeDasharray: '4 3' })}
-            ></line>
-            <text x={xt} y={height + yPad} fontSize={12} textAnchor="middle">
-              {t}
-            </text>
-          </g>
-        )
-      })}
-      {ticksY.map((t, i) => {
-        const yt = y(t)
-        return (
-          <g key={yt}>
-            <line
-              key={t}
-              x1={0}
-              x2={width-lPad}
-              y1={yt}
-              y2={yt}
-              stroke="#D8D8D8"
-              {...(i === 0 || i === ticksY.length - 1
-                ? {}
-                : { strokeDasharray: '4 3' })}
-            ></line>
-            <text x={-rPad} y={yt+4} fontSize={12} textAnchor="middle">
-              {`${t}%`}
-            </text>
-          </g>
-        )
-      })}
+        {ticksX.map((t, i) => {
+          const xt = x(t)
+          return (
+            <g key={xt}>
+              <line
+                key={t}
+                x1={xt}
+                x2={xt}
+                y1={-5}
+                y2={height}
+                stroke="#D8D8D8"
+                {...(i === 0 || i === ticksX.length - 1
+                  ? {}
+                  : { strokeDasharray: '4 3' })}
+              ></line>
+              <text x={xt} y={height + yPad} fontSize={12} textAnchor="middle">
+                {t}
+              </text>
+            </g>
+          )
+        })}
+        {ticksY.map((t, i) => {
+          const yt = y(t)
+          return (
+            <g key={yt}>
+              <line
+                key={t}
+                x1={0}
+                x2={width - lPad}
+                y1={yt}
+                y2={yt}
+                stroke="#D8D8D8"
+                {...(i === 0 || i === ticksY.length - 1
+                  ? {}
+                  : { strokeDasharray: '4 3' })}
+              ></line>
+              <text x={-rPad} y={yt + 4} fontSize={12} textAnchor="middle">
+                {`${t}%`}
+              </text>
+            </g>
+          )
+        })}
 
-      {dataSelection.map((result, i) => (
-        <g key={`results-${i}`}>{renderResult(result)}</g>
-      ))}
+        {dataSelection.map((result, i) => (
+          <g key={`results-${i}`}>{renderResult(result)}</g>
+        ))}
       </g>
     </svg>
   )
