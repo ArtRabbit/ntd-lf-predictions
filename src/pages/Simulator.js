@@ -433,13 +433,18 @@ const Simulator = props => {
     //console.log(countryLinks)
   }, [country])
   const [doseSettingsOpen, setDoseSettingsOpen] = useState(false)
-  const [doseSettingsLeft, setDoseSettingsLeft] = useState(0)
 
   const closeRoundModal = event => {
     setDoseSettingsOpen(false)
     setCurMDARound(-1)
   }
 
+  useEffect(() => {
+    if (typeof scenarioResults[tabIndex] === 'undefined') {
+      console.log('No scenarios? Running a new one...')
+      runCurrentScenario()
+    }
+  }, [])
   return (
     <Layout>
       <HeadWithInputs
