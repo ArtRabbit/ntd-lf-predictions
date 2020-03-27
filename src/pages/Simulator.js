@@ -995,7 +995,7 @@ const Simulator = props => {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={simInProgress} /*  || scenarioInputs.length === 0 */
+                disabled={(simInProgress || scenarioResults.length === 0)} /*  || scenarioInputs.length === 0 */
                 onClick={runCurrentScenario}
               >
                 UPDATE SCENARIO
@@ -1003,7 +1003,7 @@ const Simulator = props => {
 
               <Button
                 variant="contained"
-                disabled={simInProgress} /*  || scenarioInputs.length === 0 */
+                disabled={(simInProgress || scenarioResults.length === 0)} /*  || scenarioInputs.length === 0 */
                 onClick={confirmRemoveCurrentScenario}
               >
                 REMOVE SCENARIO
