@@ -477,13 +477,14 @@ const Simulator = props => {
                 />
               ))}
 
-              <Tab
+              {tabLength < 5 && <Tab
                 key={`tab-element-99`}
                 label={`+ Add one`}
                 disabled={simInProgress}
                 onClick={runNewScenario}
               >
               </Tab>
+              }
             </Tabs>
           </Grid>
 
