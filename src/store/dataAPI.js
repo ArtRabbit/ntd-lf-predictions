@@ -62,7 +62,7 @@ const groupProps = (obj, pattern) =>
     mapKeys(key => key.replace(/[^\d]/g, ''))
   )(obj)
 
-const roundPrevalence = p => round(p * 100, 2)
+const roundPrevalence = p => (isFinite(p) ? round(p * 100, 2) : null)
 
 const buildScales = (stats, data) => {
   //   const prev = scaleSequential(interpolateReds)
@@ -269,8 +269,8 @@ function mergeFeatures({ data, featureCollection, key, scales }) {
     // const population = featureData?.population ?? '–'
 
     // get color from scale if prevalence value available
-    const colorsByYear = mapValues(prevalenceOverTime, p_prevalence =>
-      isFinite(p_prevalence) ? color(prev(p_prevalence)).hex() : null
+    const colorsByYear = mapValues(prevalenceOverTime, prevalence =>
+      isFinite(prevalence) ? color(prev(prevalence)).hex() : null
     )
 
     return merge({}, feature, {
