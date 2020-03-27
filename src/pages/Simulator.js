@@ -111,7 +111,7 @@ const useStyles = makeStyles(theme => ({
     },
     '& > p': {
       margin: 0,
-      fontSize: 8,
+      fontSize: 12,
       display: 'block',
       textAlign: 'center'
     },
