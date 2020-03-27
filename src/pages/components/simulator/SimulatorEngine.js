@@ -989,7 +989,8 @@ export var simControler = {
     }
   },
   removeScenario: function () {
-    SessionData.deleteScenario()
+    // todo
+    //SessionData.deleteScenario()
   },
   fixInput: fix_input => {
     var curScen = ScenarioIndex.getIndex()
