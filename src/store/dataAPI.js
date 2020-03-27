@@ -375,9 +375,8 @@ class DataAPI {
   get countryData() {
     const countries = this.countriesCurrentRegime
     const stats = this.countryStats
-    const { relations } = this.dataStore
 
-    if (countries && relations) {
+    if (countries) {
       const data = addRanking(countries)
       return { data: keyBy('id')(data), stats }
     }
@@ -389,9 +388,8 @@ class DataAPI {
   get stateData() {
     const states = this.statesCurrentRegime
     const stats = this.stateStats
-    const { relations } = this.dataStore
 
-    if (states && relations) {
+    if (states) {
       const data = addRanking(states)
       return { data: keyBy('id')(data), stats }
     }
@@ -415,9 +413,8 @@ class DataAPI {
   // for each country, states are ranked by prevalence over years, and stats are added
   get stateByCountryData() {
     const states = this.statesCurrentRegime
-    const { relations } = this.dataStore
 
-    if (states && relations) {
+    if (states) {
       return flow(
         groupBy(x => x.relatedCountries[0]),
         mapValuesFP(s => {
@@ -436,9 +433,8 @@ class DataAPI {
   get iuByStateData() {
     const IUs = this.IUsCurrentRegime
     const { country } = this.uiState
-    const { relations } = this.dataStore
 
-    if (IUs && relations) {
+    if (IUs) {
       return flow(
         filter(x => x.relatedCountries[0] === country),
         groupBy(x => x.relatedStates[0]),
@@ -458,9 +454,8 @@ class DataAPI {
   get iuData() {
     const ius = this.IUsCurrentRegime
     const stats = this.IUStats
-    const { relations } = this.dataStore
 
-    if (ius && relations) {
+    if (ius) {
       const data = addRanking(ius)
       return { data: keyBy('id')(data), stats }
     }
