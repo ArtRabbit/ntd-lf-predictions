@@ -705,7 +705,7 @@ const Simulator = props => {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={simInProgress || scenarioInputs.length === 0}
+                disabled={simInProgress} /* || scenarioInputs.length === 0 */
                 onClick={runCurrentScenario}
               >
                 UPDATE SCENARIO
@@ -800,7 +800,8 @@ const Simulator = props => {
               <CloseButton action={closeRoundModal} />
 
               <Typography className={classes.title} variant="h5" component="h4">
-                MDA round #{curMDARound + 1}
+                {/* MDA round # */}
+                {new Date().getFullYear() + curMDARound}
               </Typography>
               <FormControl fullWidth className={classes.formControl}>
                 <FormLabel

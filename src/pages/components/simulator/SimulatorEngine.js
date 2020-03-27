@@ -832,48 +832,6 @@ export var statFunctions = {
   },
 }
 
-// !!!!!!!!!!!!!!! FUNCTION TO GENERATE MDA JSON IF THE FORM IS FILLED IN /// !!!!!!!!!!!!!!!
-
-function generateMDAFromForm() {
-  // Lukas: not being used simControler.mdaObj gets populated automaticaly
-  // !!!!!!!!!!!!!!! GRAB PARAMETERS FROM FORM /// !!!!!!!!!!!!!!!
-  // !!!!!!!!!!!!!!! IS THIS THE CORRECT FUNCTION TO CALL??? /// !!!!!!!!!!!!!!!
-  var params = simControler.params
-  var mdaJSON = []
-  //   if (params.mdaSixMonths == 'False') {
-  var mdaLength, ts
-  if (params.mdaSixMonths !== 6) {
-    mdaLength = 40
-    ts = 12
-  } else {
-    mdaLength = 20
-    ts = 6
-  }
-  var times = []
-  var coverages = []
-  var adherences = []
-  for (var i = 0; i < mdaLength; i++) {
-    times.push(ts * (i + 1))
-    coverages.push(params.coverage / 100)
-    adherences.push(params.rho)
-  }
-  mdaJSON.push({
-    time: times,
-    coverage: coverages,
-    adherence: adherences,
-  })
-  mdaJSON =
-    '{"time":[' +
-    times.toString() +
-    '], "coverage":[' +
-    coverages.toString() +
-    '], "adherence" : [' +
-    adherences.toString() +
-    ']}'
-  simControler.mdaObj = JSON.parse(mdaJSON)
-  return simControler.mdaObj
-}
-
 export var simControler = {
   /*
     DEFINE CLASS SESSION DATA TO STORE AND RETRIEVE RUNS.
