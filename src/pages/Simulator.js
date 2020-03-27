@@ -249,7 +249,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-        (simParams.mdaSixMonths / 12) * 12 * i
+          (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -268,6 +268,7 @@ const Simulator = props => {
 
     // console.log(SimulatorEngine.simControler.mdaObj)
   }
+  const [graphMetric, setGraphMetric] = useState('Ms')
   const [curMDARound, setCurMDARound] = useState(-1)
   const [simMDAtime, setSimMDAtime] = useState([])
   const [simMDAcoverage, setSimMDAcoverage] = useState([])
@@ -397,7 +398,7 @@ const Simulator = props => {
   }
   const removeCurrentScenario = () => {
     if (!simInProgress) {
-      alert('todo');
+      alert('todo')
       //SimulatorEngine.simControler.removeScenario()
     }
   }
@@ -530,16 +531,21 @@ const Simulator = props => {
                       <Select
                         labelId="larvae-prevalence"
                         id="larvae-prevalence"
-                        value={0}
-                        onChange={() => {
-                          alert('todo')
+                        value={graphMetric}
+                        onChange={ev => {
+                          console.log(ev.target.value)
+                          setGraphMetric(ev.target.value)
                         }}
                       >
-                        <MenuItem value={0}>
-                          Mosquito larvae prevalence
+                        <MenuItem value={'Ms'}>
+                          Prevalence mirofilerima
                         </MenuItem>
-                        <MenuItem value={1}>prevalence 1</MenuItem>
-                        <MenuItem value={2}>prevalence 2</MenuItem>
+                        <MenuItem value={'Ls'}>
+                          Prevalence in the mosquito population
+                        </MenuItem>
+                        <MenuItem value={'Ws'}>
+                          Prevalence of worms in the lymph nodes
+                        </MenuItem>
                       </Select>
                     </FormControl>
 
@@ -548,7 +554,7 @@ const Simulator = props => {
                         data={result}
                         inputs={simMDAcoverage}
                         showAllResults={false}
-                        metrics={['Ms']}
+                        metrics={[graphMetric]}
                       />
                     </div>
                     <div
@@ -629,7 +635,7 @@ const Simulator = props => {
                             {simParams.mdaSixMonths === 6
                               ? curMDARound % 2
                                 ? new Date().getFullYear() +
-                                Math.floor(curMDARound / 2)
+                                  Math.floor(curMDARound / 2)
                                 : new Date().getFullYear() + curMDARound / 2
                               : new Date().getFullYear() + curMDARound}
                             {curMDARound % 2 ? ' (2nd round)' : ''}
