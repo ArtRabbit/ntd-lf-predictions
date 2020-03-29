@@ -663,7 +663,7 @@ const Simulator = props => {
                       }}
                     >
                       {/* {(12 / simParams.mdaSixMonths) * 20} */}
-                      {/* {simMDAtime.map((e, i) => (
+                      {simMDAtime.map((e, i) => (
                         <div
                           key={i}
                           style={{
@@ -701,8 +701,8 @@ const Simulator = props => {
                               minWidth: 10,
                             }}
                           ></span>
-                        </div> 
-                      ))}*/}
+                        </div>
+                      ))}
                     </div>
 
                     {doseSettingsOpen && (
