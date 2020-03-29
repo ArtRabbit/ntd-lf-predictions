@@ -246,14 +246,10 @@ const Simulator = props => {
   const [simParams, setSimParams] = useState({
     ...SimulatorEngine.simControler.params, // params editable via UI
   })
-
+  const [editingMDAs, setEditingMDAs] = useState(false)
   /* MDA object */
-  useEffect(() => {
-    // handleFrequencyChange()
-    populateMDA()
-  }, [simParams.mdaSixMonths, simParams.coverage])
   const populateMDA = () => {
-    // console.log('populateMDA')
+    console.log('populateMDA, simParams.mdaSixMonths', simParams.mdaSixMonths)
     var MDAtime = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
@@ -267,6 +263,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAcoverage.push(simParams.coverage)
     }
+    console.log('MDAcoverage', MDAcoverage)
     setSimMDAcoverage([...MDAcoverage])
 
     var MDAadherence = []
@@ -299,9 +296,6 @@ const Simulator = props => {
       ? 0
       : JSON.parse(window.localStorage.getItem('sessionData')).scenarios.length
   )
-  useEffect(() => {
-    console.log(tabLength)
-  }, [tabLength])
   const [tabIndex, setTabIndex] = useState(
     JSON.parse(window.localStorage.getItem('scenarioIndex')) || 0
   )
@@ -315,9 +309,9 @@ const Simulator = props => {
       // set input arams if you have them
       setSimParams(scenarioInputs[tabIndex])
       SimulatorEngine.ScenarioIndex.setIndex(tabIndex)
-      /*       setSimMDAtime(scenarioMDAs[tabIndex].time)
+      setSimMDAtime(scenarioMDAs[tabIndex].time)
       setSimMDAcoverage(scenarioMDAs[tabIndex].coverage)
-      setSimMDAadherence(scenarioMDAs[tabIndex].adherence) */
+      setSimMDAadherence(scenarioMDAs[tabIndex].adherence)
     }
   }, [tabIndex])
 
@@ -342,7 +336,6 @@ const Simulator = props => {
   }
   const [simulationProgress, setSimulationProgress] = useState(0)
   const [scenarioInputs, setScenarioInputs] = useState([])
-  //   TODO: remove localStorage for production
   const [scenarioResults, setScenarioResults] = useState(
     window.localStorage.getItem('sessionData')
       ? JSON.parse(window.localStorage.getItem('sessionData')).scenarios
@@ -354,8 +347,6 @@ const Simulator = props => {
       setSimulationProgress(resultObject)
     } else {
       console.log('Simulation returned results!')
-      console.log('scenarioResults', tabIndex)
-      console.log(scenarioResults)
 
       if (typeof scenarioResults[tabIndex] === 'undefined') {
         // console.log('scenarioResults')
@@ -385,12 +376,6 @@ const Simulator = props => {
         scenarioResultsNew[correctTabIndex] = resultItem // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
         setScenarioResults(scenarioResultsNew) // 5. Set the state to our new copy
 
-        // TODO: remove, just for development
-        /*         window.localStorage.setItem(
-          'scenarios',
-          JSON.stringify(scenarioResultsNew)
-        ) */
-
         let scenarioInputsNew = [...scenarioInputs]
         let inputsItem = scenarioInputsNew[correctTabIndex]
         inputsItem = JSON.parse(resultObject).params.inputs
@@ -409,6 +394,7 @@ const Simulator = props => {
         setScenarioMDAs(scenarioMDAsNew)
       }
       setSimInProgress(false)
+      console.log('newScenario', newScenario)
       if (newScenario === true) {
         setTabLength(tabLength + 1)
         setTabIndex(tabLength > 5 ? 4 : tabLength)
@@ -421,7 +407,7 @@ const Simulator = props => {
   const runCurrentScenario = () => {
     if (!simInProgress) {
       setSimInProgress(true)
-      console.log(tabIndex, simParams)
+      // console.log(tabIndex, simParams)
       SimulatorEngine.simControler.newScenario = false
       SimulatorEngine.simControler.runScenario(
         simParams,
@@ -436,7 +422,6 @@ const Simulator = props => {
       // alert('todo')
 
       SimulatorEngine.SessionData.deleteScenario(tabIndex)
-
       console.log(scenarioResults)
       console.log(scenarioResults[tabIndex])
 
@@ -444,7 +429,6 @@ const Simulator = props => {
       newScenarios = newScenarios.filter(
         item => item !== scenarioResults[tabIndex]
       )
-      console.log(newScenarios)
       setScenarioResults([...newScenarios])
 
       let newScenarioInputs = [...scenarioInputs]
@@ -453,10 +437,17 @@ const Simulator = props => {
       )
       setScenarioInputs([...newScenarioInputs])
 
+      let newScenarioMDAs = [...scenarioMDAs]
+      newScenarioMDAs = newScenarioMDAs.filter(
+        item => item !== scenarioMDAs[tabIndex]
+      )
+      setScenarioMDAs(newScenarioMDAs)
+      /*       setSimMDAtime(scenarioMDAs[tabIndex].time) // !!!!!!!!!! doesnt work because previous line hasn't happenned yet
+      setSimMDAcoverage(scenarioMDAs[tabIndex].coverage)
+      setSimMDAadherence(scenarioMDAs[tabIndex].adherence) */
+
       setTabLength(tabLength >= 1 ? tabLength - 1 : 0)
       setTabIndex(tabIndex >= 1 ? tabIndex - 1 : 0)
-      // window.localStorage.setItem('scenarios', JSON.stringify(newScenarios))
-      // SimulatorEngine.simControler.removeScenario(tabIndex)
     }
   }
 
@@ -477,6 +468,7 @@ const Simulator = props => {
   const runNewScenario = () => {
     if (!simInProgress) {
       if (tabLength < 5) {
+        populateMDA()
         setSimInProgress(true)
         // console.log('settingTabLength', tabLength + 1)
         //console.log(tabIndex, simParams)
@@ -486,7 +478,7 @@ const Simulator = props => {
           tabLength,
           simulatorCallback
         )
-        console.log(tabLength)
+        //        console.log(tabLength)
       } else {
         alert('Sorry maximum number of Scenarios is 5.')
       }
@@ -534,28 +526,53 @@ const Simulator = props => {
   useEffect(() => {
     if (typeof scenarioResults[tabIndex] === 'undefined') {
       console.log('No scenarios? Running a new one...')
-      runCurrentScenario()
+      populateMDA()
+      runNewScenario()
     }
 
     /* let sessionDataJson =
       JSON.parse(window.localStorage.getItem('scenarios')) || [] */
-    let sessionDataJson = JSON.parse(window.localStorage.getItem('sessionData'))
+    let scenariosArray = JSON.parse(window.localStorage.getItem('sessionData'))
       ? JSON.parse(window.localStorage.getItem('sessionData')).scenarios
       : null
-    if (sessionDataJson) {
-      let sessionDataJsonNew = sessionDataJson.map(item => item.params.inputs)
-      console.log(sessionDataJsonNew)
-      setScenarioInputs(sessionDataJsonNew)
-      console.log(sessionDataJson[tabIndex])
-      if (typeof sessionDataJsonNew[tabIndex] != 'undefined') {
+    // console.log('scenariosArray', scenariosArray)
+    if (scenariosArray) {
+      let paramsInputs = scenariosArray.map(item => item.params.inputs)
+      let MDAs = scenariosArray.map(item => item.mda)
+      setScenarioInputs(paramsInputs)
+      if (typeof paramsInputs[tabIndex] != 'undefined') {
         // set input arams if you have them
-        setSimParams(sessionDataJsonNew[tabIndex])
-        //  setSimMDAtime(scenarioMDAs[tabIndex].time)
-        // setSimMDAcoverage(scenarioMDAs[tabIndex].coverage)
-        // setSimMDAadherence(scenarioMDAs[tabIndex].adherence)
+        setSimParams(paramsInputs[tabIndex])
+        setEditingMDAs(true)
+        setScenarioMDAs(MDAs)
+        setSimMDAtime(MDAs[tabIndex].time)
+        setSimMDAcoverage(MDAs[tabIndex].coverage)
+        setSimMDAadherence(MDAs[tabIndex].adherence)
       }
     }
   }, [])
+  useEffect(() => {
+    // console.log('editingMDAs', editingMDAs)
+    /*     let calculNeeded =
+      simParams.mdaSixMonths !==
+      scenarioResults[tabIndex].params.inputs.mdaSixMonths
+    console.log(
+      simParams.mdaSixMonths,
+      '!==',
+      scenarioResults[tabIndex].params.inputs.mdaSixMonths
+    )
+    console.log('Shall I calculate MDA?', calculNeeded)
+    if (calculNeeded === true) {
+      setEditingMDAs(true)
+    }
+    if (editingMDAs === true) {
+      // populateMDA()
+    } */
+  }, [simParams.mdaSixMonths, simParams.coverage])
+
+  /*   useEffect(() => {
+    console.log('change of editingMDAs', editingMDAs)
+  }, [editingMDAs]) */
   return (
     <Layout>
       <HeadWithInputs

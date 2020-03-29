@@ -12,7 +12,12 @@ export var SessionData = {
     if (scenLabel == null) {
       scenLabel = 'Scenario ' + (ScenarioIndex.getIndex() + 1)
     }
-    var scenario = { params: params, results: results, label: scenLabel }
+    var scenario = {
+      params: params,
+      results: results,
+      label: scenLabel,
+      mda: simControler.mdaObj,
+    }
     var scenInd = ScenarioIndex.getIndex()
 
     sessionData.scenarios[scenInd] = scenario
@@ -837,7 +842,6 @@ export var statFunctions = {
       -statFunctions.NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma)
   },
 }
-
 export var simControler = {
   /*
     DEFINE CLASS SESSION DATA TO STORE AND RETRIEVE RUNS.
@@ -854,8 +858,9 @@ export var simControler = {
                         ----                   ----       ---- ts
                                                 ----       ---- doses
                                                             ---- Ls
-
-
+                        ----      ---- mda     ----  time
+                        ----                   ----  coverage
+                        ----                   ----  adherence
     */
   //////////////////////////////////////////
   /* DOM manipulation */
@@ -987,7 +992,7 @@ export var simControler = {
     if (SessionData.ran(tabIndex)) {
       ScenarioIndex.setIndex(tabIndex)
     } else {
-      this.runMapSimulation(tabIndex, simulatorCallback)
+      //     this.runMapSimulation(tabIndex, simulatorCallback)
     }
     this.runMapSimulation(tabIndex, simulatorCallback)
   },
