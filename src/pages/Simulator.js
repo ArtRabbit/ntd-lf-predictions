@@ -282,8 +282,20 @@ const Simulator = props => {
 
   /* Simuilation, tabs etc */
   const [simInProgress, setSimInProgress] = useState(false)
-  const [tabLength, setTabLength] = useState(0)
-  const [tabIndex, setTabIndex] = useState(0)
+  // console.log(parseInt(window.localStorage.getItem('scenarioIndex')))
+  // console.log(parseInt(window.localStorage.getItem('scenarioIndex')) + 1)
+  // console.log(window.localStorage.getItem('sessionData'))
+  const [tabLength, setTabLength] = useState(
+    JSON.parse(window.localStorage.getItem('sessionData')) === null
+      ? 0
+      : JSON.parse(window.localStorage.getItem('sessionData')).scenarios.length
+  )
+  useEffect(() => {
+    console.log(tabLength)
+  }, [tabLength])
+  const [tabIndex, setTabIndex] = useState(
+    JSON.parse(window.localStorage.getItem('scenarioIndex')) || 0
+  )
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue)
   }
@@ -293,9 +305,10 @@ const Simulator = props => {
     if (typeof scenarioInputs[tabIndex] != 'undefined') {
       // set input arams if you have them
       setSimParams(scenarioInputs[tabIndex])
-      setSimMDAtime(scenarioMDAs[tabIndex].time)
+      SimulatorEngine.ScenarioIndex.setIndex(tabIndex)
+      /*       setSimMDAtime(scenarioMDAs[tabIndex].time)
       setSimMDAcoverage(scenarioMDAs[tabIndex].coverage)
-      setSimMDAadherence(scenarioMDAs[tabIndex].adherence)
+      setSimMDAadherence(scenarioMDAs[tabIndex].adherence) */
     }
   }, [tabIndex])
 
@@ -322,7 +335,9 @@ const Simulator = props => {
   const [scenarioInputs, setScenarioInputs] = useState([])
   //   TODO: remove localStorage for production
   const [scenarioResults, setScenarioResults] = useState(
-    JSON.parse(window.localStorage.getItem('scenarios')) || []
+    window.localStorage.getItem('sessionData')
+      ? JSON.parse(window.localStorage.getItem('sessionData')).scenarios
+      : []
   )
   const [scenarioMDAs, setScenarioMDAs] = useState([])
   const simulatorCallback = (resultObject, newScenario) => {
@@ -330,6 +345,8 @@ const Simulator = props => {
       setSimulationProgress(resultObject)
     } else {
       console.log('Simulation returned results!')
+      console.log('scenarioResults', tabIndex)
+      console.log(scenarioResults)
 
       if (typeof scenarioResults[tabIndex] === 'undefined') {
         // console.log('scenarioResults')
@@ -360,10 +377,10 @@ const Simulator = props => {
         setScenarioResults(scenarioResultsNew) // 5. Set the state to our new copy
 
         // TODO: remove, just for development
-        window.localStorage.setItem(
+        /*         window.localStorage.setItem(
           'scenarios',
           JSON.stringify(scenarioResultsNew)
-        )
+        ) */
 
         let scenarioInputsNew = [...scenarioInputs]
         let inputsItem = scenarioInputsNew[correctTabIndex]
@@ -383,6 +400,10 @@ const Simulator = props => {
         setScenarioMDAs(scenarioMDAsNew)
       }
       setSimInProgress(false)
+      if (newScenario === true) {
+        setTabLength(tabLength + 1)
+        setTabIndex(tabLength > 5 ? 4 : tabLength)
+      }
     }
   }
   /*   useEffect(() => {
@@ -393,12 +414,18 @@ const Simulator = props => {
       setSimInProgress(true)
       console.log(tabIndex, simParams)
       SimulatorEngine.simControler.newScenario = false
-      SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
+      SimulatorEngine.simControler.runScenario(
+        simParams,
+        tabIndex,
+        simulatorCallback
+      )
     }
   }
   const removeCurrentScenario = () => {
     if (!simInProgress) {
       // alert('todo')
+
+      SimulatorEngine.SessionData.deleteScenario(tabIndex)
 
       console.log(scenarioResults)
       console.log(scenarioResults[tabIndex])
@@ -409,10 +436,16 @@ const Simulator = props => {
       )
       console.log(newScenarios)
       setScenarioResults([...newScenarios])
-      setTabLength(tabLength - 1)
-      setTabIndex(tabIndex - 1)
-      window.localStorage.setItem('scenarios', JSON.stringify(newScenarios))
 
+      let newScenarioInputs = [...scenarioInputs]
+      newScenarioInputs = newScenarioInputs.filter(
+        item => item !== scenarioInputs[tabIndex]
+      )
+      setScenarioInputs([...newScenarioInputs])
+
+      setTabLength(tabLength >= 1 ? tabLength - 1 : 0)
+      setTabIndex(tabIndex >= 1 ? tabIndex - 1 : 0)
+      // window.localStorage.setItem('scenarios', JSON.stringify(newScenarios))
       // SimulatorEngine.simControler.removeScenario(tabIndex)
     }
   }
@@ -422,11 +455,14 @@ const Simulator = props => {
       if (tabLength < 5) {
         setSimInProgress(true)
         // console.log('settingTabLength', tabLength + 1)
-        setTabIndex(tabLength)
-        setTabLength(tabLength + 1)
         //console.log(tabIndex, simParams)
         SimulatorEngine.simControler.newScenario = true
-        SimulatorEngine.simControler.runScenario(simParams, simulatorCallback)
+        SimulatorEngine.simControler.runScenario(
+          simParams,
+          tabLength,
+          simulatorCallback
+        )
+        console.log(tabLength)
       } else {
         alert('Sorry maximum number of Scenarios is 5.')
       }
@@ -475,6 +511,25 @@ const Simulator = props => {
     if (typeof scenarioResults[tabIndex] === 'undefined') {
       console.log('No scenarios? Running a new one...')
       runCurrentScenario()
+    }
+
+    /* let sessionDataJson =
+      JSON.parse(window.localStorage.getItem('scenarios')) || [] */
+    let sessionDataJson = JSON.parse(window.localStorage.getItem('sessionData'))
+      ? JSON.parse(window.localStorage.getItem('sessionData')).scenarios
+      : null
+    if (sessionDataJson) {
+      let sessionDataJsonNew = sessionDataJson.map(item => item.params.inputs)
+      console.log(sessionDataJsonNew)
+      setScenarioInputs(sessionDataJsonNew)
+      console.log(sessionDataJson[tabIndex])
+      if (typeof sessionDataJsonNew[tabIndex] != 'undefined') {
+        // set input arams if you have them
+        setSimParams(sessionDataJsonNew[tabIndex])
+        //  setSimMDAtime(scenarioMDAs[tabIndex].time)
+        // setSimMDAcoverage(scenarioMDAs[tabIndex].coverage)
+        // setSimMDAadherence(scenarioMDAs[tabIndex].adherence)
+      }
     }
   }, [])
   return (
@@ -584,7 +639,7 @@ const Simulator = props => {
                       }}
                     >
                       {/* {(12 / simParams.mdaSixMonths) * 20} */}
-                      {simMDAtime.map((e, i) => (
+                      {/* {simMDAtime.map((e, i) => (
                         <div
                           key={i}
                           style={{
@@ -602,17 +657,8 @@ const Simulator = props => {
                             //a.target.style.borderColor = 'white'
                           }}
                           onClick={a => {
-                            //a.target.style.backgroundColor = '#d01c8b'
-                            //console.log(a.target)
-                            //console.log(a.target.getBoundingClientRect().left)
-                            //console.log(a.target.offsetWidth)
                             setCurMDARound(i)
                             setDoseSettingsOpen(true)
-                            /*setDoseSettingsLeft(
-                              a.target.getBoundingClientRect().left +
-                                (a.target.offsetWidth / 2 )  -
-                                155
-                            )*/
                           }}
                           title={
                             simMDAtime[i] +
@@ -631,8 +677,8 @@ const Simulator = props => {
                               minWidth: 10,
                             }}
                           ></span>
-                        </div>
-                      ))}
+                        </div> 
+                      ))}*/}
                     </div>
 
                     {doseSettingsOpen && (
