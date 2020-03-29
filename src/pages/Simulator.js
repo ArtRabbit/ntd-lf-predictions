@@ -5,8 +5,24 @@ import { Layout } from '../layout'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTheme } from '@material-ui/styles'
 import {
-  Box, Grid, Typography, CircularProgress, Tabs, Tab, Button, Radio, RadioGroup,
-  FormControlLabel, FormControl, FormLabel, MenuItem, Select, Paper, Slider, ClickAwayListener, Tooltip
+  Box,
+  Grid,
+  Typography,
+  CircularProgress,
+  Tabs,
+  Tab,
+  Button,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  MenuItem,
+  Select,
+  Paper,
+  Slider,
+  ClickAwayListener,
+  Tooltip,
 } from '@material-ui/core'
 
 import HeadWithInputs from './components/HeadWithInputs'
@@ -242,7 +258,7 @@ const Simulator = props => {
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
         (simParams.mdaSixMonths / 12) * 12 +
-        (simParams.mdaSixMonths / 12) * 12 * i
+          (simParams.mdaSixMonths / 12) * 12 * i
       )
     }
     setSimMDAtime([...MDAtime])
@@ -415,7 +431,6 @@ const Simulator = props => {
     }
   }
 
-
   const removeCurrentScenario = () => {
     if (!simInProgress) {
       // alert('todo')
@@ -431,12 +446,6 @@ const Simulator = props => {
       )
       console.log(newScenarios)
       setScenarioResults([...newScenarios])
-<<<<<<< HEAD
-=======
-      setTabLength(Math.max(0, tabLength - 1))
-      setTabIndex(Math.max(0, tabIndex - 1))
-      window.localStorage.setItem('scenarios', JSON.stringify(newScenarios))
->>>>>>> 927b14fddea605b0f53e15d6493180a43d92c729
 
       let newScenarioInputs = [...scenarioInputs]
       newScenarioInputs = newScenarioInputs.filter(
@@ -710,7 +719,7 @@ const Simulator = props => {
                             {simParams.mdaSixMonths === 6
                               ? curMDARound % 2
                                 ? new Date().getFullYear() +
-                                Math.floor(curMDARound / 2)
+                                  Math.floor(curMDARound / 2)
                                 : new Date().getFullYear() + curMDARound / 2
                               : new Date().getFullYear() + curMDARound}
                             {curMDARound % 2 ? ' (2nd round)' : ''}
@@ -752,14 +761,17 @@ const Simulator = props => {
                             fullWidth
                             className={classes.formControl}
                           >
-                            <Tooltip title="Controls how randomly coverage is applied. For 0, coverage is completely random. For 1, the same individuals are always treated." aria-label="info">
+                            <Tooltip
+                              title="Controls how randomly coverage is applied. For 0, coverage is completely random. For 1, the same individuals are always treated."
+                              aria-label="info"
+                            >
                               <FormLabel
                                 component="legend"
                                 htmlFor="rho"
                                 className={`${classes.withSlider} ${classes.withHelp}`}
                               >
                                 Systematic adherence
-                            </FormLabel>
+                              </FormLabel>
                             </Tooltip>
                             <Slider
                               value={simMDAadherence[curMDARound]}
@@ -1047,7 +1059,9 @@ const Simulator = props => {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={(simInProgress || scenarioResults.length === 0)} /*  || scenarioInputs.length === 0 */
+                disabled={
+                  simInProgress || scenarioResults.length === 0
+                } /*  || scenarioInputs.length === 0 */
                 onClick={runCurrentScenario}
               >
                 UPDATE SCENARIO
@@ -1055,7 +1069,9 @@ const Simulator = props => {
 
               <Button
                 variant="contained"
-                disabled={(simInProgress || scenarioResults.length === 0)} /*  || scenarioInputs.length === 0 */
+                disabled={
+                  simInProgress || scenarioResults.length === 0
+                } /*  || scenarioInputs.length === 0 */
                 onClick={confirmRemoveCurrentScenario}
               >
                 REMOVE SCENARIO
@@ -1063,7 +1079,9 @@ const Simulator = props => {
 
               <ConfirmationDialog
                 title="Do you want to delete this scenario?"
-                onClose={() => { setConfirmatonOpen(false) }}
+                onClose={() => {
+                  setConfirmatonOpen(false)
+                }}
                 onConfirm={confirmedRemoveCurrentScenario}
                 open={confirmatonOpen}
               />
