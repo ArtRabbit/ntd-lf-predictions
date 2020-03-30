@@ -249,7 +249,29 @@ const Simulator = props => {
   const [editingMDAs, setEditingMDAs] = useState(false)
   /* MDA object */
   const populateMDA = () => {
-    console.log('populateMDA, simParams.mdaSixMonths', simParams.mdaSixMonths)
+    var MDAtime = []
+    for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
+      MDAtime.push(
+        (simParams.mdaSixMonths / 12) * 12 +
+          (simParams.mdaSixMonths / 12) * 12 * i
+      )
+    }
+    SimulatorEngine.simControler.mdaObj.time = [...MDAtime]
+
+    var MDAcoverage = []
+    for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
+      MDAcoverage.push(simParams.coverage)
+    }
+    SimulatorEngine.simControler.mdaObj.coverage = [...MDAcoverage]
+
+    var MDAadherence = []
+    for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
+      MDAadherence.push(simParams.rho)
+    }
+    SimulatorEngine.simControler.mdaObj.adherence = [...MDAadherence]
+    // console.log(SimulatorEngine.simControler.mdaObj)
+  }
+  const populateMDAOnTheFly = () => {
     var MDAtime = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAtime.push(
@@ -258,20 +280,16 @@ const Simulator = props => {
       )
     }
     setSimMDAtime([...MDAtime])
-    // SimulatorEngine.simControler.mdaObj.time = [...MDAtime]
     var MDAcoverage = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAcoverage.push(simParams.coverage)
     }
-    console.log('MDAcoverage', MDAcoverage)
     setSimMDAcoverage([...MDAcoverage])
-
     var MDAadherence = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAadherence.push(simParams.rho)
     }
     setSimMDAadherence([...MDAadherence])
-
     // console.log(SimulatorEngine.simControler.mdaObj)
   }
   const [graphMetric, setGraphMetric] = useState('Ms')
@@ -355,20 +373,12 @@ const Simulator = props => {
           ...scenarioInputs,
           JSON.parse(resultObject).params.inputs,
         ])
-        setScenarioMDAs([
-          ...scenarioMDAs,
-          {
-            time: [...simMDAtime],
-            coverage: [...simMDAcoverage],
-            adherence: [...simMDAadherence],
-          },
-        ])
+        setScenarioMDAs([...scenarioMDAs, JSON.parse(resultObject).mda.time])
+        setSimMDAtime([...JSON.parse(resultObject).mda.time])
+        setSimMDAcoverage([...JSON.parse(resultObject).mda.coverage])
+        setSimMDAadherence([...JSON.parse(resultObject).mda.adherence])
       } else {
-        //        console.log('tabIndex', tabIndex)
-        //        console.log('newScenario', newScenario)
         let correctTabIndex = newScenario === true ? tabIndex + 1 : tabIndex
-        // let correctTabIndex = tabIndex + 1
-        //        console.log('correctTabIndex', correctTabIndex)
 
         let scenarioResultsNew = [...scenarioResults] // 1. Make a shallow copy of the items
         let resultItem = scenarioResultsNew[correctTabIndex] // 2. Make a shallow copy of the resultItem you want to mutate
@@ -390,11 +400,14 @@ const Simulator = props => {
           adherence: [...simMDAadherence],
         }
         scenarioMDAsNew[correctTabIndex] = MDAsItem
-
         setScenarioMDAs(scenarioMDAsNew)
+
+        setSimMDAtime([...JSON.parse(resultObject).mda.time])
+        setSimMDAcoverage([...JSON.parse(resultObject).mda.coverage])
+        setSimMDAadherence([...JSON.parse(resultObject).mda.adherence])
       }
       setSimInProgress(false)
-      console.log('newScenario', newScenario)
+      // console.log('newScenario', newScenario)
       if (newScenario === true) {
         setTabLength(tabLength + 1)
         setTabIndex(tabLength > 5 ? 4 : tabLength)
@@ -553,21 +566,22 @@ const Simulator = props => {
   }, [])
   useEffect(() => {
     // console.log('editingMDAs', editingMDAs)
-    /*     let calculNeeded =
-      simParams.mdaSixMonths !==
-      scenarioResults[tabIndex].params.inputs.mdaSixMonths
-    console.log(
-      simParams.mdaSixMonths,
-      '!==',
-      scenarioResults[tabIndex].params.inputs.mdaSixMonths
-    )
-    console.log('Shall I calculate MDA?', calculNeeded)
-    if (calculNeeded === true) {
-      setEditingMDAs(true)
+    if (scenarioResults[tabIndex]) {
+      let calculNeeded =
+        simParams.mdaSixMonths !==
+          scenarioResults[tabIndex].params.inputs.mdaSixMonths ||
+        simParams.coverage !== scenarioResults[tabIndex].params.inputs.coverage
+      console.log(
+        'Shall I re-calculate MDA rounds?',
+        editingMDAs && calculNeeded
+      )
+      if (calculNeeded === true) {
+        setEditingMDAs(true)
+      }
+      if (editingMDAs && calculNeeded) {
+        populateMDAOnTheFly()
+      }
     }
-    if (editingMDAs === true) {
-      // populateMDA()
-    } */
   }, [simParams.mdaSixMonths, simParams.coverage])
 
   /*   useEffect(() => {

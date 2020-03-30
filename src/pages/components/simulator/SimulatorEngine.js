@@ -126,17 +126,17 @@ export var SessionData = {
   },
   deleteScenario: tabIndex => {
     var ses = SessionData.retrieveSessions()
-    console.log(ses)
-    console.log('Deleting scenario at index:', tabIndex)
+    // console.log(ses)
+    // console.log('Deleting scenario at index:', tabIndex)
     var sessionArray = ses.scenarios
     var newSessionArray = [...sessionArray]
-    console.log(sessionArray)
+    // console.log(sessionArray)
 
     /*     var newSessionArray = newSessionArray
       .slice(0, tabIndex)
       .concat(newSessionArray.slice(tabIndex + 1, newSessionArray.length)) */
     newSessionArray.splice(tabIndex, 1)
-    console.log(newSessionArray)
+    // console.log(newSessionArray)
 
     var toStore = { scenarios: newSessionArray }
     var stringToStore = JSON.stringify(toStore)
