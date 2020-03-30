@@ -1,25 +1,27 @@
-import React from 'react';
+import React from 'react'
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles'
 import {
-  Typography, Button,
-  Dialog, DialogTitle, DialogActions
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogActions,
 } from '@material-ui/core'
 
-const useStyles = makeStyles(theme => ({
-}));
+const useStyles = makeStyles(theme => ({}))
 
-const ConfirmationDialog = (props) => {
-  const { onClose, onConfirm, open, title, ...other } = props;
-  const classes = useStyles();
+const ConfirmationDialog = props => {
+  const { onClose, onConfirm, open, title, ...other } = props
+  const classes = useStyles()
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   const handleOk = () => {
-    onConfirm();
-  };
+    onConfirm()
+  }
 
   return (
     <Dialog
@@ -30,14 +32,22 @@ const ConfirmationDialog = (props) => {
       {...other}
     >
       <DialogTitle disableTypography id="confirmation-dialog-title">
-        <Typography variant="h3" component="h2">{title}</Typography>
+        <Typography variant="h3" component="h2" style={{ marginTop: '8px' }}>
+          {title}
+        </Typography>
       </DialogTitle>
-      <DialogActions>
-        <Button onClick={handleCancel} autoFocus variant="contained">Cancel</Button>
-        <Button onClick={handleOk} color="primary" variant="contained">Ok</Button>
+      <DialogActions
+        style={{ padding: '8px 16px 24px', justifyContent: 'center' }}
+      >
+        <Button onClick={handleCancel} autoFocus variant="contained">
+          Cancel
+        </Button>
+        <Button onClick={handleOk} color="primary" variant="contained">
+          Ok
+        </Button>
       </DialogActions>
     </Dialog>
-  );
+  )
 }
 
 ConfirmationDialog.propTypes = {
@@ -45,6 +55,6 @@ ConfirmationDialog.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
-};
+}
 
-export default ConfirmationDialog;
+export default ConfirmationDialog
