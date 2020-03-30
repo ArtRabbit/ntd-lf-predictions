@@ -54,7 +54,7 @@ const HotSpots = props => {
 
       <SectionTitle
         top={false}
-        headline="District hotspots"
+        headline="Overview"
         text={`An overview of district hotspots and areas of interest in all modelled countries. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
@@ -104,8 +104,8 @@ const HotSpots = props => {
       </Box>
 
       <SectionTitle
-        headline="District activity"
-        text={`Get a detailed view of the performance of individual districts in each country. See where prevalence is declining, increasing, and which areas are reaching the WHO 1% threshold. To see alternative outcomes, change the treatment scenario in the top menu.`}
+        headline="Activity"
+        text={`Get a detailed view of the performance of countries. See where prevalence is declining, increasing, and which areas are reaching the WHO 1% threshold. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
       <Grid container spacing={0}>

@@ -146,7 +146,9 @@ function Map({
     if (event.features) {
       const feature = event.features[0]
       if (feature) {
+
         dispatch({ type: 'HOVER', payload: { feature, event } })
+        
       } else {
         dispatch({ type: 'HOVEROUT' })
       }

@@ -56,7 +56,7 @@ const Trends = props => {
       <SectionTitle
         top={false}
         headline="Intervention needs"
-        text={`Compare which populations are in need of intervention in 2020 with the projections for 2030. To see alternative outcomes, change the treatment scenario in the top menu.`}
+        text={`Compare which populations are in need of intervention in 2000 with the projections for 2030. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
       {countryData && <BarChart dataAndStats={countryData} />}
@@ -74,7 +74,7 @@ const Trends = props => {
       <SectionTitle
         top={false}
         headline="Trend map"
-        text={`View good and bad performance by district and compare prevalence over time from 2000 to 2030. To see alternative outcomes, change the treatment scenario in the top menu.`}
+        text={`View good and bad performance by district in each country over time from 2000 to 2030. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
 
       <div

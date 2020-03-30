@@ -85,7 +85,7 @@ const HotSpotCountry = props => {
 
       <SectionTitle
         top={true}
-        headline="Implementation unit hotspots"
+        headline="Implementation units overview"
         text={`An overview of IU hotspots and areas of interest in all modelled areas. To see alternative outcomes, change the treatment scenario in the top menu.`}
       />
       <div
