@@ -83,16 +83,6 @@ const DataMethodology = (props) => {
 
 
 
-
-
-
-
-
-
-        <Typography paragraph variant="body2" component="p">
-          Need a copy text element here paragraph
-        </Typography>
-
       </TextContents>
     </Layout>
   )

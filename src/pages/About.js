@@ -62,17 +62,17 @@ const About = (props) => {
           The current members of the NTD Modelling Consortium are:
         </Typography>
         <Typography paragraph variant="body1" component="p">
-          Case Western Reserve University
-          Erasmus University Medical Center
-          Imperial College London
-          Liverpool School of Tropical Medicine
-          London School of Hygiene & Tropical Medicine
-          Swiss Tropical and Public Health Institute
-          University of California, San Francisco 
-          University of Lancaster 
-          University of Notre Dame
-          University of Oxford 
-          University of Warwick
+          <a href="http://www.case.edu/">Case Western Reserve University</a><br />
+          <a href="https://www6.erasmusmc.nl/public-health/?lang=en&amp;reason=404">Erasmus University Medical Center</a><br />
+          <a href="http://www.imperial.ac.uk/">Imperial College London</a><br />
+          <a href="http://www.lstmed.ac.uk/">Liverpool School of Tropical Medicine</a><br />
+          <a href="http://www.lshtm.ac.uk/">London School of Hygiene & Tropical Medicine</a><br />
+          <a href="https://www.swisstph.ch/en/">Swiss Tropical and Public Health Institute</a><br />
+          <a href="https://www.ucsf.edu/">University of California, San Francisco</a><br />
+          <a href="http://chicas.lancaster-university.uk/projects/ntd_consortium.html">University of Lancaster</a><br />
+          <a href="https://www.nd.edu/">University of Notre Dame</a><br />
+          <a href="https://www.bdi.ox.ac.uk/">University of Oxford</a><br />
+          <a href="https://warwick.ac.uk/">University of Warwick</a><br />
         </Typography>
         <Typography gutterBottom variant="h3"><br />Contact Us</Typography>
           
