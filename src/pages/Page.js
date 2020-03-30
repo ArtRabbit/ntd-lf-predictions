@@ -10,9 +10,9 @@ const Page = (props) => {
     <Layout>
 
       <Head
-        title="Default page"
+        title="This page could not be found"
         text={
-          `TBC`
+          `404`
         }
       />
 

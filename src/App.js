@@ -10,7 +10,9 @@ import Simulator from './pages/Simulator'
 import Trends from './pages/Trends'
 import TrendsCountry from './pages/TrendsCountry'
 import HotSpotCountry from './pages/HotSpotCountry'
-import AboutLF from './pages/AboutLF'
+import About from './pages/About'
+import DataMethodology from './pages/DataMethodology'
+import PrivacyCookies from './pages/PrivacyCookies'
 
 import 'typeface-roboto'
 import 'typeface-libre-franklin'
@@ -168,7 +170,9 @@ function App() {
             <Route exact path="/hotspots" component={HotSpots} />
             <Route exact path="/hotspots/:country" component={HotSpotCountry} />
             <Route exact path="/simulator" component={Simulator} />
-            <Route exact path="/about-lf" component={AboutLF} />
+            <Route exact path="/about" component={About} />
+            <Route exact path="/data-methodology" component={DataMethodology} />
+            <Route exact path="/privacy-cookies" component={PrivacyCookies} />
             <Route exact path="**" component={Page} />
           </Switch>
         </ScrollToTop>
