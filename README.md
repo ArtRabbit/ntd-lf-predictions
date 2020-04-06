@@ -8,7 +8,7 @@ You need [node](https://nodejs.org/en/) and [npm](https://www.npmjs.com/get-npm)
 
 The project uses mapbox for the mapping functionality. To set up the map functionality, create a free [mapbox.com](https://www.mapbox.com/) account and add the contents of mapbox-style.zip from this repository to the new account. 
 
-Generate a mapbox access key and create a '.env' and a '.env_development' file in the project directory and add your access key in the format: REACT_APP_MAPBOX_ACCESS_TOKEN=YOURKEYHERE to these files.
+Generate a mapbox access key and edit the '.env' and a '.env.development' file in the project directory and add your access key in the format: REACT_APP_MAPBOX_ACCESS_TOKEN=YOURKEYHERE to these files.
 
 Then run `yarn` or `npm install` and `yarn start` or `npm start` to run the project.
 
