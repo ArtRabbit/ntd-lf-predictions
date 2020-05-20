@@ -21,25 +21,26 @@ function ScenarioGraph({
   metrics = ['Ms', 'Ws', 'Ls'],
   showAllResults,
   inputs,
+  simInProgress
 }) {
+  //console.log('init',data);
+
   const dataSelection = showAllResults ? data.results : [data.results[0]]
   const domainX = extent(flatten(map(dataSelection, 'ts')))
   const domainY = extent(
-    flattenDeep(map(dataSelection, x => values(pick(x, metrics))))
+    flattenDeep(map(data.results, x => values(pick(x, metrics))))
   )
-
   const ShowActivePoint = ({ active, coord }) => {
 
     return (<g key={`active-${active}`} transform={`translate(${coord[0]},${coord[1]})`}>
              
               <circle
-                      key={`${active}-d`}
                       fill={
                         coord[2] <= 1 ? '#4dac26'
                       : coord[2] >= 6 && coord[2] <= 10
                       ? '#d01c8b'
                       : coord[2] > 10
-                      ? '#f1b6da'
+                      ? '#d01c8b'
                       : '#d01c8b'
                       }
                       fillOpacity={1}
@@ -68,13 +69,10 @@ function ScenarioGraph({
     const coords = data.map(d => [x(d.ts), y(d[prop]),d[prop]])
     //console.log(coords);
     let points = null;
-    //console.log('data',data);
-    //console.log('prop',prop);
-    //console.log('x',x);
-    //console.log('y',y);
+
     
     points = coords.map((coord,i)=>{
-     
+        
         return <g key={`info-${i}`} transform={`translate(${coord[0]},${coord[1]})`}>
 
                     <circle
@@ -93,7 +91,7 @@ function ScenarioGraph({
       points.push(<ShowActivePoint active={activeInfo} coord={coords[activeInfo]} />);
     }
     let hoverPoints = coords.map((coord,i)=>{
-     
+      
       return <g key={`hover-${i}`} transform={`translate(${coord[0]},${coord[1]})`}>
 
                     <circle
@@ -103,6 +101,7 @@ function ScenarioGraph({
                           r={6}
                           cx={0}
                           cy={0}
+                          cursor='crosshair'
                           onMouseEnter={() => handleEnter(i)}
                           onMouseLeave={handleLeave}
                         ></circle>
@@ -147,24 +146,25 @@ function ScenarioGraph({
   const ticksX = x.ticks()
   const ticksY = y.ticks()
 
-  const renderResult = d => {
+  const renderResult = (d,main) => {
+    if (simInProgress) return
     const { ts, Ms, Ws, Ls } = d
     const series = zip(ts, Ms, Ws, Ls)
     const seriesObj = map(series, x => zipObject(['ts', 'Ms', 'Ws', 'Ls'], x))
-    //console.log(data);
+
     //console.log(series);
     //console.log(seriesObj);
-
+    const color = main ? "#6236FF" : "#eeee"
     return (
       <>
         
         
         {metrics.map(m => (
-          <Path key={`${m}-l`} data={seriesObj} prop={m} x={x} y={y} color="#6236FF" />
+          <Path key={`${m}-l`} data={seriesObj} prop={m} x={x} y={y} color={color} />
         ))}
 
-        {metrics.map(m => (
-          <InfoPoints key={`${m}-p`} data={seriesObj} prop={m} x={x} y={y} color="#6236FF" />
+        {main && metrics.map(m => (
+          <InfoPoints key={`${m}-p`} data={seriesObj} prop={m} x={x} y={y} color={color} />
         ))}
         
       </>
@@ -220,9 +220,11 @@ function ScenarioGraph({
             </g>
           )
         })}
-
-        {dataSelection.map((result, i) => (
-          <g key={`results-${i}`}>{renderResult(result)}</g>
+        {data.results && data.results.map((result, i) => (
+          <g key={`results1-${i}`}>{renderResult(result,false)}</g>
+        ))}
+        {data.stats && [data.stats].map((result, i) => (
+          <g key={`results-${i}`}>{renderResult(result,true)}</g>
         ))}
       </g>
     </svg>

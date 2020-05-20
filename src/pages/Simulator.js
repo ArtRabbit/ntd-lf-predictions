@@ -367,7 +367,7 @@ const Simulator = props => {
       console.log('Simulation returned results!')
 
       if (typeof scenarioResults[tabIndex] === 'undefined') {
-        // console.log('scenarioResults')
+        //console.log('scenarioResults',resultObject)
         setScenarioResults([...scenarioResults, JSON.parse(resultObject)])
         setScenarioInputs([
           ...scenarioInputs,
@@ -379,7 +379,7 @@ const Simulator = props => {
         setSimMDAadherence([...JSON.parse(resultObject).mda.adherence])
       } else {
         let correctTabIndex = newScenario === true ? tabIndex + 1 : tabIndex
-
+        //console.log('scenarioResults',resultObject)
         let scenarioResultsNew = [...scenarioResults] // 1. Make a shallow copy of the items
         let resultItem = scenarioResultsNew[correctTabIndex] // 2. Make a shallow copy of the resultItem you want to mutate
         resultItem = JSON.parse(resultObject) // 3. Replace the property you're intested in
@@ -420,7 +420,7 @@ const Simulator = props => {
   const runCurrentScenario = () => {
     if (!simInProgress) {
       setSimInProgress(true)
-      // console.log(tabIndex, simParams)
+      //console.log(tabIndex, simParams)
       SimulatorEngine.simControler.newScenario = false
       SimulatorEngine.simControler.runScenario(
         simParams,
@@ -435,8 +435,8 @@ const Simulator = props => {
       // alert('todo')
 
       SimulatorEngine.SessionData.deleteScenario(tabIndex)
-      console.log(scenarioResults)
-      console.log(scenarioResults[tabIndex])
+      //console.log(scenarioResults)
+      //console.log(scenarioResults[tabIndex])
 
       let newScenarios = [...scenarioResults]
       newScenarios = newScenarios.filter(
@@ -679,6 +679,7 @@ const Simulator = props => {
                         inputs={simMDAcoverage}
                         showAllResults={false}
                         metrics={[graphMetric]}
+                        simInProgress={simInProgress}
                       />
                     </div>
                     <div

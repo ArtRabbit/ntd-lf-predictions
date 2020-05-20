@@ -894,6 +894,15 @@ export var simControler = {
 
     // simControler.dump(scenario);
     // $("#scenario-statistic")[0].innerHTML = JSON.stringify(obj);
+    // add stats in scenario
+    scenario.stats = {
+      ts: ts,
+      prev_reds: ryrs,
+      doses: dyrs,
+      Ws: stats.medW,
+      Ms: stats.medM,
+      Ls: stats.medL,
+    }
     simulatorCallback(JSON.stringify(scenario), simControler.newScenario)
     // console.log(JSON.stringify(scenario));
     // return JSON.stringify(scenario);
