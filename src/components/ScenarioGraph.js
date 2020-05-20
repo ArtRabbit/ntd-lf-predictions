@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { zip, zipObject, map, flatten, flattenDeep, pick, values } from 'lodash'
 import { scaleLinear, extent, line } from 'd3'
 import AutoSizer from 'react-virtualized-auto-sizer'
+
+let fadeOutTimeout = null;
 
 function Path({ data, prop, x, y, color }) {
   const coords = data.map(d => [x(d.ts), y(d[prop])])
@@ -9,6 +11,8 @@ function Path({ data, prop, x, y, color }) {
 
   return <path d={l} stroke={color} fill="none" strokeWidth="2" />
 }
+
+
 
 function ScenarioGraph({
   data,
@@ -23,6 +27,105 @@ function ScenarioGraph({
   const domainY = extent(
     flattenDeep(map(dataSelection, x => values(pick(x, metrics))))
   )
+
+  const ShowActivePoint = ({ active, coord }) => {
+
+    return (<g key={`active-${active}`} transform={`translate(${coord[0]},${coord[1]})`}>
+             
+              <circle
+                      key={`${active}-d`}
+                      fill={
+                        coord[2] <= 1 ? '#4dac26'
+                      : coord[2] >= 6 && coord[2] <= 10
+                      ? '#d01c8b'
+                      : coord[2] > 10
+                      ? '#f1b6da'
+                      : '#d01c8b'
+                      }
+                      fillOpacity={1}
+                      r={20}
+                      cx={2}
+                      cy={-18}
+                    ></circle>
+              <text
+                  fill="white"
+                  fontSize="12px"
+                  fontFamily="Roboto"
+                  pointerEvents="none"
+                  x={2}
+                  y={-18}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                >
+                  {`${coord[2].toFixed(1)}%`}
+                </text>
+    
+                
+      </g>);
+
+  }
+  const InfoPoints = ({ data, prop, x, y, color }) => {
+    const coords = data.map(d => [x(d.ts), y(d[prop]),d[prop]])
+    //console.log(coords);
+    let points = null;
+    //console.log('data',data);
+    //console.log('prop',prop);
+    //console.log('x',x);
+    //console.log('y',y);
+    
+    points = coords.map((coord,i)=>{
+     
+        return <g key={`info-${i}`} transform={`translate(${coord[0]},${coord[1]})`}>
+
+                    <circle
+                          key={`${i}`}
+                          fill={'#6236FF'}
+                          fillOpacity={.8}
+                          r={3}
+                          cx={0}
+                          cy={0}
+                        ></circle>
+                     
+          </g>
+
+    });
+    if ( activeInfo != null ) {
+      points.push(<ShowActivePoint active={activeInfo} coord={coords[activeInfo]} />);
+    }
+    let hoverPoints = coords.map((coord,i)=>{
+     
+      return <g key={`hover-${i}`} transform={`translate(${coord[0]},${coord[1]})`}>
+
+                    <circle
+                          key={`${i}-h`}
+                          fill={'#ff0000'}
+                          fillOpacity={0}
+                          r={6}
+                          cx={0}
+                          cy={0}
+                          onMouseEnter={() => handleEnter(i)}
+                          onMouseLeave={handleLeave}
+                        ></circle>
+                   
+        </g>
+
+    });
+    const allPoints = points.concat(hoverPoints) 
+
+    return allPoints;
+  
+  }
+
+
+  const [activeInfo, setActiveInfo] = useState()
+
+  const handleEnter = id => {
+    if ( fadeOutTimeout != null ) { clearTimeout(fadeOutTimeout) }
+    setActiveInfo(id)
+  }
+  const handleLeave = () => {
+    fadeOutTimeout = setTimeout( ()=> { setActiveInfo(null); }, 50);
+  }
 
   const lPad = 50
   const rPad = 32
@@ -48,12 +151,22 @@ function ScenarioGraph({
     const { ts, Ms, Ws, Ls } = d
     const series = zip(ts, Ms, Ws, Ls)
     const seriesObj = map(series, x => zipObject(['ts', 'Ms', 'Ws', 'Ls'], x))
+    //console.log(data);
+    //console.log(series);
+    //console.log(seriesObj);
 
     return (
       <>
+        
+        
         {metrics.map(m => (
-          <Path key={m} data={seriesObj} prop={m} x={x} y={y} color="#6236FF" />
+          <Path key={`${m}-l`} data={seriesObj} prop={m} x={x} y={y} color="#6236FF" />
         ))}
+
+        {metrics.map(m => (
+          <InfoPoints key={`${m}-p`} data={seriesObj} prop={m} x={x} y={y} color="#6236FF" />
+        ))}
+        
       </>
     )
   }
