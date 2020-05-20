@@ -44,7 +44,7 @@ import imgInfoIcon from '../images/info-24-px.svg'
 
 SimulatorEngine.simControler.documentReady()
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   tabs: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
@@ -239,7 +239,7 @@ TabPanel.propTypes = {
 
 let countryLinks = []
 
-const Simulator = props => {
+const Simulator = (props) => {
   const classes = useStyles()
   const theme = useTheme()
 
@@ -257,19 +257,25 @@ const Simulator = props => {
       )
     }
     SimulatorEngine.simControler.mdaObj.time = [...MDAtime]
+    SimulatorEngine.simControler.mdaObjOrig.time = [...MDAtime]
 
     var MDAcoverage = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAcoverage.push(simParams.coverage)
     }
     SimulatorEngine.simControler.mdaObj.coverage = [...MDAcoverage]
+    SimulatorEngine.simControler.mdaObjOrig.coverage = [...MDAcoverage]
 
     var MDAadherence = []
     for (var i = 0; i < (12 / simParams.mdaSixMonths) * 20; i++) {
       MDAadherence.push(simParams.rho)
     }
     SimulatorEngine.simControler.mdaObj.adherence = [...MDAadherence]
-    // console.log(SimulatorEngine.simControler.mdaObj)
+    SimulatorEngine.simControler.mdaObjOrig.adherence = [...MDAadherence]
+    console.log(
+      'SimulatorEngine.simControler.mdaObj',
+      SimulatorEngine.simControler.mdaObj
+    )
   }
   const populateMDAOnTheFly = () => {
     var MDAtime = []
@@ -298,10 +304,32 @@ const Simulator = props => {
   const [simMDAcoverage, setSimMDAcoverage] = useState([])
   const [simMDAadherence, setSimMDAadherence] = useState([])
   useEffect(() => {
-    // console.log(simMDAtime, simMDAcoverage, simMDAadherence)
-    SimulatorEngine.simControler.mdaObj.time = [...simMDAtime]
-    SimulatorEngine.simControler.mdaObj.coverage = [...simMDAcoverage]
-    SimulatorEngine.simControler.mdaObj.adherence = [...simMDAadherence]
+    const zeroExistsAtThisPos = simMDAcoverage.indexOf(0)
+    // console.log('zeroExistsAtThisPos', zeroExistsAtThisPos)
+
+    if (zeroExistsAtThisPos > -1) {
+      let newSimMDAcoverage = [...simMDAcoverage]
+      let newSimMDAtime = [...simMDAtime]
+      let newSimMDAadherence = [...simMDAadherence]
+      for (let i = 0; newSimMDAcoverage.indexOf(0) > -1; i++) {
+        newSimMDAtime.splice(newSimMDAcoverage.indexOf(0), 1)
+        newSimMDAcoverage.splice(newSimMDAcoverage.indexOf(0), 1)
+        newSimMDAadherence.splice(newSimMDAcoverage.indexOf(0), 1)
+      }
+      SimulatorEngine.simControler.mdaObj.time = [...newSimMDAtime]
+      SimulatorEngine.simControler.mdaObj.coverage = [...newSimMDAcoverage]
+      SimulatorEngine.simControler.mdaObj.adherence = [...newSimMDAadherence]
+    } else {
+      SimulatorEngine.simControler.mdaObj.time = [...simMDAtime]
+      SimulatorEngine.simControler.mdaObj.coverage = [...simMDAcoverage]
+      SimulatorEngine.simControler.mdaObj.adherence = [...simMDAadherence]
+    }
+    SimulatorEngine.simControler.mdaObjOrig.time = [...simMDAtime]
+    SimulatorEngine.simControler.mdaObjOrig.coverage = [...simMDAcoverage]
+    SimulatorEngine.simControler.mdaObjOrig.adherence = [...simMDAadherence]
+
+    // console.log('MDA change', simMDAtime, simMDAcoverage, simMDAadherence)
+    // console.log('mdaObjOrig', SimulatorEngine.simControler.mdaObjOrig)
   }, [simMDAtime, simMDAcoverage, simMDAadherence])
 
   /* Simuilation, tabs etc */
@@ -340,7 +368,7 @@ const Simulator = props => {
       coverage: newValue, // / 100
     })
   }
-  const handleFrequencyChange = event => {
+  const handleFrequencyChange = (event) => {
     setDoseSettingsOpen(false)
     setSimParams({ ...simParams, mdaSixMonths: event.target.value })
   }
@@ -373,10 +401,13 @@ const Simulator = props => {
           ...scenarioInputs,
           JSON.parse(resultObject).params.inputs,
         ])
-        setScenarioMDAs([...scenarioMDAs, JSON.parse(resultObject).mda.time])
-        setSimMDAtime([...JSON.parse(resultObject).mda.time])
-        setSimMDAcoverage([...JSON.parse(resultObject).mda.coverage])
-        setSimMDAadherence([...JSON.parse(resultObject).mda.adherence])
+        setScenarioMDAs([
+          ...scenarioMDAs,
+          JSON.parse(resultObject).mdaOrig.time,
+        ])
+        setSimMDAtime([...JSON.parse(resultObject).mdaOrig.time])
+        setSimMDAcoverage([...JSON.parse(resultObject).mdaOrig.coverage])
+        setSimMDAadherence([...JSON.parse(resultObject).mdaOrig.adherence])
       } else {
         let correctTabIndex = newScenario === true ? tabIndex + 1 : tabIndex
         //console.log('scenarioResults',resultObject)
@@ -394,17 +425,19 @@ const Simulator = props => {
 
         let scenarioMDAsNew = [...scenarioMDAs]
         let MDAsItem = scenarioMDAsNew[correctTabIndex]
+        const returnedMDAOrig = JSON.parse(resultObject)
         MDAsItem = {
-          time: [...simMDAtime],
-          coverage: [...simMDAcoverage],
-          adherence: [...simMDAadherence],
+          time: [...returnedMDAOrig.mdaOrig.time],
+          coverage: [...returnedMDAOrig.mdaOrig.coverage],
+          adherence: [...returnedMDAOrig.mdaOrig.adherence],
         }
         scenarioMDAsNew[correctTabIndex] = MDAsItem
+        // console.log('ccc', correctTabIndex, scenarioMDAsNew)
         setScenarioMDAs(scenarioMDAsNew)
 
-        setSimMDAtime([...JSON.parse(resultObject).mda.time])
-        setSimMDAcoverage([...JSON.parse(resultObject).mda.coverage])
-        setSimMDAadherence([...JSON.parse(resultObject).mda.adherence])
+        setSimMDAtime([...JSON.parse(resultObject).mdaOrig.time])
+        setSimMDAcoverage([...JSON.parse(resultObject).mdaOrig.coverage])
+        setSimMDAadherence([...JSON.parse(resultObject).mdaOrig.adherence])
       }
       setSimInProgress(false)
       // console.log('newScenario', newScenario)
@@ -440,19 +473,19 @@ const Simulator = props => {
 
       let newScenarios = [...scenarioResults]
       newScenarios = newScenarios.filter(
-        item => item !== scenarioResults[tabIndex]
+        (item) => item !== scenarioResults[tabIndex]
       )
       setScenarioResults([...newScenarios])
 
       let newScenarioInputs = [...scenarioInputs]
       newScenarioInputs = newScenarioInputs.filter(
-        item => item !== scenarioInputs[tabIndex]
+        (item) => item !== scenarioInputs[tabIndex]
       )
       setScenarioInputs([...newScenarioInputs])
 
       let newScenarioMDAs = [...scenarioMDAs]
       newScenarioMDAs = newScenarioMDAs.filter(
-        item => item !== scenarioMDAs[tabIndex]
+        (item) => item !== scenarioMDAs[tabIndex]
       )
       setScenarioMDAs(newScenarioMDAs)
       /*       setSimMDAtime(scenarioMDAs[tabIndex].time) // !!!!!!!!!! doesnt work because previous line hasn't happenned yet
@@ -531,7 +564,7 @@ const Simulator = props => {
   }, [country])
   const [doseSettingsOpen, setDoseSettingsOpen] = useState(false)
 
-  const closeRoundModal = event => {
+  const closeRoundModal = (event) => {
     setDoseSettingsOpen(false)
     setCurMDARound(-1)
   }
@@ -550,8 +583,8 @@ const Simulator = props => {
       : null
     // console.log('scenariosArray', scenariosArray)
     if (scenariosArray) {
-      let paramsInputs = scenariosArray.map(item => item.params.inputs)
-      let MDAs = scenariosArray.map(item => item.mda)
+      let paramsInputs = scenariosArray.map((item) => item.params.inputs)
+      let MDAs = scenariosArray.map((item) => item.mdaOrig)
       setScenarioInputs(paramsInputs)
       if (typeof paramsInputs[tabIndex] != 'undefined') {
         // set input arams if you have them
@@ -656,7 +689,7 @@ const Simulator = props => {
                         labelId="larvae-prevalence"
                         id="larvae-prevalence"
                         value={graphMetric}
-                        onChange={ev => {
+                        onChange={(ev) => {
                           // console.log(ev.target.value)
                           setGraphMetric(ev.target.value)
                         }}
@@ -705,17 +738,19 @@ const Simulator = props => {
                             borderWidth: 1,
                             borderColor: 'white',
                             borderStyle: 'solid',
+                            opacity: simMDAcoverage[i] === 0 ? 0.3 : 1,
                           }}
-                          onMouseOver={a => {
+                          onMouseOver={(a) => {
                             //a.target.style.borderColor = '#d01c8b'
                           }}
-                          onMouseOut={a => {
+                          onMouseOut={(a) => {
                             //a.target.style.borderColor = 'white'
                           }}
-                          onClick={a => {
+                          onClick={(a) => {
                             setCurMDARound(i)
                             setDoseSettingsOpen(true)
                           }}
+                          className="bar"
                           title={
                             simMDAtime[i] +
                             ', ' +
@@ -929,7 +964,7 @@ const Simulator = props => {
                   aria-label="Species"
                   name="species"
                   value={simParams.species}
-                  onChange={event => {
+                  onChange={(event) => {
                     setSimParams({
                       ...simParams,
                       species: Number(event.target.value),
@@ -1068,7 +1103,7 @@ const Simulator = props => {
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
                   value={simParams.mdaRegimen}
-                  onChange={event => {
+                  onChange={(event) => {
                     setSimParams({
                       ...simParams,
                       mdaRegimen: event.target.value,
