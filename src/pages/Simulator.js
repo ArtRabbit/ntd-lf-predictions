@@ -332,6 +332,22 @@ const Simulator = (props) => {
     // console.log('mdaObjOrig', SimulatorEngine.simControler.mdaObjOrig)
   }, [simMDAtime, simMDAcoverage, simMDAadherence])
 
+  // check for stale scenarios object in LS
+  const LSSessionData = JSON.parse(window.localStorage.getItem('sessionData'))
+  if (
+    LSSessionData !== null &&
+    LSSessionData.scenarios &&
+    LSSessionData.scenarios[0] &&
+    LSSessionData.scenarios[0].mda &&
+    typeof LSSessionData.scenarios[0].mdaOrig === 'undefined'
+  ) {
+    // clear LS and relaod if stale project is found
+    window.localStorage.removeItem('sessionData')
+    window.localStorage.removeItem('scenarioIndex')
+    console.log('reloading')
+    window.location.reload()
+  }
+
   /* Simuilation, tabs etc */
   const [simInProgress, setSimInProgress] = useState(false)
   // console.log(parseInt(window.localStorage.getItem('scenarioIndex')))
