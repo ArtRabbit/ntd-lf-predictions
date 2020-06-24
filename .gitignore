@@ -33,3 +33,5 @@ settings.json
 .env.development
 .prettierrc
 .env.production
+src/images/ace-explore.json
+src/images/on-site-notes.jpg
