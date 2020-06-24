@@ -171,6 +171,7 @@ const Home = (props) => {
             links={[
               { to: '/trends', name: 'TRENDS' },
               { to: '/hotspots', name: 'HOTSPOTS' },
+              { to: '/simulator', name: 'SIMULATOR' },
             ]}
           />
         </Box>
