@@ -506,11 +506,15 @@ params.sigma = params.rho / (1 - params.rho);
 params.u0 = -NormSInv(params.covMDA) * Math.sqrt(1 + params.sigma);
 
 setPropMDA = function (regimen) {
+  console.log('regimen',regimen);
+  
   ps = modelParams();
   chis = [0.99, 0.95, 0.99, 1.0, Number(ps.microfilaricide) / 100, 0.99];
   taus = [0.35, 0.55, 0.1, 1.0, Number(ps.macrofilaricide) / 100, 0.1];
   params.mfPropMDA = 1 - chis[Number(regimen) - 1];
   params.wPropMDA = 1 - taus[Number(regimen) - 1];
+
+  console.log('params',params);
 };
 
 closest = function (num, arr) {

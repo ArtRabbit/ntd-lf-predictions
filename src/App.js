@@ -18,12 +18,12 @@ import 'typeface-roboto'
 import 'typeface-libre-franklin'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 
 // root element styles
 import './App.scss';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     /*
     primary: purple,

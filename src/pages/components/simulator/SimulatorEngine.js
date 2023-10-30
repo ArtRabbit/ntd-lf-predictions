@@ -350,6 +350,7 @@ export var Model = function (n) {
         this.people[i].M = params.mfPropMDA * this.people[i].M
         this.people[i].WM = Math.floor(params.wPropMDA * this.people[i].WM)
         this.people[i].WF = Math.floor(params.wPropMDA * this.people[i].WF)
+        this.people[i].treated = params.fecRed
       }
     }
   }
@@ -484,6 +485,15 @@ export var Model = function (n) {
         this.bedNetEvent()
         this.bedNetInt = 1
       }
+      //  adding in the use of the fecRed parameter.
+      //if ((Math.round(t) % 12 > params.fecRed)){
+      //After effects of MDA wear off reset to 0.
+
+      // // reduce value of treated by 1 each month
+      // for (int i = 0; i < this.n; i++){
+      //    this.people[i].treated = this.people[i].treated - 1;
+      // }
+      //}
 
       if (t >= nextMDA) {
         this.MDAEvent()
@@ -686,12 +696,39 @@ export var statFunctions = {
   },
 
   setPropMDA: function (regimen) {
-    // var ps = simControler.modelParams();
-    var ps = simControler.params
-    var chis = [0.99, 0.95, 0.99, 1.0, Number(ps.microfilaricide) / 100, 0.99]
-    var taus = [0.35, 0.55, 0.1, 1.0, Number(ps.macrofilaricide) / 100, 0.1]
-    params.mfPropMDA = 1 - chis[Number(regimen) - 1]
-    params.wPropMDA = 1 - taus[Number(regimen) - 1]
+
+    switch (regimen) {
+      case 1:
+         //regimen 1 = albendazole + ivermectin
+        params.wPropMDA = 0.65
+        params.mfPropMDA = 0.01
+        params.fecRed = 9.0
+        break;
+      case 2:
+        //regimen 2 = albendazole + diethylcarbamazine
+        params.wPropMDA = 0.45
+        params.mfPropMDA = 0.05
+        params.fecRed = 6.0
+        break;
+      case 4:
+        //regimen 4 = ivermectin + albendazole + diethylcarbamazine
+        params.wPropMDA = 0
+        params.mfPropMDA = 0
+        params.fecRed = 0
+        break;
+      case 5:
+        //regimen 5 = custom
+        var ps = simControler.params
+        var chis = [0.99, 0.95, 0.99, 1.0, Number(ps.microfilaricide) / 100, 0.99]
+        var taus = [0.35, 0.55, 0.1, 1.0, Number(ps.macrofilaricide) / 100, 0.1]
+        params.mfPropMDA = 1 - chis[Number(regimen) - 1]
+        params.wPropMDA = 1 - taus[Number(regimen) - 1]
+        params.fecRed = ps.fecRed;
+        break;
+
+    }
+
+
   },
 
   closest: function (num, arr) {
@@ -824,6 +861,7 @@ export var statFunctions = {
     params.rho = Number(ps.rho)
     params.rhoBComp = Number(ps.rhoBComp)
     params.rhoCN = Number(ps.rhoCN)
+    params.fecRed = Number(ps.fecRed)
     params.species = Number(ps.species)
     params.mosquitoSpecies = params.species
     //calculate other parameters for params
@@ -1057,6 +1095,7 @@ export var simControler = {
     macrofilaricide: 65, // $("#Macrofilaricide").val(),
     microfilaricide: 65, // $("#Microfilaricide").val(),
     runs: 5, // $("#runs").val()
+    fecRed: 0,
   },
   mdaObj: {
     time: [], //60, 96, 120, 144, 180

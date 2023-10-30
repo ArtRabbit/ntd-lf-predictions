@@ -384,6 +384,31 @@ const Simulator = (props) => {
       coverage: newValue, // / 100
     })
   }
+
+  const handlefecRedChange = (event, newValue) => {
+    // this used to be a special occastion. If nothing changes we can use the handleSlerChanges handler instead.
+    setSimParams({
+      ...simParams,
+      fecRed: newValue, // / 100
+    })
+  }
+
+  const handleMicroChange = (event, newValue) => {
+    // this used to be a special occastion. If nothing changes we can use the handleSlerChanges handler instead.
+    setSimParams({
+      ...simParams,
+      microfilaricide: newValue, // / 100
+    })
+  }
+
+  const handleMacroChange = (event, newValue) => {
+    // this used to be a special occastion. If nothing changes we can use the handleSlerChanges handler instead.
+    setSimParams({
+      ...simParams,
+      macrofilaricide: newValue, // / 100
+    })
+  }
+
   const handleFrequencyChange = (event) => {
     setDoseSettingsOpen(false)
     setSimParams({ ...simParams, mdaSixMonths: event.target.value })
@@ -636,6 +661,8 @@ const Simulator = (props) => {
   /*   useEffect(() => {
     console.log('change of editingMDAs', editingMDAs)
   }, [editingMDAs]) */
+  console.log('simParams',simParams)
+
   return (
     <Layout>
       <HeadWithInputs
@@ -1120,9 +1147,23 @@ const Simulator = (props) => {
                   id="demo-simple-select-helper"
                   value={simParams.mdaRegimen}
                   onChange={(event) => {
+                    console.log(event.target.value)
+                    var fecRed = 0
+                    switch (event.target.value) {
+                      case 1:
+                          fecRed=9.0
+                        break;
+                      case 2:
+                        fecRed=6.0
+                        break;
+                      case 4:
+                        fecRed=0
+                        break;
+                    }
                     setSimParams({
                       ...simParams,
                       mdaRegimen: event.target.value,
+                      fecRed: fecRed
                     })
                   }}
                 >
@@ -1130,12 +1171,76 @@ const Simulator = (props) => {
                   <MenuItem value={2}>
                     albendazole + diethylcarbamazine
                   </MenuItem>
-                  <MenuItem value={3}>ivermectin</MenuItem>
                   <MenuItem value={4}>
                     ivermectin + albendazole + diethylcarbamazine
                   </MenuItem>
                   <MenuItem value={5}>custom</MenuItem>
                 </Select>
+                {simParams.mdaRegimen === 5 && <div className={classes.settingsBody}>
+                  <FormControl fullWidth className={classes.formControl}>
+                   <FormLabel
+                      component="legend"
+                      htmlFor="microfilaricide"
+                      className={classes.withSlider}
+                    >
+                      Microfilaricide
+                    </FormLabel>
+                     <Slider
+                        value={simParams.microfilaricide}
+                        min={0}
+                        step={1}
+                        max={100}
+                        onChange={handleMicroChange}
+                        aria-labelledby="microfilaricide"
+                        marks={[
+                          { value: 0, label: '0' },
+                          { value: 100, label: '100' },
+                        ]}
+                        valueLabelDisplay="on"
+                      />
+                    </FormControl>
+                      <FormLabel
+                        component="legend"
+                        htmlFor="macrofilaricide"
+                        className={classes.withSlider}
+                      >
+                        Macrofilaricide
+                      </FormLabel>
+                      <Slider
+                        value={simParams.macrofilaricide}
+                        min={0}
+                        step={1}
+                        max={100}
+                        onChange={handleMacroChange}
+                        aria-labelledby="slider"
+                        marks={[
+                          { value: 0, label: '0' },
+                          { value: 100, label: '100' },
+                        ]}
+                        valueLabelDisplay="on"
+                      />
+                      <FormLabel
+                        component="legend"
+                        htmlFor="fecRed"
+                        className={classes.withSlider}
+                      >
+                        Embryostatic Effect
+                      </FormLabel>
+                      <Slider
+                        value={simParams.fecRed}
+                        min={0}
+                        step={0.1}
+                        max={10}
+                        onChange={handlefecRedChange}
+                        aria-labelledby="slider"
+                        marks={[
+                          { value: 0, label: '0' },
+                          { value: 10, label: '10' },
+                        ]}
+                        valueLabelDisplay="on"
+                      />
+                  
+                  </div>}
               </FormControl>
             </div>
             <div className={classes.buttons}>
